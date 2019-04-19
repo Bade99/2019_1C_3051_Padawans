@@ -16,6 +16,7 @@ namespace TGC.Group.Model
 
         private Xwing xwing;
         private PistasReferencia pistaReferencia;
+        private WorldSphere worldSphere;
         private FollowingCamera followingCamera;
         private BoundingBoxHelper boundingBoxHelper;
 
@@ -30,8 +31,9 @@ namespace TGC.Group.Model
         {
             var d3dDevice = D3DDevice.Instance.Device;
             var loader = new TgcSceneLoader();
-            pistaReferencia = new PistasReferencia(loader, 50);
+            pistaReferencia = new PistasReferencia(loader, 5);
             xwing = new Xwing(loader);
+            worldSphere = new WorldSphere(loader, xwing);
             followingCamera = new FollowingCamera(xwing);
             boundingBoxHelper = new BoundingBoxHelper(xwing, pistaReferencia);
         }
@@ -40,6 +42,7 @@ namespace TGC.Group.Model
             PreUpdate();
 
             followingCamera.Update(Camara);
+            worldSphere.Update();
             xwing.UpdateInput(Input);
             boundingBoxHelper.UpdateInput(Input);
 
@@ -68,6 +71,7 @@ namespace TGC.Group.Model
 
             xwing.Render();
             pistaReferencia.Render();
+            worldSphere.Render();
             boundingBoxHelper.RenderBoundingBoxes();
 
             PostRender();
@@ -75,8 +79,10 @@ namespace TGC.Group.Model
 
         public override void Dispose()
         {
+
             xwing.Dispose();
             pistaReferencia.Dispose();
+            worldSphere.Dispose();
         }
     }
 }
