@@ -30,7 +30,8 @@ namespace TGC.Group.Model
         {
             this.loader = loader;
             xwing = loader.loadSceneFromFile("Padawans_media\\XWing\\xwing-TgcScene.xml").Meshes[0];
-            xwing.Scale = new TGCVector3(0.5f, 0.5f, 0.5f);
+            xwing.Position = new TGCVector3(0,0,0);
+            xwing.Scale = new TGCVector3(0.1f, 0.1f, 0.1f);
             xwing.RotateY(FastMath.PI_HALF);
         }
 
@@ -46,6 +47,33 @@ namespace TGC.Group.Model
 
         public override void Update()
         {
+
+        }
+
+        private void testingInput(TgcD3dInput input)
+        {
+            //Movimientos Y+G+H+J para moverse rapido por el mapa
+            if (input.keyDown(Key.Y))
+            {
+                xwing.Position = new TGCVector3(xwing.Position.X, xwing.Position.Y + 10, xwing.Position.Z);
+            }
+            if (input.keyDown(Key.H))
+            {
+                xwing.Position = new TGCVector3(xwing.Position.X, xwing.Position.Y - 10, xwing.Position.Z);
+            }
+            if (input.keyDown(Key.G))
+            {
+                xwing.Position = new TGCVector3(xwing.Position.X + 10, xwing.Position.Y, xwing.Position.Z);
+            }
+            if (input.keyDown(Key.J))
+            {
+                xwing.Position = new TGCVector3(xwing.Position.X - 10, xwing.Position.Y, xwing.Position.Z);
+            }
+
+            if (input.keyDown(Key.C))//ir para atras
+            {
+                xwing.Position = new TGCVector3(xwing.Position.X, xwing.Position.Y, xwing.Position.Z + 10);
+            }
 
         }
 
@@ -68,6 +96,10 @@ namespace TGC.Group.Model
             {
                 xwing.Position = new TGCVector3(xwing.Position.X - 1, xwing.Position.Y, xwing.Position.Z);
             }
+
+            //Teclas especiales para moverse rapido y mas facil por el mapa
+            testingInput(input);
+
             //Movimientos flechas
             if (input.keyDown(Key.LeftArrow))
             {
