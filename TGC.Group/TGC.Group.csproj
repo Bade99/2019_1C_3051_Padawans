@@ -94,6 +94,7 @@
       <DependentUpon>Game.settings</DependentUpon>
     </Compile>
     <Compile Include="Model\BoundingBoxHelper.cs" />
+    <Compile Include="Model\WorldSphere.cs" />
     <Compile Include="Model\InteractiveElement.cs" />
     <Compile Include="Model\CommonHelper.cs" />
     <Compile Include="Model\PistasReferencia.cs" />
