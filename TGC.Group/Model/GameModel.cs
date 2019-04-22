@@ -34,7 +34,7 @@ namespace TGC.Group.Model
             xwing = new Xwing(loader);
             worldSphere = new WorldSphere(loader, xwing);
             followingCamera = new FollowingCamera(xwing);
-            boundingBoxHelper = new BoundingBoxHelper(xwing, pistaReferencia);
+            boundingBoxHelper = new BoundingBoxHelper(xwing, pistaReferencia, worldSphere);
         }
         public override void Update()
         {
@@ -43,18 +43,6 @@ namespace TGC.Group.Model
             worldSphere.Update();
             xwing.UpdateInput(Input,ElapsedTime);
             boundingBoxHelper.UpdateInput(Input, ElapsedTime);
-
-            ////Ruedita para alejar/acercar camara
-            //if (Input.WheelPos == -1)
-            //{
-            //    Camara.SetCamera(Camara.Position + new TGCVector3(0, 2, 2), Camara.LookAt);
-            //}
-            //if (Input.WheelPos == 1)
-            //{
-            //    Camara.SetCamera(Camara.Position + new TGCVector3(0, -2, -2), Camara.LookAt);
-            //}
-
-            //Sleep para que no vaya tan rapido, ajustarlo segun gusto
             Thread.Sleep(1);//@mientras mas chico el numero mas ganas en performance, tmb podemos sacar esto y listo
             PostUpdate();
         }
