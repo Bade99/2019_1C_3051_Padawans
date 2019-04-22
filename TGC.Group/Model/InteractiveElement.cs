@@ -17,6 +17,6 @@ namespace TGC.Group.Model
     /// </summary>
     public interface InteractiveElement
     {
-        void UpdateInput(TgcD3dInput input);
+        void UpdateInput(TgcD3dInput input,float ElapsedTime);
     }
 }

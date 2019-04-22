@@ -38,7 +38,7 @@ namespace TGC.Group.Model
             }
         }
 
-        public void UpdateInput(TgcD3dInput input)
+        public void UpdateInput(TgcD3dInput input,float ElapsedTime)
         {
             if (input.keyPressed(Key.F))
             {

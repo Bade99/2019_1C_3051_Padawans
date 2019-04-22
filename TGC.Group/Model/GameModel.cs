@@ -13,9 +13,8 @@ namespace TGC.Group.Model
 {
     public class GameModel : TgcExample
     {
-
         private Xwing xwing;
-        private PistasReferencia pistaReferencia;
+        private MainRunway pistaReferencia;
         private WorldSphere worldSphere;
         private FollowingCamera followingCamera;
         private BoundingBoxHelper boundingBoxHelper;
@@ -31,7 +30,7 @@ namespace TGC.Group.Model
         {
             var d3dDevice = D3DDevice.Instance.Device;
             var loader = new TgcSceneLoader();
-            pistaReferencia = new PistasReferencia(loader, 5);
+            pistaReferencia = new MainRunway(loader, 5);
             xwing = new Xwing(loader);
             worldSphere = new WorldSphere(loader, xwing);
             followingCamera = new FollowingCamera(xwing);
@@ -40,24 +39,23 @@ namespace TGC.Group.Model
         public override void Update()
         {
             PreUpdate();
-
-            followingCamera.Update(Camara);
+            followingCamera.Update(Camara,Input);
             worldSphere.Update();
-            xwing.UpdateInput(Input);
-            boundingBoxHelper.UpdateInput(Input);
+            xwing.UpdateInput(Input,ElapsedTime);
+            boundingBoxHelper.UpdateInput(Input, ElapsedTime);
 
-            //Ruedita para alejar/acercar camara
-            if (Input.WheelPos == -1)
-            {
-                Camara.SetCamera(Camara.Position + new TGCVector3(0, 2, 2), Camara.LookAt);
-            }
-            if (Input.WheelPos == 1)
-            {
-                Camara.SetCamera(Camara.Position + new TGCVector3(0, -2, -2), Camara.LookAt);
-            }
+            ////Ruedita para alejar/acercar camara
+            //if (Input.WheelPos == -1)
+            //{
+            //    Camara.SetCamera(Camara.Position + new TGCVector3(0, 2, 2), Camara.LookAt);
+            //}
+            //if (Input.WheelPos == 1)
+            //{
+            //    Camara.SetCamera(Camara.Position + new TGCVector3(0, -2, -2), Camara.LookAt);
+            //}
 
             //Sleep para que no vaya tan rapido, ajustarlo segun gusto
-            Thread.Sleep(10);
+            Thread.Sleep(1);//@mientras mas chico el numero mas ganas en performance, tmb podemos sacar esto y listo
             PostUpdate();
         }
         public override void Render()

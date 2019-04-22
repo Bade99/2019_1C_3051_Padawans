@@ -97,7 +97,7 @@
     <Compile Include="Model\WorldSphere.cs" />
     <Compile Include="Model\InteractiveElement.cs" />
     <Compile Include="Model\CommonHelper.cs" />
-    <Compile Include="Model\PistasReferencia.cs" />
+    <Compile Include="Model\MainRunway.cs" />
     <Compile Include="Model\FollowingCamera.cs" />
     <Compile Include="Model\Xwing.cs" />
     <Compile Include="Model\GameModel.cs" />
