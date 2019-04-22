@@ -78,6 +78,7 @@ namespace TGC.Group.Model
             }
             if (input.keyDown(Key.C))//ir para atras
             {
+                velocidadZ = minimaVelocidadZ;
                 xwing.Position = new TGCVector3(xwing.Position.X, xwing.Position.Y, xwing.Position.Z + 10);
             }
 

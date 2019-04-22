@@ -204,8 +204,10 @@ namespace TGC.Group.Model
 
             posicion = distancia * .4f + new TGCVector3(30f,0,0);
             escalador = new TGCVector3(.3f, .3f, 5f);
-            PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 2.5f), mesh_pivot, 0,rotacion);
+            PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0,rotacion);
 
+            posicion = distancia * .6f + new TGCVector3(-30f, 0, 0);
+            PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0, rotacion);
 
             escalador = new TGCVector3(30f, 50f, 50f);
             mesh_pivot = 0;
