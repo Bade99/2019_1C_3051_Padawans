@@ -19,7 +19,7 @@ public class FollowingCamera
     {
         cameraPosition = new TGCVector3();
         //Esta es la distancia fija que hay desde la posicion de la camara hacia el punto donde se ve
-        fixedDistanceCamera = new TGCVector3(0, 5, 100);//def: 0,50,125
+        fixedDistanceCamera = new TGCVector3(0, 10, 40);
         minimumDistance = fixedDistanceCamera - new TGCVector3(0,10f,10f);
         lookAtCamera = new TGCVector3();
         this.xwing = xwing;
