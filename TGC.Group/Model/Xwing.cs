@@ -20,14 +20,16 @@ namespace TGC.Group.Model
     {
         private TgcSceneLoader loader;
         TgcMesh xwing;
-        private static float minimaVelocidadZ = 25f;
-        private float velocidadZ = minimaVelocidadZ;
-        private float velocidadEjes = 30f;
+        private readonly float minimaVelocidad = 25f;
+        private float velocidadGeneral;
+        private readonly float velocidadEjes = 30f;
         private readonly float aceleracion = 80f;//@necesitamos saber el elapsed time para poder tener esto bien seteado, preguntar de donde lo sacamos
         private readonly float friccion = 10f;
         private readonly float maximaVelocidadZ = 300;
-        private bool barrelRoll = false;
-        private int barrelRollAvance = 0;
+        private bool barrelRoll;
+        private int barrelRollAvance;
+        private float anguloAcimutal;
+        private float anguloPolar;
 
         public Xwing(TgcSceneLoader loader)
         {
@@ -36,6 +38,11 @@ namespace TGC.Group.Model
             xwing.Position = new TGCVector3(0,0,0);
             xwing.Scale = new TGCVector3(0.1f, 0.1f, 0.1f);
             xwing.RotateY(FastMath.PI_HALF);
+
+            velocidadGeneral = minimaVelocidad;
+            barrelRoll = false;
+            anguloAcimutal = GetAnguloAcimutal(xwing.Rotation.Y);
+            anguloPolar = GetAnguloPolar(xwing.Rotation.Z);
         }
 
         public override void Render()
@@ -74,11 +81,11 @@ namespace TGC.Group.Model
             }
             if (input.keyDown(Key.V))//ir para adelante
             {
-                velocidadZ += aceleracion;
+                velocidadGeneral += aceleracion;
             }
             if (input.keyDown(Key.C))//ir para atras
             {
-                velocidadZ = minimaVelocidadZ;
+                velocidadGeneral = minimaVelocidad;
                 xwing.Position = new TGCVector3(xwing.Position.X, xwing.Position.Y, xwing.Position.Z + 10);
             }
 
@@ -88,6 +95,7 @@ namespace TGC.Group.Model
         public void UpdateInput(TgcD3dInput input,float ElapsedTime) //@@@no se está teniendo en cuenta el ElapsedTime!!
         {//@la nave deberia tener rotacion, en vez de movimiento de solo un eje, ver tgc examples
             //Movimientos W+A+S+D
+            ElapsedTime = 0.01f; //Lo hardcodeo hasta que sepamos bien como hacer esto
             if (input.keyDown(Key.W))
             {
                 xwing.Position = new TGCVector3(xwing.Position.X, xwing.Position.Y + velocidadEjes * ElapsedTime, xwing.Position.Z);
@@ -112,37 +120,41 @@ namespace TGC.Group.Model
             if (input.keyDown(Key.LeftArrow))
             {
                 xwing.RotateY(-1f*ElapsedTime);
+                anguloAcimutal = GetAnguloAcimutal(xwing.Rotation.Y);
             }
             if (input.keyDown(Key.RightArrow))
             {
                 xwing.RotateY(1f*ElapsedTime);
+                anguloAcimutal = GetAnguloAcimutal(xwing.Rotation.Y);
             }
             if (input.keyDown(Key.UpArrow))
             {
-                xwing.RotateZ(-1f*ElapsedTime);
+                xwing.RotateZ(1f*ElapsedTime);
+                anguloPolar = GetAnguloPolar(xwing.Rotation.Z);
             }
             if (input.keyDown(Key.DownArrow))
             {
-                xwing.RotateZ(1f*ElapsedTime);
+                xwing.RotateZ(-1f*ElapsedTime);
+                anguloPolar = GetAnguloPolar(xwing.Rotation.Z);
             }
             //Acelerar
-            if (input.keyDown(Key.LeftShift) && velocidadZ < maximaVelocidadZ)
+            if (input.keyDown(Key.LeftShift) && velocidadGeneral < maximaVelocidadZ)
             {
-                velocidadZ += (aceleracion*ElapsedTime);
+                velocidadGeneral += (aceleracion*ElapsedTime);
             }
             //Frenar
             if (input.keyDown(Key.LeftControl))
             {
-                velocidadZ -= (aceleracion*ElapsedTime / 2);
+                velocidadGeneral -= (aceleracion*ElapsedTime / 2);
             }
-            //Permite que la nave se detenga totalmente
-            if (velocidadZ > minimaVelocidadZ)
+            //Permite que la nave se detenga paulatinamente con la friccion
+            if (velocidadGeneral > minimaVelocidad)
             {
-                velocidadZ -= (friccion*ElapsedTime);
+                velocidadGeneral -= (friccion*ElapsedTime);
             }
             else
             {
-                velocidadZ = minimaVelocidadZ;
+                velocidadGeneral = minimaVelocidad;
             }
 
             //BarrelRoll con barra espaciadora
@@ -164,22 +176,52 @@ namespace TGC.Group.Model
             }
 
             //Efecto de aceleracion
-            xwing.Position = new TGCVector3(xwing.Position.X, xwing.Position.Y, xwing.Position.Z - velocidadZ*ElapsedTime);//@@todos los ejes deberian usar funciones similares, para evitar ese salto que aparenta dar la nave
+            xwing.Position = CalcularAvanceNave(xwing.Position, ElapsedTime);//@@todos los ejes deberian usar funciones similares, para evitar ese salto que aparenta dar la nave
         }
 
+        private float GetAnguloPolar(float angulo)
+        {
+            anguloPolar = (-xwing.Rotation.Z + FastMath.PI / 2) % (2 * FastMath.PI);
+            if (anguloPolar > FastMath.PI)
+            {
+                anguloPolar = (FastMath.PI * 2) - anguloPolar;
+            }
+            return anguloPolar;
+        }
+
+        private float GetAnguloAcimutal(float angulo)
+        {
+            return (angulo + (FastMath.PI)) % (FastMath.PI * 2);
+        }
+
+        private TGCVector3 CalcularAvanceNave(TGCVector3 posicion, float ElapsedTime)
+        {
+            float x = posicion.X - velocidadGeneral * FastMath.Cos(anguloAcimutal) * FastMath.Sin(anguloPolar) * ElapsedTime;
+            float y = posicion.Y + velocidadGeneral * FastMath.Cos(anguloPolar) * ElapsedTime;
+            float z = posicion.Z + velocidadGeneral * FastMath.Sin(anguloAcimutal) * FastMath.Sin(anguloPolar) * ElapsedTime;
+            return new TGCVector3(x, y, z);
+        }
         public override void Dispose()
         {
             xwing.Dispose();
         }
 
-        public float GetVelocidadZ()
+        public float GetVelocidadGeneral()
         {
-            return velocidadZ;
+            return velocidadGeneral;
         }
 
         public TGCVector3 GetPosition()
         {
             return xwing.Position;
+        }
+        public float GetPolar()
+        {
+            return anguloPolar;
+        }
+        public float GetAcimutal()
+        {
+            return anguloAcimutal;
         }
     }
 }

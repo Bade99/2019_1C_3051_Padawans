@@ -53,7 +53,9 @@ namespace TGC.Group.Model
             DrawText.drawText($"Con la tecla F se dibuja el bounding box.", 0, 20, Color.OrangeRed);
             DrawText.drawText("Con la ruedita aleja/acerca la camara [Actual]: " + TGCVector3.PrintVector3(Camara.Position), 0, 30, Color.OrangeRed);
             DrawText.drawText("Posicion Xwing: " + TGCVector3.PrintVector3(xwing.GetPosition()), 0, 40, Color.OrangeRed);
-            DrawText.drawText("Velocidad Xwing: " + xwing.GetVelocidadZ(), 0, 50, Color.OrangeRed);
+            DrawText.drawText("Velocidad Xwing: " + xwing.GetVelocidadGeneral(), 0, 50, Color.OrangeRed);
+            DrawText.drawText("Polar: " + xwing.GetPolar(), 0, 60, Color.OrangeRed);
+            DrawText.drawText("Acimutal: " + xwing.GetAcimutal(), 0, 70, Color.OrangeRed);
 
             xwing.Render();
             pistaReferencia.Render();
