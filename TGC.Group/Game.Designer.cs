@@ -49,7 +49,7 @@ namespace TGC.Group {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Juego de Naves de Star Wars")]
+        [global::System.Configuration.DefaultSettingValueAttribute("SpaceShip - Juego de Naves de Star Wars")]
         public string Description {
             get {
                 return ((string)(this["Description"]));

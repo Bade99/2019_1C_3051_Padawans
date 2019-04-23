@@ -9,7 +9,7 @@
       <Value Profile="(Default)">Padawans</Value>
     </Setting>
     <Setting Name="Description" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Juego de Naves de Star Wars</Value>
+      <Value Profile="(Default)">SpaceShip - Juego de Naves de Star Wars</Value>
     </Setting>
     <Setting Name="ShadersDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)">..\..\Shaders\</Value>
