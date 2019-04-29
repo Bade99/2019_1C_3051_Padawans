@@ -56,6 +56,8 @@ namespace TGC.Group.Model
             DrawText.drawText("Velocidad Xwing: " + xwing.GetVelocidadGeneral(), 0, 50, Color.OrangeRed);
             DrawText.drawText("Polar: " + xwing.GetPolar(), 0, 60, Color.OrangeRed);
             DrawText.drawText("Acimutal: " + xwing.GetAcimutal(), 0, 70, Color.OrangeRed);
+            DrawText.drawText("RotationZ: " + xwing.GetRotation().Z, 0, 80, Color.OrangeRed);
+            DrawText.drawText("RotationY: " + xwing.GetRotation().Y, 0, 90, Color.OrangeRed);
 
             xwing.Render();
             pistaReferencia.Render();

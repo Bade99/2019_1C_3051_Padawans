@@ -8,7 +8,7 @@ public class FollowingCamera
 {
     private TGCVector3 cameraPosition;
     private TGCVector3 lookAtCamera;
-    private readonly float fixedDistanceCamera = 40;
+    private readonly float fixedDistanceCamera = -40;
     private TGCVector3 minimumDistance;
     private Xwing xwing;
 
@@ -61,8 +61,8 @@ public class FollowingCamera
     private TGCVector3 GetDistancePoint()
     {
         float x = fixedDistanceCamera * FastMath.Cos(xwing.GetAcimutal()) * FastMath.Sin(xwing.GetPolar());
-        float y = -fixedDistanceCamera * FastMath.Cos(xwing.GetPolar());
-        float z = -fixedDistanceCamera * FastMath.Sin(xwing.GetAcimutal()) * FastMath.Sin(xwing.GetPolar());
+        float y = fixedDistanceCamera * FastMath.Cos(xwing.GetPolar());
+        float z = fixedDistanceCamera * FastMath.Sin(xwing.GetAcimutal()) * FastMath.Sin(xwing.GetPolar());
         return new TGCVector3(x,y,z);
     }
 }

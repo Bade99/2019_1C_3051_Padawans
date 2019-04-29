@@ -28,8 +28,10 @@ namespace TGC.Group.Model
         private readonly float maximaVelocidadZ = 300;
         private bool barrelRoll;
         private int barrelRollAvance;
-        private float anguloAcimutal;
-        private float anguloPolar;
+        private bool rotationYAnimation;
+        private float rotationYAnimacionAdvance;
+        private readonly float progressUnityRotationAdvance = FastMath.PI / 60;
+        private CoordenadaEsferica coordenadaEsferica;
 
         public Xwing(TgcSceneLoader loader)
         {
@@ -41,8 +43,11 @@ namespace TGC.Group.Model
 
             velocidadGeneral = minimaVelocidad;
             barrelRoll = false;
-            anguloAcimutal = GetAnguloAcimutal(xwing.Rotation.Y);
-            anguloPolar = GetAnguloPolar(xwing.Rotation.Z);
+            ActualizarCoordenadaEsferica();
+
+            //Rotation y animation
+            rotationYAnimation = false;
+            rotationYAnimacionAdvance = 0;
         }
 
         public override void Render()
@@ -63,7 +68,7 @@ namespace TGC.Group.Model
         private void TestingInput(TgcD3dInput input)
         {
             //Movimientos Y+G+H+J para moverse rapido por el mapa
-            if (input.keyDown(Key.Y))
+            if (input.keyDown(Key.Y) && !rotationYAnimation)
             {
                 xwing.Position = new TGCVector3(xwing.Position.X, xwing.Position.Y + 10, xwing.Position.Z);
             }
@@ -112,6 +117,10 @@ namespace TGC.Group.Model
             {
                 xwing.Position = new TGCVector3(xwing.Position.X - velocidadEjes * ElapsedTime, xwing.Position.Y, xwing.Position.Z);
             }
+            if (input.keyDown(Key.R))
+            {
+                xwing.RotateY(FastMath.PI);
+            }
 
             //Teclas especiales para moverse rapido y mas facil por el mapa
             TestingInput(input);
@@ -120,22 +129,25 @@ namespace TGC.Group.Model
             if (input.keyDown(Key.LeftArrow))
             {
                 xwing.RotateY(-1f*ElapsedTime);
-                anguloAcimutal = GetAnguloAcimutal(xwing.Rotation.Y);
+                CommonHelper.ClampRotationY(xwing);
+                ActualizarCoordenadaEsferica();
             }
             if (input.keyDown(Key.RightArrow))
             {
                 xwing.RotateY(1f*ElapsedTime);
-                anguloAcimutal = GetAnguloAcimutal(xwing.Rotation.Y);
+                CommonHelper.ClampRotationY(xwing);
+                ActualizarCoordenadaEsferica();
             }
-            if (input.keyDown(Key.UpArrow))
+            if (input.keyDown(Key.UpArrow) && !rotationYAnimation)
             {
                 xwing.RotateZ(1f*ElapsedTime);
-                anguloPolar = GetAnguloPolar(xwing.Rotation.Z);
+                ActualizarCoordenadaEsferica();
+
             }
-            if (input.keyDown(Key.DownArrow))
+            if (input.keyDown(Key.DownArrow) && !rotationYAnimation)
             {
                 xwing.RotateZ(-1f*ElapsedTime);
-                anguloPolar = GetAnguloPolar(xwing.Rotation.Z);
+                ActualizarCoordenadaEsferica();
             }
             //Acelerar
             if (input.keyDown(Key.LeftShift) && velocidadGeneral < maximaVelocidadZ)
@@ -162,6 +174,18 @@ namespace TGC.Group.Model
             {
                 barrelRoll = true;
             }
+            //Rotation y animation
+            if (rotationYAnimation)
+            {
+                rotationYAnimacionAdvance += progressUnityRotationAdvance;
+                xwing.RotateY(progressUnityRotationAdvance);
+                if (rotationYAnimacionAdvance >= FastMath.PI)
+                {
+                    rotationYAnimacionAdvance = 0;
+                    rotationYAnimation = false;
+                }
+                ActualizarCoordenadaEsferica();
+            }
             if (barrelRoll)//@la nave debe girar para el lado que está yendo
             {
                 var angulo = barrelRollAvance * FastMath.TWO_PI / 100;
@@ -179,28 +203,19 @@ namespace TGC.Group.Model
             xwing.Position = CalcularAvanceNave(xwing.Position, ElapsedTime);//@@todos los ejes deberian usar funciones similares, para evitar ese salto que aparenta dar la nave
         }
 
-        private float GetAnguloPolar(float angulo)
+        private void ActualizarCoordenadaEsferica()
         {
-            anguloPolar = (-xwing.Rotation.Z + FastMath.PI / 2) % (2 * FastMath.PI);
-            if (anguloPolar > FastMath.PI)
-            {
-                anguloPolar = (FastMath.PI * 2) - anguloPolar;
-            }
-            return anguloPolar;
-        }
-
-        private float GetAnguloAcimutal(float angulo)
-        {
-            return (angulo + (FastMath.PI)) % (FastMath.PI * 2);
+            coordenadaEsferica = new CoordenadaEsferica(xwing.Rotation);
         }
 
         private TGCVector3 CalcularAvanceNave(TGCVector3 posicion, float ElapsedTime)
         {
-            float x = posicion.X - velocidadGeneral * FastMath.Cos(anguloAcimutal) * FastMath.Sin(anguloPolar) * ElapsedTime;
-            float y = posicion.Y + velocidadGeneral * FastMath.Cos(anguloPolar) * ElapsedTime;
-            float z = posicion.Z + velocidadGeneral * FastMath.Sin(anguloAcimutal) * FastMath.Sin(anguloPolar) * ElapsedTime;
+            float x = posicion.X + velocidadGeneral * FastMath.Cos(coordenadaEsferica.acimutal) * FastMath.Sin(coordenadaEsferica.polar) * ElapsedTime;
+            float y = posicion.Y + velocidadGeneral * FastMath.Cos(coordenadaEsferica.polar) * ElapsedTime;
+            float z = posicion.Z + velocidadGeneral * FastMath.Sin(coordenadaEsferica.acimutal) * FastMath.Sin(coordenadaEsferica.polar) * ElapsedTime;
             return new TGCVector3(x, y, z);
         }
+
         public override void Dispose()
         {
             xwing.Dispose();
@@ -215,13 +230,17 @@ namespace TGC.Group.Model
         {
             return xwing.Position;
         }
+        public TGCVector3 GetRotation()
+        {
+            return xwing.Rotation;
+        }
         public float GetPolar()
         {
-            return anguloPolar;
+            return coordenadaEsferica.polar;
         }
         public float GetAcimutal()
         {
-            return anguloAcimutal;
+            return coordenadaEsferica.acimutal;
         }
     }
 }
