@@ -30,8 +30,10 @@ namespace TGC.Group.Model
         private int barrelRollAvance;
         private bool rotationYAnimation;
         private float rotationYAnimacionAdvance;
+        private readonly float limiteAnguloPolar=0.1f;
         private readonly float progressUnityRotationAdvance = FastMath.PI / 60;
         private CoordenadaEsferica coordenadaEsferica;
+        private bool swapPolarKeys = false;
 
         public Xwing(TgcSceneLoader loader)
         {
@@ -119,7 +121,8 @@ namespace TGC.Group.Model
             }
             if (input.keyDown(Key.R))
             {
-                xwing.RotateY(FastMath.PI);
+                xwing.RotateX(FastMath.PI_HALF);
+                xwing.RotateY(FastMath.PI_HALF);
             }
 
             //Teclas especiales para moverse rapido y mas facil por el mapa
@@ -140,14 +143,24 @@ namespace TGC.Group.Model
             }
             if (input.keyDown(Key.UpArrow) && !rotationYAnimation)
             {
-                xwing.RotateZ(1f*ElapsedTime);
-                ActualizarCoordenadaEsferica();
-
+                if (!swapPolarKeys)
+                {
+                    UpArrow(ElapsedTime);
+                }
+                else
+                {
+                    DownArrow(ElapsedTime);
+                }
             }
             if (input.keyDown(Key.DownArrow) && !rotationYAnimation)
             {
-                xwing.RotateZ(-1f*ElapsedTime);
-                ActualizarCoordenadaEsferica();
+                if (!swapPolarKeys)
+                {
+                    DownArrow(ElapsedTime);
+                } else
+                {
+                    UpArrow(ElapsedTime);
+                }
             }
             //Acelerar
             if (input.keyDown(Key.LeftShift) && velocidadGeneral < maximaVelocidadZ)
@@ -201,6 +214,34 @@ namespace TGC.Group.Model
 
             //Efecto de aceleracion
             xwing.Position = CalcularAvanceNave(xwing.Position, ElapsedTime);//@@todos los ejes deberian usar funciones similares, para evitar ese salto que aparenta dar la nave
+        }
+
+        private void DownArrow(float ElapsedTime)
+        {
+            if (coordenadaEsferica.polar < (FastMath.PI - limiteAnguloPolar))
+            {
+                xwing.RotateZ(-1f * ElapsedTime);
+                ActualizarCoordenadaEsferica();
+            }
+            else
+            {
+                rotationYAnimation = true;
+                swapPolarKeys = !swapPolarKeys;
+            }
+        }
+
+        private void UpArrow(float ElapsedTime)
+        {
+            if (coordenadaEsferica.polar > limiteAnguloPolar)
+            {
+                xwing.RotateZ(1f * ElapsedTime);
+                ActualizarCoordenadaEsferica();
+            }
+            else
+            {
+                rotationYAnimation = true;
+                swapPolarKeys = !swapPolarKeys;
+            }
         }
 
         private void ActualizarCoordenadaEsferica()
