@@ -39,7 +39,7 @@ namespace TGC.Group.Model
         public override void Update()
         {
             PreUpdate();
-            followingCamera.Update(Camara,Input);
+            followingCamera.Update(Camara,Input,ElapsedTime);
             worldSphere.Update();
             xwing.UpdateInput(Input,ElapsedTime);
             boundingBoxHelper.UpdateInput(Input, ElapsedTime);

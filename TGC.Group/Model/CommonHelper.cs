@@ -19,10 +19,12 @@ namespace TGC.Group.Model
     {
        public static TGCVector3 SumarVectores(TGCVector3 vector1, TGCVector3 vector2)
         {
-            vector1.X += vector2.X;
-            vector1.Y += vector2.Y;
-            vector1.Z += vector2.Z;
-            return vector1;
+            return new TGCVector3(vector1.X + vector2.X, vector1.Y + vector2.Y, vector1.Z + vector2.Z);
+        }
+
+        public static TGCVector3 RestarVectores(TGCVector3 vector1, TGCVector3 restando)
+        {
+            return new TGCVector3(vector1.X - restando.X, vector1.Y - restando.Y, vector1.Z - restando.Z);
         }
 
         public static float ClampPositiveRadians(float radians)

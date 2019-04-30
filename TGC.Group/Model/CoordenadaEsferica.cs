@@ -21,7 +21,6 @@ namespace TGC.Group.Model
     {
         public float acimutal { get; set; }
         public float polar { get; set; }
-        public bool passedSouthPole { get; set; }
 
         public CoordenadaEsferica(TGCVector3 rotation)
         {
