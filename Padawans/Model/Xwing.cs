@@ -27,17 +27,20 @@ namespace TGC.Group.Model
         private readonly float friccion = 10f;
         private readonly float maximaVelocidadZ = 300;
         private bool barrelRoll;
-        private int barrelRollAvance;
+        private int barrelRollAvance=0;
         private bool rotationYAnimation;
         private float rotationYAnimacionAdvance;
         private readonly float limiteAnguloPolar=0.1f;
         private readonly float progressUnityRotationAdvance = FastMath.PI / 60;
         private CoordenadaEsferica coordenadaEsferica;
         private bool swapPolarKeys = false;
+        private TGCVector3 ultimaPosicion;
+        private float rotacionBarrelRoll;
 
         public Xwing(TgcSceneLoader loader)
         {
             this.loader = loader;
+            TgcScene algo;
             xwing = loader.loadSceneFromFile("Padawans_media\\XWing\\xwing-TgcScene.xml").Meshes[0];
             xwing.Position = new TGCVector3(0,0,0);
             xwing.Scale = new TGCVector3(0.1f, 0.1f, 0.1f);
@@ -202,8 +205,16 @@ namespace TGC.Group.Model
             if (barrelRoll)//@la nave debe girar para el lado que está yendo
             {
                 var angulo = barrelRollAvance * FastMath.TWO_PI / 100;
-                xwing.Position = new TGCVector3(xwing.Position.X + FastMath.Cos(angulo), xwing.Position.Y + FastMath.Sin(angulo), xwing.Position.Z);
-                xwing.RotateX(-FastMath.TWO_PI / 100);
+                xwing.Position = new TGCVector3(xwing.Position.X , xwing.Position.Y , xwing.Position.Z );
+                
+                if (barrelRollAvance == 0)
+                {
+                    if (ultimaPosicion.X - xwing.Position.X >= 0) rotacionBarrelRoll = -FastMath.TWO_PI / 100;
+                    else rotacionBarrelRoll = FastMath.TWO_PI / 100;
+                }
+                
+                xwing.RotateX(rotacionBarrelRoll);
+
                 barrelRollAvance++;
                 if (barrelRollAvance >= 100)
                 {
@@ -214,6 +225,7 @@ namespace TGC.Group.Model
 
             //Efecto de aceleracion
             xwing.Position = CalcularAvanceNave(xwing.Position, ElapsedTime);//@@todos los ejes deberian usar funciones similares, para evitar ese salto que aparenta dar la nave
+            ultimaPosicion = xwing.Position;
         }
 
         private void DownArrow(float ElapsedTime)

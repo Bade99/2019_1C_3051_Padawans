@@ -137,11 +137,10 @@ namespace TGC.Group.Model
 
                 foreach (TgcMesh mesh in escena.Meshes)
                 {
-                    //TgcMesh mesh_actual = mesh.createMeshInstance(mesh.Name); no pude hacerlo funcionar con instancias
+
                     mesh.Scale = escalador;
                     mesh.Rotation = rotacion;
                     mesh.Position = posicion;
-                    //mesh.Transform = TGCMatrix.Scaling(escalador) * TGCMatrix.RotationYawPitchRoll(rotacion.Y, rotacion.X, rotacion.Z) * TGCMatrix.Translation(posicion);
                     todas_escenas[i].Add(mesh.clone(mesh.Name));
                 }
                 
