@@ -19,7 +19,7 @@ namespace TGC.Group.Model
     public class Xwing : SceneElement, InteractiveElement
     {
         private TgcSceneLoader loader;
-        TgcMesh xwing;
+        TgcMesh xwing,alaXwing;
         private readonly float minimaVelocidad = 25f;
         private float velocidadGeneral;
         private readonly float velocidadEjes = 30f;
@@ -40,11 +40,15 @@ namespace TGC.Group.Model
         public Xwing(TgcSceneLoader loader)
         {
             this.loader = loader;
-            TgcScene algo;
             xwing = loader.loadSceneFromFile("Padawans_media\\XWing\\xwing-TgcScene.xml").Meshes[0];
+            alaXwing = loader.loadSceneFromFile("Padawans_media\\XWing\\xwing-TgcScene.xml").Meshes[1];
             xwing.Position = new TGCVector3(0,0,0);
             xwing.Scale = new TGCVector3(0.1f, 0.1f, 0.1f);
             xwing.RotateY(FastMath.PI_HALF);
+
+            alaXwing.Position = new TGCVector3(0, 0, 0);
+            alaXwing.Scale = new TGCVector3(0.1f, 0.1f, 0.1f);
+            alaXwing.RotateY(FastMath.PI_HALF);
 
             velocidadGeneral = minimaVelocidad;
             barrelRoll = false;
@@ -58,6 +62,7 @@ namespace TGC.Group.Model
         public override void Render()
         {
             xwing.Render();
+            alaXwing.Render();
         }
 
         public override void RenderBoundingBox()
@@ -225,7 +230,9 @@ namespace TGC.Group.Model
 
             //Efecto de aceleracion
             xwing.Position = CalcularAvanceNave(xwing.Position, ElapsedTime);//@@todos los ejes deberian usar funciones similares, para evitar ese salto que aparenta dar la nave
-            ultimaPosicion = xwing.Position;
+            alaXwing.Position = xwing.Position;
+            alaXwing.Rotation = xwing.Rotation;
+            ultimaPosicion = xwing.Position+new TGCVector3(1f,1f,1f);
         }
 
         private void DownArrow(float ElapsedTime)
