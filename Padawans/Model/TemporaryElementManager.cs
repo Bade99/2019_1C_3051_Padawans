@@ -57,5 +57,9 @@ namespace TGC.Group.Model
         {
             return elementos.Count==0;
         }
+        public int CantidadElementos()
+        {
+            return elementos.Count();
+        }
     }
 }

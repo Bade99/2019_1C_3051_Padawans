@@ -35,7 +35,7 @@ namespace TGC.Group.Model
             xwing = new Xwing(loader,managerElementosTemporales);
             worldSphere = new WorldSphere(loader, xwing);
             followingCamera = new FollowingCamera(xwing);
-            boundingBoxHelper = new BoundingBoxHelper(xwing, pistaReferencia, worldSphere);
+            boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ITemporaryElement[] { managerElementosTemporales });
         }
         public override void Update()
         {
@@ -60,12 +60,12 @@ namespace TGC.Group.Model
             DrawText.drawText("Acimutal: " + xwing.GetAcimutal(), 0, 70, Color.OrangeRed);
             DrawText.drawText("RotationZ: " + xwing.GetRotation().Z, 0, 80, Color.OrangeRed);
             DrawText.drawText("RotationY: " + xwing.GetRotation().Y, 0, 90, Color.OrangeRed);
-
+            DrawText.drawText("La nave dispara con click izquierdo ", 0, 100, Color.White);
+            DrawText.drawText("Elementos temporales: " + managerElementosTemporales.CantidadElementos(), 0, 110, Color.White);
             xwing.Render();
             pistaReferencia.Render();
             worldSphere.Render();
             managerElementosTemporales.Render();
-            managerElementosTemporales.RenderBoundingBox();
             boundingBoxHelper.RenderBoundingBoxes();
 
             PostRender();
