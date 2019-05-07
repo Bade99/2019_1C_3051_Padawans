@@ -65,6 +65,7 @@ namespace TGC.Group.Model
             pistaReferencia.Render();
             worldSphere.Render();
             managerElementosTemporales.Render();
+            managerElementosTemporales.RenderBoundingBox();
             boundingBoxHelper.RenderBoundingBoxes();
 
             PostRender();
