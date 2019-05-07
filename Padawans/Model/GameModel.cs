@@ -18,7 +18,7 @@ namespace TGC.Group.Model
         private WorldSphere worldSphere;
         private FollowingCamera followingCamera;
         private BoundingBoxHelper boundingBoxHelper;
-
+        private TemporaryElementManager managerElementosTemporales;
         public GameModel(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
         {
             Category = Game.Default.Category;
@@ -31,7 +31,8 @@ namespace TGC.Group.Model
             var d3dDevice = D3DDevice.Instance.Device;
             var loader = new TgcSceneLoader();
             pistaReferencia = new MainRunway(loader, 5);
-            xwing = new Xwing(loader);
+            managerElementosTemporales = new TemporaryElementManager();
+            xwing = new Xwing(loader,managerElementosTemporales);
             worldSphere = new WorldSphere(loader, xwing);
             followingCamera = new FollowingCamera(xwing);
             boundingBoxHelper = new BoundingBoxHelper(xwing, pistaReferencia, worldSphere);
@@ -42,6 +43,7 @@ namespace TGC.Group.Model
             followingCamera.Update(Camara,Input,ElapsedTime);
             worldSphere.Update();
             xwing.UpdateInput(Input,ElapsedTime);
+            managerElementosTemporales.Update(ElapsedTime);
             boundingBoxHelper.UpdateInput(Input, ElapsedTime);
             Thread.Sleep(1);//@mientras mas chico el numero mas ganas en performance, tmb podemos sacar esto y listo
             PostUpdate();
@@ -62,6 +64,7 @@ namespace TGC.Group.Model
             xwing.Render();
             pistaReferencia.Render();
             worldSphere.Render();
+            managerElementosTemporales.Render();
             boundingBoxHelper.RenderBoundingBoxes();
 
             PostRender();
@@ -69,10 +72,10 @@ namespace TGC.Group.Model
 
         public override void Dispose()
         {
-
             xwing.Dispose();
             pistaReferencia.Dispose();
             worldSphere.Dispose();
+            managerElementosTemporales.Dispose();
         }
     }
 }

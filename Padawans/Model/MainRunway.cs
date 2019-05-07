@@ -137,7 +137,6 @@ namespace TGC.Group.Model
 
                 foreach (TgcMesh mesh in escena.Meshes)
                 {
-
                     mesh.Scale = escalador;
                     mesh.Rotation = rotacion;
                     mesh.Position = posicion;

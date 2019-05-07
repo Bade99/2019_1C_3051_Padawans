@@ -10,7 +10,6 @@ using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
 
-
 namespace TGC.Group.Model
 {
     /// <summary>
@@ -20,6 +19,7 @@ namespace TGC.Group.Model
     {
         private TgcSceneLoader loader;
         TgcMesh xwing,alaXwing;
+        private TemporaryElementManager managerDisparos;
         private readonly float minimaVelocidad = 25f;
         private float velocidadGeneral;
         private readonly float velocidadEjes = 30f;
@@ -36,13 +36,15 @@ namespace TGC.Group.Model
         private bool swapPolarKeys = false;
         private TGCVector3 ultimaPosicion;
         private float rotacionBarrelRoll;
-
-        public Xwing(TgcSceneLoader loader)
+        private float tiempoEntreDisparos=.5f;
+        private float tiempoDesdeUltimoDisparo = .5f;
+        public Xwing(TgcSceneLoader loader,TemporaryElementManager managerElementosTemporales)
         {
+            managerDisparos = managerElementosTemporales;
             this.loader = loader;
             xwing = loader.loadSceneFromFile("Padawans_media\\XWing\\xwing-TgcScene.xml").Meshes[0];
             alaXwing = loader.loadSceneFromFile("Padawans_media\\XWing\\xwing-TgcScene.xml").Meshes[1];
-            xwing.Position = new TGCVector3(0,0,0);
+            xwing.Position = new TGCVector3(0,10f,0);
             xwing.Scale = new TGCVector3(0.1f, 0.1f, 0.1f);
             xwing.RotateY(FastMath.PI_HALF);
 
@@ -188,6 +190,16 @@ namespace TGC.Group.Model
             else
             {
                 velocidadGeneral = minimaVelocidad;
+            }
+
+            //Disparar
+            tiempoDesdeUltimoDisparo += ElapsedTime;
+            if (input.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT))
+            {
+                if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos) {
+                    tiempoDesdeUltimoDisparo = 0f;
+                    managerDisparos.AgregarElemento(new Misil(this.GetPosition()));//creo que la position no se actualiza
+                }
             }
 
             //BarrelRoll con barra espaciadora
