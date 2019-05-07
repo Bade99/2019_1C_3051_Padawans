@@ -21,7 +21,7 @@ namespace TGC.Group.Model
         {
             if (this.Terminado() == false)
             {
-                elementos.RemoveAll(elem => { return elem.Terminado() == true; });
+                elementos.RemoveAll(elem => { if (elem.Terminado()) elem.Dispose(); return elem.Terminado() == true; });
                 elementos.ForEach(elem => { elem.Update(ElapsedTime); });
             }
         }
@@ -41,10 +41,7 @@ namespace TGC.Group.Model
         }
         public void Dispose()
         {
-            if (this.Terminado() == false)
-            {
                 elementos.ForEach(elem => { elem.Dispose(); });
-            }
         }
         public void RemoverTodosLosElementos()
         {

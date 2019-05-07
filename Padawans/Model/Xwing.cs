@@ -39,9 +39,12 @@ namespace TGC.Group.Model
         private float rotacionBarrelRoll;
         private float tiempoEntreDisparos=.5f;
         private float tiempoDesdeUltimoDisparo = .5f;
-        public Xwing(TgcSceneLoader loader,TemporaryElementManager managerElementosTemporales)
+        string mediaDir;
+        
+        public Xwing(TgcSceneLoader loader,TemporaryElementManager managerElementosTemporales, string mediaDir)
         {
             managerDisparos = managerElementosTemporales;
+            this.mediaDir = mediaDir;
             this.loader = loader;
             xwing = loader.loadSceneFromFile("Padawans_media\\XWing\\xwing-TgcScene.xml").Meshes[0];
             alaXwing = loader.loadSceneFromFile("Padawans_media\\XWing\\xwing-TgcScene.xml").Meshes[1];
@@ -200,7 +203,7 @@ namespace TGC.Group.Model
             {
                 if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos) {
                     tiempoDesdeUltimoDisparo = 0f;
-                    managerDisparos.AgregarElemento(new Misil(this.GetPosition(),this.CalcularOffsetUnAla()));//creo que la position no se actualiza
+                    managerDisparos.AgregarElemento(new Misil(this.GetPosition(),this.CalcularOffsetUnAla(),mediaDir));//creo que la position no se actualiza
                 }
             }
 

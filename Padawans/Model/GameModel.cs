@@ -25,14 +25,14 @@ namespace TGC.Group.Model
             Name = Game.Default.Name;
             Description = Game.Default.Description;
         }
-
+        
         public override void Init()
         {
             var d3dDevice = D3DDevice.Instance.Device;
             var loader = new TgcSceneLoader();
             pistaReferencia = new MainRunway(loader, 5);
             managerElementosTemporales = new TemporaryElementManager();
-            xwing = new Xwing(loader,managerElementosTemporales);
+            xwing = new Xwing(loader,managerElementosTemporales, this.MediaDir);
             worldSphere = new WorldSphere(loader, xwing);
             followingCamera = new FollowingCamera(xwing);
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ITemporaryElement[] { managerElementosTemporales });

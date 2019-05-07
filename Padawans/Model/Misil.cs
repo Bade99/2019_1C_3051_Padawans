@@ -11,6 +11,7 @@ using TGC.Core.Input;
 using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
+using TGC.Core.Sound;
 
 namespace TGC.Group.Model
 {
@@ -22,9 +23,13 @@ namespace TGC.Group.Model
         private float velocidadZ;
         private float tiempoDeVida=10f;
         private bool terminado = false;
-
-        public Misil(TGCVector3 posicionXwing,TGCVector3 offset)
+        private TgcMp3Player sonido;
+        string mediaDir;
+        private float tiempoDeVidaSonido=1f;
+        private bool sonidoTerminado = false;
+        public Misil(TGCVector3 posicionXwing,TGCVector3 offset, string mediaDir)
         {
+            this.mediaDir = mediaDir;
             misil = new TGCBox();
             escala = new TGCVector3(5f, 5f, 5f);//podria recibir estos valores como parametro tmb
             rotacion = new TGCVector3(0,0,0);
@@ -50,11 +55,15 @@ namespace TGC.Group.Model
             misil.updateValues();
             //misil.Transform = TGCMatrix.Scaling(misil.Scale) * TGCMatrix.RotationYawPitchRoll(misil.Rotation.Y, misil.Rotation.X, misil.Rotation.Z) * TGCMatrix.Translation(misil.Position);
 
+            sonido = new TgcMp3Player();
+            sonido.FileName = mediaDir+"\\Sonidos\\TIE fighter fire 1.mp3";
+            sonido.play(true);
         }
 
         public void Update(float ElapsedTime)
         {
             tiempoDeVida -= ElapsedTime;
+            
             if (tiempoDeVida < 0f)
             {
                 terminado = true;
@@ -67,6 +76,16 @@ namespace TGC.Group.Model
                 misil.updateValues();
 
             }
+            if (!sonidoTerminado)
+            {
+                if (tiempoDeVidaSonido < 0f)
+                {
+                    sonido.closeFile();
+                    sonidoTerminado = true;
+                }
+                else tiempoDeVidaSonido -= ElapsedTime;
+            }
+
         }
 
         public bool Terminado()
