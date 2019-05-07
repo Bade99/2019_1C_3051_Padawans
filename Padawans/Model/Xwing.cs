@@ -1,5 +1,6 @@
 using Microsoft.DirectX.DirectInput;
 using System.Collections.Generic;
+using System;
 using System.Drawing;
 using System.Threading;
 using TGC.Core.Direct3D;
@@ -70,6 +71,7 @@ namespace TGC.Group.Model
         public override void RenderBoundingBox()
         {
             xwing.BoundingBox.Render();
+            alaXwing.BoundingBox.Render();
         }
 
         public override void Update()
@@ -198,7 +200,7 @@ namespace TGC.Group.Model
             {
                 if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos) {
                     tiempoDesdeUltimoDisparo = 0f;
-                    managerDisparos.AgregarElemento(new Misil(this.GetPosition()));//creo que la position no se actualiza
+                    managerDisparos.AgregarElemento(new Misil(this.GetPosition(),this.CalcularOffsetUnAla()));//creo que la position no se actualiza
                 }
             }
 
@@ -313,6 +315,16 @@ namespace TGC.Group.Model
         public float GetAcimutal()
         {
             return coordenadaEsferica.acimutal;
+        }
+        private TGCVector3 CalcularOffsetUnAla()
+        {
+            Random rnd = new Random();
+            int rndLargo = (rnd.Next(1, 3)==1) ? 1 : -1;
+            int rndAncho = (rnd.Next(1, 3)==1) ? 1 : -1;
+            var largoOffset = rndLargo * this.alaXwing.BoundingBox.calculateSize().Z * .5f;
+            var anchoOffset = rndAncho * this.alaXwing.BoundingBox.calculateSize().Y * .5f;
+            var distancia = -this.alaXwing.BoundingBox.calculateSize().X * 1.5f;
+            return new TGCVector3(largoOffset, anchoOffset, distancia);
         }
     }
 }
