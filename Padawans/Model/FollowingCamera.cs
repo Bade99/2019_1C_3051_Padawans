@@ -2,16 +2,15 @@
 using TGC.Core.Mathematica;
 using TGC.Group.Model;
 using TGC.Core.Input;
+using Microsoft.DirectX.DirectInput;
 
-
-public class FollowingCamera
+public class FollowingCamera : InteractiveElement
 {
     private TGCVector3 cameraDestination;
     private TGCVector3 cameraPosition;
     private TGCVector3 velocidadVectorial;
     private TGCVector3 lookAtCamera;
     private readonly float fixedDistanceCamera = -20;
-    private TGCVector3 minimumDistance;
     private Xwing xwing;
     private float aceleracion;
 
@@ -24,22 +23,9 @@ public class FollowingCamera
         this.xwing = xwing;
         velocidadVectorial = new TGCVector3();
         cameraPosition = CommonHelper.SumarVectores(xwing.GetPosition(), GetDistancePoint());
-        this.xwing = xwing;
     }
-/*
-    private void CheckZoom()
-    {
-        if (fixedDistanceCamera.Y < minimumDistance.Y || fixedDistanceCamera.Z < minimumDistance.Z)
-        {
-            //no se hace con la x xq puede haber giros de camara
-            fixedDistanceCamera.Y = minimumDistance.Y;
-            fixedDistanceCamera.Z = minimumDistance.Z;
-        }
-    }
-    */
     public void Update(TGC.Core.Camara.TgcCamera Camara,TgcD3dInput Input, float ElapsedTime)
     {
-        //CheckZoom();
         cameraDestination = CommonHelper.SumarVectores(xwing.GetPosition(), GetDistancePoint());
         TGCVector3 delta = CommonHelper.RestarVectores(cameraDestination, cameraPosition);
         //aceleracion = FastMath.Pow(xwing.GetVelocidadGeneral(), 2) / 625;
@@ -90,19 +76,6 @@ public class FollowingCamera
             lookAtCamera = xwing.GetPosition();
             Camara.SetCamera(cameraPosition, lookAtCamera);
         }
-        /*
-        //Ruedita para alejar/acercar camara
-        else if (Input.WheelPos == -1)//rueda para atras
-        {
-            fixedDistanceCamera.Add(new TGCVector3(0, 1, 2));
-            //Camara.SetCamera(cameraPosition + new TGCVector3(0, 2, 2), Camara.LookAt);
-        }
-        else if (Input.WheelPos == 1)//rueda para adelante
-        {
-            fixedDistanceCamera.Subtract(new TGCVector3(0, 1, 2));
-            //Camara.SetCamera(cameraPosition + new TGCVector3(0, -2, -2), Camara.LookAt);
-        }
-        */
     }
 
     private TGCVector3 GetDistancePoint()
@@ -111,5 +84,13 @@ public class FollowingCamera
         float y = fixedDistanceCamera * FastMath.Cos(xwing.GetPolar());
         float z = fixedDistanceCamera * FastMath.Sin(xwing.GetAcimutal()) * FastMath.Sin(xwing.GetPolar());
         return new TGCVector3(x,y,z);
+    }
+
+    public void UpdateInput(TgcD3dInput input, float ElapsedTime)
+    {
+        if (input.keyDown(Key.LeftShift))
+        {
+            //velocidadVectorial=CommonHelper.VectorXEscalar(velocidadVectorial, 1.03f);
+        }
     }
 }

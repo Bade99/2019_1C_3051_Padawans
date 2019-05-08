@@ -21,18 +21,26 @@ namespace TGC.Group.Model
         private TgcSceneLoader loader;
         TgcMesh xwing,alaXwing;
         private TemporaryElementManager managerDisparos;
+
+        //Constantes
         private readonly float minimaVelocidad = 25f;
-        private float velocidadGeneral;
-        private readonly float velocidadEjes = 30f;
+        private readonly float velocidadEjes = 10f;
         private readonly float aceleracion = 80f;//@necesitamos saber el elapsed time para poder tener esto bien seteado, preguntar de donde lo sacamos
         private readonly float friccion = 10f;
         private readonly float maximaVelocidadZ = 300;
+        private readonly float limiteAnguloPolar=0.1f;
+        private readonly float progressUnityRotationAdvance = FastMath.PI / 60;
+
+        private TGCVector3 left = new TGCVector3(-1, 0, 0);
+        private TGCVector3 right = new TGCVector3(1, 0, 0);
+        private TGCVector3 front = new TGCVector3(0, 0, 1);
+        private TGCVector3 back = new TGCVector3(0, 0, -1);
+
+        private float velocidadGeneral;
         private bool barrelRoll;
         private int barrelRollAvance=0;
         private bool rotationYAnimation;
         private float rotationYAnimacionAdvance;
-        private readonly float limiteAnguloPolar=0.1f;
-        private readonly float progressUnityRotationAdvance = FastMath.PI / 60;
         private CoordenadaEsferica coordenadaEsferica;
         private bool swapPolarKeys = false;
         private TGCVector3 ultimaPosicion;
@@ -40,7 +48,13 @@ namespace TGC.Group.Model
         private float tiempoEntreDisparos=.5f;
         private float tiempoDesdeUltimoDisparo = .5f;
         string mediaDir;
-        
+        //matrices de transformaciones
+        private TGCMatrix matrizXwingInicial;
+
+        //propiedades de la nave
+        private TGCVector3 posicion;
+        private TGCVector3 rotation;
+
         public Xwing(TgcSceneLoader loader,TemporaryElementManager managerElementosTemporales, string mediaDir)
         {
             managerDisparos = managerElementosTemporales;
@@ -48,19 +62,19 @@ namespace TGC.Group.Model
             this.loader = loader;
             xwing = loader.loadSceneFromFile("Padawans_media\\XWing\\xwing-TgcScene.xml").Meshes[0];
             alaXwing = loader.loadSceneFromFile("Padawans_media\\XWing\\xwing-TgcScene.xml").Meshes[1];
-            xwing.Position = new TGCVector3(0,10f,0);
-            xwing.Scale = new TGCVector3(0.1f, 0.1f, 0.1f);
-            xwing.RotateY(FastMath.PI_HALF);
+            //Posicion, rotacion y escala inicial
+            matrizXwingInicial = TGCMatrix.Scaling(0.1f, 0.1f, 0.1f);
+            posicion = new TGCVector3();
+            rotation = new TGCVector3(0, FastMath.PI_HALF, 0);
 
-            alaXwing.Position = new TGCVector3(0, 0, 0);
-            alaXwing.Scale = new TGCVector3(0.1f, 0.1f, 0.1f);
-            alaXwing.RotateY(FastMath.PI_HALF);
+            xwing.AutoTransform = false;
+            alaXwing.AutoTransform = false;
 
             velocidadGeneral = minimaVelocidad;
             barrelRoll = false;
             ActualizarCoordenadaEsferica();
 
-            //Rotation y animation
+            //Rotationy animation
             rotationYAnimation = false;
             rotationYAnimacionAdvance = 0;
         }
@@ -69,6 +83,7 @@ namespace TGC.Group.Model
         {
             xwing.Render();
             alaXwing.Render();
+           
         }
 
         public override void RenderBoundingBox()
@@ -79,7 +94,8 @@ namespace TGC.Group.Model
 
         public override void Update()
         {
-
+            xwing.Transform = matrizXwingInicial * GetRotationMatrix() * TGCMatrix.Translation(posicion);
+            alaXwing.Transform = matrizXwingInicial * GetRotationMatrix() * TGCMatrix.Translation(posicion);
         }
 
         private void TestingInput(TgcD3dInput input)
@@ -87,32 +103,30 @@ namespace TGC.Group.Model
             //Movimientos Y+G+H+J para moverse rapido por el mapa
             if (input.keyDown(Key.Y) && !rotationYAnimation)
             {
-                xwing.Position = new TGCVector3(xwing.Position.X, xwing.Position.Y + 10, xwing.Position.Z);
+                posicion.Add(TGCVector3.Up * 10);
             }
             if (input.keyDown(Key.H))
             {
-                xwing.Position = new TGCVector3(xwing.Position.X, xwing.Position.Y - 10, xwing.Position.Z);
+                posicion.Add(TGCVector3.Up * -10);
             }
             if (input.keyDown(Key.G))
             {
-                xwing.Position = new TGCVector3(xwing.Position.X + 10, xwing.Position.Y, xwing.Position.Z);
+                posicion.Add(left * 10);
             }
             if (input.keyDown(Key.J))
             {
-                xwing.Position = new TGCVector3(xwing.Position.X - 10, xwing.Position.Y, xwing.Position.Z);
+                posicion.Add(right * 10);
             }
-            if (input.keyDown(Key.V))//ir para adelante
+            if (input.keyDown(Key.V))
             {
                 velocidadGeneral += aceleracion;
             }
-            if (input.keyDown(Key.C))//ir para atras
+            if (input.keyDown(Key.C))
             {
                 velocidadGeneral = minimaVelocidad;
-                xwing.Position = new TGCVector3(xwing.Position.X, xwing.Position.Y, xwing.Position.Z + 10);
             }
 
         }
-
 
         public void UpdateInput(TgcD3dInput input,float ElapsedTime) //@@@no se está teniendo en cuenta el ElapsedTime!!
         {//@la nave deberia tener rotacion, en vez de movimiento de solo un eje, ver tgc examples
@@ -120,24 +134,19 @@ namespace TGC.Group.Model
             ElapsedTime = 0.01f; //Lo hardcodeo hasta que sepamos bien como hacer esto
             if (input.keyDown(Key.W))
             {
-                xwing.Position = new TGCVector3(xwing.Position.X, xwing.Position.Y + velocidadEjes * ElapsedTime, xwing.Position.Z);
+                posicion.Add(TGCVector3.Up * ElapsedTime * velocidadEjes);
             }
             if (input.keyDown(Key.S))
             {
-                xwing.Position = new TGCVector3(xwing.Position.X, xwing.Position.Y - velocidadEjes * ElapsedTime, xwing.Position.Z);
+                posicion.Add(TGCVector3.Down * ElapsedTime * velocidadEjes);
             }
             if (input.keyDown(Key.A))
             {
-                xwing.Position = new TGCVector3(xwing.Position.X + velocidadEjes * ElapsedTime, xwing.Position.Y, xwing.Position.Z);
+                posicion.Add(left * ElapsedTime * velocidadEjes);
             }
             if (input.keyDown(Key.D))
             {
-                xwing.Position = new TGCVector3(xwing.Position.X - velocidadEjes * ElapsedTime, xwing.Position.Y, xwing.Position.Z);
-            }
-            if (input.keyDown(Key.R))
-            {
-                xwing.RotateX(FastMath.PI_HALF);
-                xwing.RotateY(FastMath.PI_HALF);
+                posicion.Add(right * ElapsedTime * velocidadEjes);
             }
 
             //Teclas especiales para moverse rapido y mas facil por el mapa
@@ -146,14 +155,12 @@ namespace TGC.Group.Model
             //Movimientos flechas
             if (input.keyDown(Key.LeftArrow))
             {
-                xwing.RotateY(-1f*ElapsedTime);
-                CommonHelper.ClampRotationY(xwing);
+                rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Down * 1f*ElapsedTime));
                 ActualizarCoordenadaEsferica();
             }
             if (input.keyDown(Key.RightArrow))
             {
-                xwing.RotateY(1f*ElapsedTime);
-                CommonHelper.ClampRotationY(xwing);
+                rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Up * 1f * ElapsedTime));
                 ActualizarCoordenadaEsferica();
             }
             if (input.keyDown(Key.UpArrow) && !rotationYAnimation)
@@ -203,7 +210,7 @@ namespace TGC.Group.Model
             {
                 if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos) {
                     tiempoDesdeUltimoDisparo = 0f;
-                    managerDisparos.AgregarElemento(new Misil(this.GetPosition(),this.CalcularOffsetUnAla(),mediaDir));//creo que la position no se actualiza
+                    managerDisparos.AgregarElemento(new Misil(posicion,this.CalcularOffsetUnAla(),mediaDir));//creo que la position no se actualiza
                 }
             }
 
@@ -216,7 +223,7 @@ namespace TGC.Group.Model
             if (rotationYAnimation)
             {
                 rotationYAnimacionAdvance += progressUnityRotationAdvance;
-                xwing.RotateY(progressUnityRotationAdvance);
+                rotation.Add(TGCVector3.Up * progressUnityRotationAdvance);
                 if (rotationYAnimacionAdvance >= FastMath.PI)
                 {
                     rotationYAnimacionAdvance = 0;
@@ -224,18 +231,17 @@ namespace TGC.Group.Model
                 }
                 ActualizarCoordenadaEsferica();
             }
-            if (barrelRoll)//@la nave debe girar para el lado que está yendo
+            if (barrelRoll)//Sigue andando mal :D
             {
                 var angulo = barrelRollAvance * FastMath.TWO_PI / 100;
-                xwing.Position = new TGCVector3(xwing.Position.X , xwing.Position.Y , xwing.Position.Z );
                 
                 if (barrelRollAvance == 0)
                 {
-                    if (ultimaPosicion.X - xwing.Position.X >= 0) rotacionBarrelRoll = -FastMath.TWO_PI / 100;
+                    if (ultimaPosicion.X - posicion.X >= 0) rotacionBarrelRoll = -FastMath.TWO_PI / 100;
                     else rotacionBarrelRoll = FastMath.TWO_PI / 100;
                 }
                 
-                xwing.RotateX(rotacionBarrelRoll);
+                rotation.Add(left * rotacionBarrelRoll);
 
                 barrelRollAvance++;
                 if (barrelRollAvance >= 100)
@@ -245,18 +251,16 @@ namespace TGC.Group.Model
                 }
             }
 
-            //Efecto de aceleracion
-            xwing.Position = CalcularAvanceNave(xwing.Position, ElapsedTime);//@@todos los ejes deberian usar funciones similares, para evitar ese salto que aparenta dar la nave
-            alaXwing.Position = xwing.Position;
-            alaXwing.Rotation = xwing.Rotation;
-            ultimaPosicion = xwing.Position+new TGCVector3(1f,1f,1f);
+            //Efecto de friccion, aceleracion o velocidad constante
+            posicion = CalcularNuevaPosicion(posicion, ElapsedTime);
+            ultimaPosicion = posicion + TGCVector3.One;
         }
 
         private void DownArrow(float ElapsedTime)
         {
             if (coordenadaEsferica.polar < (FastMath.PI - limiteAnguloPolar))
             {
-                xwing.RotateZ(-1f * ElapsedTime);
+                rotation.Add(back * ElapsedTime);
                 ActualizarCoordenadaEsferica();
             }
             else
@@ -270,7 +274,7 @@ namespace TGC.Group.Model
         {
             if (coordenadaEsferica.polar > limiteAnguloPolar)
             {
-                xwing.RotateZ(1f * ElapsedTime);
+                rotation.Add(front * ElapsedTime);
                 ActualizarCoordenadaEsferica();
             }
             else
@@ -280,12 +284,18 @@ namespace TGC.Group.Model
             }
         }
 
-        private void ActualizarCoordenadaEsferica()
+        private TGCMatrix GetRotationMatrix()
         {
-            coordenadaEsferica = new CoordenadaEsferica(xwing.Rotation);
+            return
+                TGCMatrix.RotationYawPitchRoll(rotation.Y, rotation.X, rotation.Z);
         }
 
-        private TGCVector3 CalcularAvanceNave(TGCVector3 posicion, float ElapsedTime)
+        private void ActualizarCoordenadaEsferica()
+        {
+            coordenadaEsferica = new CoordenadaEsferica(rotation);
+        }
+
+        private TGCVector3 CalcularNuevaPosicion(TGCVector3 posicion, float ElapsedTime)
         {
             float x = posicion.X + velocidadGeneral * FastMath.Cos(coordenadaEsferica.acimutal) * FastMath.Sin(coordenadaEsferica.polar) * ElapsedTime;
             float y = posicion.Y + velocidadGeneral * FastMath.Cos(coordenadaEsferica.polar) * ElapsedTime;
@@ -305,11 +315,11 @@ namespace TGC.Group.Model
 
         public TGCVector3 GetPosition()
         {
-            return xwing.Position;
+            return posicion;
         }
         public TGCVector3 GetRotation()
         {
-            return xwing.Rotation;
+            return rotation;
         }
         public float GetPolar()
         {

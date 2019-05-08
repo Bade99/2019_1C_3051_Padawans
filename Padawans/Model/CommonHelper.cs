@@ -27,6 +27,11 @@ namespace TGC.Group.Model
             return new TGCVector3(vector1.X - restando.X, vector1.Y - restando.Y, vector1.Z - restando.Z);
         }
 
+        public static TGCVector3 VectorXEscalar(TGCVector3 v, float f)
+        {
+            return new TGCVector3(v.X * f, v.Y * f, v.Z * f);
+        }
+
         public static float ClampPositiveRadians(float radians)
         {
             if (radians<0)
@@ -48,22 +53,49 @@ namespace TGC.Group.Model
             }
         }
 
-        public static void RotateY180(TgcMesh rotando)
+        public static TGCVector3 RotateY180(TGCVector3 rotando)
         {
-            rotando.RotateY(FastMath.PI);
+            rotando.Y += (FastMath.PI);
             ClampRotationY(rotando);
+            return rotando;
         }
 
-        public static void ClampRotationY(TgcMesh rotando)
+        public static TGCVector3 ClampRotationY(TGCVector3 rotation)
         {
-            if (rotando.Rotation.Y > (FastMath.PI * 2))
+            if (rotation.Y > (FastMath.PI * 2))
             {
-                rotando.RotateY(-(FastMath.PI * 2));
+                rotation.Y -= (FastMath.PI * 2);
             }
-            if (rotando.Rotation.Y < 0)
+            if (rotation.Y < 0)
             {
-                rotando.RotateY((FastMath.PI * 2));
+                rotation.Y += (FastMath.PI * 2);
             }
+            return rotation;
         }
+
+        public static TGCMatrix MatrixXEscalar(TGCMatrix m, float f)
+        {
+            m.M11 *= f;
+            m.M12 *= f;
+            m.M13 *= f;
+            m.M14 *= f;
+
+            m.M21 *= f;
+            m.M22 *= f;
+            m.M23 *= f;
+            m.M24 *= f;
+
+            m.M31 *= f;
+            m.M32 *= f;
+            m.M33 *= f;
+            m.M34 *= f;
+
+            m.M41 *= f;
+            m.M42 *= f;
+            m.M43 *= f;
+            m.M44 *= f;
+
+            return m;
+        } 
     }
 }

@@ -57,7 +57,7 @@ namespace TGC.Group.Model
 
             sonido = new TgcMp3Player();
             sonido.FileName = mediaDir+"\\Sonidos\\TIE fighter fire 1.mp3";
-            sonido.play(true);
+            //sonido.play(true);
         }
 
         public void Update(float ElapsedTime)
