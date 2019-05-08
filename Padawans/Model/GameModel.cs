@@ -32,8 +32,8 @@ namespace TGC.Group.Model
             var d3dDevice = D3DDevice.Instance.Device;
             var loader = new TgcSceneLoader();
             pistaReferencia = new MainRunway(loader, 5);
-            xwing = new Xwing(loader,managerElementosTemporales, this.MediaDir);
             managerElementosTemporales = new TemporaryElementManager();
+            xwing = new Xwing(loader,managerElementosTemporales, this.MediaDir);
             managerEnemigos = new EnemyManager();
             managerEnemigos.AgregarElemento(new XwingEnemigo(new TGCVector3(0f, 10f, -100f), xwing));
             worldSphere = new WorldSphere(loader, xwing);
