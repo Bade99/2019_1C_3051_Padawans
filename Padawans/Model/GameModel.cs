@@ -19,7 +19,7 @@ namespace TGC.Group.Model
         private FollowingCamera followingCamera;
         private BoundingBoxHelper boundingBoxHelper;
         private TemporaryElementManager managerElementosTemporales;
-        private XwingEnemigo enemigo;
+        private EnemyManager managerEnemigos;
         public GameModel(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
         {
             Category = Game.Default.Category;
@@ -32,23 +32,26 @@ namespace TGC.Group.Model
             var d3dDevice = D3DDevice.Instance.Device;
             var loader = new TgcSceneLoader();
             pistaReferencia = new MainRunway(loader, 5);
-            managerElementosTemporales = new TemporaryElementManager();
             xwing = new Xwing(loader,managerElementosTemporales, this.MediaDir);
+            managerElementosTemporales = new TemporaryElementManager();
+            managerEnemigos = new EnemyManager();
+            managerEnemigos.AgregarElemento(new XwingEnemigo(new TGCVector3(0f, 10f, -100f), xwing));
             worldSphere = new WorldSphere(loader, xwing);
             followingCamera = new FollowingCamera(xwing);
-            enemigo = new XwingEnemigo(new TGCVector3(0f,10f,-100f),xwing);
-            boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ITemporaryElement[] { managerElementosTemporales });
+            boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ActiveElementManager[] { managerElementosTemporales });
         }
         public override void Update()
         {
             PreUpdate();
+
             followingCamera.Update(Camara,Input,ElapsedTime);
             worldSphere.Update();
             xwing.UpdateInput(Input,ElapsedTime);
             managerElementosTemporales.Update(ElapsedTime);
-            enemigo.Update(ElapsedTime);
+            managerEnemigos.Update(ElapsedTime);
             boundingBoxHelper.UpdateInput(Input, ElapsedTime);
             Thread.Sleep(1);//@mientras mas chico el numero mas ganas en performance, tmb podemos sacar esto y listo
+
             PostUpdate();
         }
         public override void Render()
@@ -65,12 +68,13 @@ namespace TGC.Group.Model
             DrawText.drawText("RotationY: " + xwing.GetRotation().Y, 0, 90, Color.OrangeRed);
             DrawText.drawText("La nave dispara con click izquierdo ", 0, 100, Color.White);
             DrawText.drawText("Elementos temporales: " + managerElementosTemporales.CantidadElementos(), 0, 110, Color.White);
+
             xwing.Render();
             pistaReferencia.Render();
             worldSphere.Render();
             managerElementosTemporales.Render();
             boundingBoxHelper.RenderBoundingBoxes();
-            enemigo.Render();
+            managerEnemigos.Render();
 
             PostRender();
         }
@@ -81,7 +85,7 @@ namespace TGC.Group.Model
             pistaReferencia.Dispose();
             worldSphere.Dispose();
             managerElementosTemporales.Dispose();
-            enemigo.Dispose();
+            managerEnemigos.Dispose();
         }
     }
 }

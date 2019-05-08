@@ -93,10 +93,12 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Game.settings</DependentUpon>
     </Compile>
+    <Compile Include="Model\ActiveElementManager.cs" />
     <Compile Include="Model\BoundingBoxHelper.cs" />
+    <Compile Include="Model\EnemyManager.cs" />
     <Compile Include="Model\Misil.cs" />
     <Compile Include="Model\CoordenadaEsferica.cs" />
-    <Compile Include="Model\ITemporaryElement.cs" />
+    <Compile Include="Model\IActiveElement.cs" />
     <Compile Include="Model\TemporaryElementManager.cs" />
     <Compile Include="Model\WorldSphere.cs" />
     <Compile Include="Model\InteractiveElement.cs" />

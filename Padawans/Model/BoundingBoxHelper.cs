@@ -18,12 +18,12 @@ namespace TGC.Group.Model
     public class BoundingBoxHelper : InteractiveElement
     {
         private SceneElement[] parameters;
-        private ITemporaryElement[] parametrosTemporales;
+        private ActiveElementManager[] parametrosTemporales;
         private bool renderBoundingBoxes;
         /// <summary>
         ///    Este constructor tiene parametros variables, se pueden agregar con comas cuantos objetos se quiera
         /// </summary>
-        public BoundingBoxHelper(SceneElement[] parameters,ITemporaryElement[] parametrosTemporales)
+        public BoundingBoxHelper(SceneElement[] parameters,ActiveElementManager[] parametrosTemporales)
         {
             this.parameters = parameters;
             this.parametrosTemporales = parametrosTemporales;
@@ -37,7 +37,7 @@ namespace TGC.Group.Model
                 {
                     element.RenderBoundingBox();
                 }
-                foreach (ITemporaryElement element in parametrosTemporales)
+                foreach (IActiveElement element in parametrosTemporales)
                 {
                     element.RenderBoundingBox();
                 }

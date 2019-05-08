@@ -13,7 +13,7 @@ using TGC.Core.Textures;
 
 namespace TGC.Group.Model
 {
-    class XwingEnemigo : ITemporaryElement
+    class XwingEnemigo : IActiveElement
     {
         private TgcScene nave;
         private TGCVector3 velocidad;

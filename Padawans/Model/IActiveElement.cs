@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TGC.Group.Model
 {
-    public interface ITemporaryElement
+    public interface IActiveElement
     {
         void Update(float ElapsedTime);
         bool Terminado();

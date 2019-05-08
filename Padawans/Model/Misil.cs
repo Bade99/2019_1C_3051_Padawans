@@ -15,7 +15,7 @@ using TGC.Core.Sound;
 
 namespace TGC.Group.Model
 {
-    public class Misil : ITemporaryElement
+    public class Misil : IActiveElement
     {
         private TGCBox misil;//queria usar cilindro pero no tiene las tapas, WTF
         private TGCVector3 escala;
