@@ -27,7 +27,7 @@ namespace TGC.Group.Model
         private readonly float velocidadEjes = 10f;
         private readonly float aceleracion = 80f;//@necesitamos saber el elapsed time para poder tener esto bien seteado, preguntar de donde lo sacamos
         private readonly float friccion = 10f;
-        private readonly float maximaVelocidadZ = 300;
+        private readonly float maximaVelocidad = 300;
         private readonly float limiteAnguloPolar=0.1f;
         private readonly float progressUnityRotationAdvance = FastMath.PI / 60;
 
@@ -185,7 +185,7 @@ namespace TGC.Group.Model
                 }
             }
             //Acelerar
-            if (input.keyDown(Key.LeftShift) && velocidadGeneral < maximaVelocidadZ)
+            if (input.keyDown(Key.LeftShift) && velocidadGeneral < maximaVelocidad)
             {
                 velocidadGeneral += (aceleracion*ElapsedTime);
             }
@@ -311,6 +311,16 @@ namespace TGC.Group.Model
         public float GetVelocidadGeneral()
         {
             return velocidadGeneral;
+        }
+
+        public float GetVelocidadMaxima()
+        {
+            return maximaVelocidad;
+        }
+
+        public Boolean maxSpeed()
+        {
+            return FastMath.Abs(velocidadGeneral - maximaVelocidad) < 20; 
         }
 
         public TGCVector3 GetPosition()

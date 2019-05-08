@@ -30,41 +30,29 @@ public class FollowingCamera : InteractiveElement
         TGCVector3 delta = CommonHelper.RestarVectores(cameraDestination, cameraPosition);
         //aceleracion = FastMath.Pow(xwing.GetVelocidadGeneral(), 2) / 625;
         aceleracion = xwing.GetVelocidadGeneral() / 25;
-        if (delta.X > velocidadVectorial.X)
+        if (delta.X > velocidadVectorial.X / 5)
         {
             velocidadVectorial.X += aceleracion;
         }
-        else if (delta.X < velocidadVectorial.X)
+        else
         {
             velocidadVectorial.X -= aceleracion;
         }
-        else
-        {
-            velocidadVectorial.X = 0;
-        }
-        if (delta.Y > velocidadVectorial.Y)
+        if (delta.Y > velocidadVectorial.Y / 5)
         {
             velocidadVectorial.Y += aceleracion;
         }
-        else if (delta.Y < velocidadVectorial.Y)
+        else
         {
             velocidadVectorial.Y -= aceleracion;
         }
-        else
-        {
-            velocidadVectorial.Y = 0;
-        }
-        if (delta.Z > velocidadVectorial.Z)
+        if (delta.Z > velocidadVectorial.Z / 5)
         {
             velocidadVectorial.Z += aceleracion;
         }
-        else if (delta.Z < velocidadVectorial.Z)
-        {
-            velocidadVectorial.Z -= aceleracion;
-        }
         else
         {
-            velocidadVectorial.Z = 0;
+            velocidadVectorial.Z -= aceleracion;
         }
 
         cameraPosition.X += velocidadVectorial.X * ElapsedTime;
