@@ -19,6 +19,7 @@ namespace TGC.Group.Model
         private FollowingCamera followingCamera;
         private BoundingBoxHelper boundingBoxHelper;
         private TemporaryElementManager managerElementosTemporales;
+        private XwingEnemigo enemigo;
         public GameModel(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
         {
             Category = Game.Default.Category;
@@ -35,6 +36,7 @@ namespace TGC.Group.Model
             xwing = new Xwing(loader,managerElementosTemporales, this.MediaDir);
             worldSphere = new WorldSphere(loader, xwing);
             followingCamera = new FollowingCamera(xwing);
+            enemigo = new XwingEnemigo(new TGCVector3(0f,10f,-100f),xwing);
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ITemporaryElement[] { managerElementosTemporales });
         }
         public override void Update()
@@ -44,6 +46,7 @@ namespace TGC.Group.Model
             worldSphere.Update();
             xwing.UpdateInput(Input,ElapsedTime);
             managerElementosTemporales.Update(ElapsedTime);
+            enemigo.Update(ElapsedTime);
             boundingBoxHelper.UpdateInput(Input, ElapsedTime);
             Thread.Sleep(1);//@mientras mas chico el numero mas ganas en performance, tmb podemos sacar esto y listo
             PostUpdate();
@@ -67,6 +70,7 @@ namespace TGC.Group.Model
             worldSphere.Render();
             managerElementosTemporales.Render();
             boundingBoxHelper.RenderBoundingBoxes();
+            enemigo.Render();
 
             PostRender();
         }
@@ -77,6 +81,7 @@ namespace TGC.Group.Model
             pistaReferencia.Dispose();
             worldSphere.Dispose();
             managerElementosTemporales.Dispose();
+            enemigo.Dispose();
         }
     }
 }

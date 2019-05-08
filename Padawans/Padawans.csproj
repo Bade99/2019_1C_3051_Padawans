@@ -106,6 +106,7 @@
     <Compile Include="Model\Xwing.cs" />
     <Compile Include="Model\GameModel.cs" />
     <Compile Include="Model\SceneElement.cs" />
+    <Compile Include="Model\XwingEnemigo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form\GameForm.resx">
