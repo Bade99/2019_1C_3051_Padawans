@@ -63,12 +63,8 @@ namespace TGC.Group.Model
             DrawText.drawText("Con la ruedita aleja/acerca la camara [Actual]: " + TGCVector3.PrintVector3(Camara.Position), 0, 30, Color.OrangeRed);
             DrawText.drawText("Posicion Xwing: " + TGCVector3.PrintVector3(xwing.GetPosition()), 0, 40, Color.OrangeRed);
             DrawText.drawText("Velocidad Xwing: " + xwing.GetVelocidadGeneral(), 0, 50, Color.OrangeRed);
-            DrawText.drawText("Polar: " + xwing.GetPolar(), 0, 60, Color.OrangeRed);
-            DrawText.drawText("Acimutal: " + xwing.GetAcimutal(), 0, 70, Color.OrangeRed);
-            DrawText.drawText("RotationZ: " + xwing.GetRotation().Z, 0, 80, Color.OrangeRed);
-            DrawText.drawText("RotationY: " + xwing.GetRotation().Y, 0, 90, Color.OrangeRed);
-            DrawText.drawText("La nave dispara con click izquierdo ", 0, 100, Color.White);
-            DrawText.drawText("Elementos temporales: " + managerElementosTemporales.CantidadElementos(), 0, 110, Color.White);
+            DrawText.drawText("La nave dispara con click izquierdo ", 0, 60, Color.White);
+            DrawText.drawText("Elementos temporales: " + managerElementosTemporales.CantidadElementos(), 0, 70, Color.White);
 
             xwing.Render();
             pistaReferencia.Render();

@@ -27,5 +27,20 @@ namespace TGC.Group.Model
             polar = CommonHelper.ClampPositiveRadians(-rotation.Z + (FastMath.PI / 2));
             acimutal = CommonHelper.ClampPositiveRadians(-rotation.Y);
         }
+
+        public float GetXCoord()
+        {
+            return FastMath.Cos(acimutal) * FastMath.Sin(polar);
+        }
+
+        public float GetYCoord()
+        {
+            return FastMath.Cos(polar);
+        }
+
+        public float GetZCoord()
+        {
+            return FastMath.Sin(acimutal) * FastMath.Sin(polar);
+        }
     }
 }

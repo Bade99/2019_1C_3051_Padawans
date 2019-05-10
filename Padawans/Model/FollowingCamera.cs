@@ -6,14 +6,13 @@ using Microsoft.DirectX.DirectInput;
 
 public class FollowingCamera : InteractiveElement
 {
-    private TGCVector3 cameraDestination;
     private TGCVector3 cameraPosition;
     private TGCVector3 velocidadVectorial;
     private TGCVector3 lookAtCamera;
     private readonly float fixedDistanceCamera = -20;
     private Xwing xwing;
-    private float aceleracion;
-
+    private float aceleracion = 1f;
+    private TGCVector3 cameraDestination;
 
     /// <summary>
     ///     Es el encargado de modificar la camara siguiendo a la nave
@@ -24,12 +23,12 @@ public class FollowingCamera : InteractiveElement
         velocidadVectorial = new TGCVector3();
         cameraPosition = CommonHelper.SumarVectores(xwing.GetPosition(), GetDistancePoint());
     }
-    public void Update(TGC.Core.Camara.TgcCamera Camara,TgcD3dInput Input, float ElapsedTime)
+    public void Update(TGC.Core.Camara.TgcCamera Camara, TgcD3dInput Input, float ElapsedTime)
     {
         cameraDestination = CommonHelper.SumarVectores(xwing.GetPosition(), GetDistancePoint());
         TGCVector3 delta = CommonHelper.RestarVectores(cameraDestination, cameraPosition);
-        //aceleracion = FastMath.Pow(xwing.GetVelocidadGeneral(), 2) / 625;
         aceleracion = xwing.GetVelocidadGeneral() / 25;
+
         if (delta.X > velocidadVectorial.X / 5)
         {
             velocidadVectorial.X += aceleracion;
@@ -49,8 +48,7 @@ public class FollowingCamera : InteractiveElement
         if (delta.Z > velocidadVectorial.Z / 5)
         {
             velocidadVectorial.Z += aceleracion;
-        }
-        else
+        } else
         {
             velocidadVectorial.Z -= aceleracion;
         }
@@ -58,6 +56,8 @@ public class FollowingCamera : InteractiveElement
         cameraPosition.X += velocidadVectorial.X * ElapsedTime;
         cameraPosition.Y += velocidadVectorial.Y * ElapsedTime;
         cameraPosition.Z += velocidadVectorial.Z * ElapsedTime;
+
+        //cameraPosition = CommonHelper.SumarVectores(xwing.GetPosition(), GetDistancePoint());
 
         if (Input.WheelPos == 0)
         {
@@ -68,17 +68,14 @@ public class FollowingCamera : InteractiveElement
 
     private TGCVector3 GetDistancePoint()
     {
-        float x = fixedDistanceCamera * FastMath.Cos(xwing.GetAcimutal()) * FastMath.Sin(xwing.GetPolar());
-        float y = fixedDistanceCamera * FastMath.Cos(xwing.GetPolar());
-        float z = fixedDistanceCamera * FastMath.Sin(xwing.GetAcimutal()) * FastMath.Sin(xwing.GetPolar());
+        float x = fixedDistanceCamera * xwing.GetCoordenadaEsferica().GetXCoord();
+        float y = fixedDistanceCamera * xwing.GetCoordenadaEsferica().GetYCoord();
+        float z = fixedDistanceCamera * xwing.GetCoordenadaEsferica().GetZCoord();
         return new TGCVector3(x,y,z);
     }
 
     public void UpdateInput(TgcD3dInput input, float ElapsedTime)
     {
-        if (input.keyDown(Key.LeftShift))
-        {
-            //velocidadVectorial=CommonHelper.VectorXEscalar(velocidadVectorial, 1.03f);
-        }
+
     }
 }

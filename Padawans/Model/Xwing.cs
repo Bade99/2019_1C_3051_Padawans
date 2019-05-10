@@ -25,7 +25,7 @@ namespace TGC.Group.Model
         //Constantes
         private readonly float minimaVelocidad = 25f;
         private readonly float velocidadEjes = 10f;
-        private readonly float aceleracion = 80f;//@necesitamos saber el elapsed time para poder tener esto bien seteado, preguntar de donde lo sacamos
+        private readonly float aceleracion = 80;//@necesitamos saber el elapsed time para poder tener esto bien seteado, preguntar de donde lo sacamos
         private readonly float friccion = 10f;
         private readonly float maximaVelocidad = 300;
         private readonly float limiteAnguloPolar=0.1f;
@@ -187,12 +187,12 @@ namespace TGC.Group.Model
             //Acelerar
             if (input.keyDown(Key.LeftShift) && velocidadGeneral < maximaVelocidad)
             {
-                velocidadGeneral += (aceleracion*ElapsedTime);
+                velocidadGeneral += (aceleracion * ElapsedTime);
             }
             //Frenar
             if (input.keyDown(Key.LeftControl))
             {
-                velocidadGeneral -= (aceleracion*ElapsedTime / 2);
+                velocidadGeneral -= (aceleracion *ElapsedTime / 2);
             }
             //Permite que la nave se detenga paulatinamente con la friccion
             if (velocidadGeneral > minimaVelocidad)
@@ -297,9 +297,9 @@ namespace TGC.Group.Model
 
         private TGCVector3 CalcularNuevaPosicion(TGCVector3 posicion, float ElapsedTime)
         {
-            float x = posicion.X + velocidadGeneral * FastMath.Cos(coordenadaEsferica.acimutal) * FastMath.Sin(coordenadaEsferica.polar) * ElapsedTime;
-            float y = posicion.Y + velocidadGeneral * FastMath.Cos(coordenadaEsferica.polar) * ElapsedTime;
-            float z = posicion.Z + velocidadGeneral * FastMath.Sin(coordenadaEsferica.acimutal) * FastMath.Sin(coordenadaEsferica.polar) * ElapsedTime;
+            float x = posicion.X + velocidadGeneral * coordenadaEsferica.GetXCoord() * ElapsedTime;
+            float y = posicion.Y + velocidadGeneral * coordenadaEsferica.GetYCoord() * ElapsedTime;
+            float z = posicion.Z + velocidadGeneral * coordenadaEsferica.GetZCoord() * ElapsedTime;
             return new TGCVector3(x, y, z);
         }
 
@@ -318,7 +318,7 @@ namespace TGC.Group.Model
             return maximaVelocidad;
         }
 
-        public Boolean maxSpeed()
+        public Boolean MaxSpeed()
         {
             return FastMath.Abs(velocidadGeneral - maximaVelocidad) < 20; 
         }
@@ -327,17 +327,10 @@ namespace TGC.Group.Model
         {
             return posicion;
         }
-        public TGCVector3 GetRotation()
+
+        public CoordenadaEsferica GetCoordenadaEsferica()
         {
-            return rotation;
-        }
-        public float GetPolar()
-        {
-            return coordenadaEsferica.polar;
-        }
-        public float GetAcimutal()
-        {
-            return coordenadaEsferica.acimutal;
+            return coordenadaEsferica;
         }
         private TGCVector3 CalcularOffsetUnAla()
         {
