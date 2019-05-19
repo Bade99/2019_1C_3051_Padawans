@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,20 +18,26 @@ namespace TGC.Group.Model
         private TgcScene nave;
         private TGCVector3 velocidad;
         private Xwing target;
+        private TemporaryElementManager managerDisparos;
 
-        public XwingEnemigo(TGCVector3 posicionInicial,Xwing target)
+        public XwingEnemigo(TGCVector3 posicionInicial,Xwing target,TemporaryElementManager managerDisparos)
         {
             velocidad = new TGCVector3(0,0,10f);
-            nave = new TgcSceneLoader().loadSceneFromFile("Padawans_media\\XWing\\X-Wing-TgcScene.xml");
+            nave = new TgcSceneLoader().loadSceneFromFile(VariablesGlobales.mediaDir+"\\XWing\\X-Wing-TgcScene.xml");//@ésta deberia ser nuestra nave, no la enemiga!
             nave.Meshes.ForEach(mesh => { mesh.Position = posicionInicial; });
             nave.Meshes.ForEach(mesh => { mesh.RotateY(-FastMath.PI_HALF); });
             nave.Meshes.ForEach(mesh => { mesh.Scale= new TGCVector3(0.1f, 0.1f, 0.1f); });
             this.target = target;
+            this.managerDisparos = managerDisparos; ;
         }
 
         public void Update(float elapsedTime)
         {
             nave.Meshes.ForEach(mesh => { mesh.Position += velocidad*elapsedTime; });
+            if(DistanciaATarget() < 50f)
+            {
+                managerDisparos.AgregarElemento(new Misil(this.nave.Meshes[0].Position, this.CalcularOffsetUnAla(), 1));
+            }
         }
 
         public void Render()
@@ -54,5 +60,21 @@ namespace TGC.Group.Model
         {
             nave.DisposeAll();
         }
+        public float DistanciaATarget()
+        {
+            return FastMath.Sqrt(FastMath.Pow2(this.nave.Meshes[0].Position.X-target.GetPosition().X)+ FastMath.Pow2(this.nave.Meshes[0].Position.Y - target.GetPosition().Y) + FastMath.Pow2(this.nave.Meshes[0].Position.Z - target.GetPosition().Z));
+        }
+
+        private TGCVector3 CalcularOffsetUnAla()
+        {
+            Random rnd = new Random();
+            int rndLargo = (rnd.Next(1, 3) == 1) ? 1 : -1;
+            int rndAncho = (rnd.Next(1, 3) == 1) ? 1 : -1;
+            var largoOffset = rndLargo * this.nave.Meshes[1].BoundingBox.calculateSize().Z * .5f;
+            var anchoOffset = rndAncho * this.nave.Meshes[1].BoundingBox.calculateSize().Y * .5f;
+            var distancia = -this.nave.Meshes[1].BoundingBox.calculateSize().X * 1.5f;
+            return new TGCVector3(largoOffset, anchoOffset, distancia);
+        }
+
     }
 }
