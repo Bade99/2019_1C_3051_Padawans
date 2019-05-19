@@ -56,7 +56,7 @@ namespace TGC.Group.Model
 
         public Xwing(TgcSceneLoader loader,TemporaryElementManager managerElementosTemporales)
         {
-            managerDisparos = managerElementosTemporales;
+            this.managerDisparos = managerElementosTemporales;
             this.loader = loader;
             xwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"\\XWing\\xwing-TgcScene.xml").Meshes[0];
             alaXwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"\\XWing\\xwing-TgcScene.xml").Meshes[1];
