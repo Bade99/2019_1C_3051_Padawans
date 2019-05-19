@@ -27,13 +27,14 @@ namespace TGC.Group.Model
         string mediaDir;
         private float tiempoDeVidaSonido=1f;
         private bool sonidoTerminado = false;
-        public Misil(TGCVector3 posicionXwing,TGCVector3 offset, string mediaDir)
+        public Misil(TGCVector3 posicionXwing,TGCVector3 offset,short direccion)
         {
-            this.mediaDir = mediaDir;
+            
             misil = new TGCBox();
             escala = new TGCVector3(5f, 5f, 5f);//podria recibir estos valores como parametro tmb
             rotacion = new TGCVector3(0,0,0);
-            velocidadZ = 5f;
+            direccion = (direccion >= 0) ? (short)1 : (short)-1;
+            velocidadZ = 5f*direccion;
 
             //misil.AutoTransform = true;
             //misil.AutoTransformEnabled = false;
@@ -56,7 +57,7 @@ namespace TGC.Group.Model
             //misil.Transform = TGCMatrix.Scaling(misil.Scale) * TGCMatrix.RotationYawPitchRoll(misil.Rotation.Y, misil.Rotation.X, misil.Rotation.Z) * TGCMatrix.Translation(misil.Position);
 
             sonido = new TgcMp3Player();
-            sonido.FileName = mediaDir+"\\Sonidos\\TIE fighter fire 1.mp3";
+            sonido.FileName = mediaDir+"\\Sonidos\\TIE_fighter_fire_1.mp3";
             //sonido.play(true);
         }
 
