@@ -47,7 +47,6 @@ namespace TGC.Group.Model
         private float rotacionBarrelRoll;
         private float tiempoEntreDisparos=.5f;
         private float tiempoDesdeUltimoDisparo = .5f;
-        string mediaDir;
         //matrices de transformaciones
         private TGCMatrix matrizXwingInicial;
 
@@ -55,13 +54,12 @@ namespace TGC.Group.Model
         private TGCVector3 posicion;
         private TGCVector3 rotation;
 
-        public Xwing(TgcSceneLoader loader,TemporaryElementManager managerElementosTemporales, string mediaDir)
+        public Xwing(TgcSceneLoader loader,TemporaryElementManager managerElementosTemporales)
         {
             managerDisparos = managerElementosTemporales;
-            this.mediaDir = mediaDir;
             this.loader = loader;
-            xwing = loader.loadSceneFromFile("Padawans_media\\XWing\\xwing-TgcScene.xml").Meshes[0];
-            alaXwing = loader.loadSceneFromFile("Padawans_media\\XWing\\xwing-TgcScene.xml").Meshes[1];
+            xwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"\\XWing\\xwing-TgcScene.xml").Meshes[0];
+            alaXwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"\\XWing\\xwing-TgcScene.xml").Meshes[1];
             //Posicion, rotacion y escala inicial
             matrizXwingInicial = TGCMatrix.Scaling(0.1f, 0.1f, 0.1f);
             posicion = new TGCVector3();
@@ -128,7 +126,7 @@ namespace TGC.Group.Model
 
         }
 
-        public void UpdateInput(TgcD3dInput input,float ElapsedTime) //@@@no se está teniendo en cuenta el ElapsedTime!!
+        public void UpdateInput(TgcD3dInput input,float ElapsedTime) //@@@no se estÃ¡ teniendo en cuenta el ElapsedTime!!
         {//@la nave deberia tener rotacion, en vez de movimiento de solo un eje, ver tgc examples
             //Movimientos W+A+S+D
             ElapsedTime = 0.01f; //Lo hardcodeo hasta que sepamos bien como hacer esto
@@ -210,7 +208,7 @@ namespace TGC.Group.Model
             {
                 if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos) {
                     tiempoDesdeUltimoDisparo = 0f;
-                    managerDisparos.AgregarElemento(new Misil(posicion,this.CalcularOffsetUnAla(),mediaDir));//creo que la position no se actualiza
+                    managerDisparos.AgregarElemento(new Misil(posicion,this.CalcularOffsetUnAla(),-1));//creo que la position no se actualiza
                 }
             }
 
