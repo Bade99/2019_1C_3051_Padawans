@@ -98,23 +98,6 @@ namespace TGC.Group.Model
 
         private void TestingInput(TgcD3dInput input)
         {
-            //Movimientos Y+G+H+J para moverse rapido por el mapa
-            if (input.keyDown(Key.Y) && !rotationYAnimation)
-            {
-                posicion.Add(TGCVector3.Up * 10);
-            }
-            if (input.keyDown(Key.H))
-            {
-                posicion.Add(TGCVector3.Up * -10);
-            }
-            if (input.keyDown(Key.G))
-            {
-                posicion.Add(left * 10);
-            }
-            if (input.keyDown(Key.J))
-            {
-                posicion.Add(right * 10);
-            }
             if (input.keyDown(Key.V))
             {
                 velocidadGeneral += aceleracion;
@@ -127,41 +110,24 @@ namespace TGC.Group.Model
         }
 
         public void UpdateInput(TgcD3dInput input,float ElapsedTime) //@@@no se está teniendo en cuenta el ElapsedTime!!
-        {//@la nave deberia tener rotacion, en vez de movimiento de solo un eje, ver tgc examples
-            //Movimientos W+A+S+D
+        {
             ElapsedTime = 0.01f; //Lo hardcodeo hasta que sepamos bien como hacer esto
-            if (input.keyDown(Key.W))
-            {
-                posicion.Add(TGCVector3.Up * ElapsedTime * velocidadEjes);
-            }
-            if (input.keyDown(Key.S))
-            {
-                posicion.Add(TGCVector3.Down * ElapsedTime * velocidadEjes);
-            }
-            if (input.keyDown(Key.A))
-            {
-                posicion.Add(left * ElapsedTime * velocidadEjes);
-            }
-            if (input.keyDown(Key.D))
-            {
-                posicion.Add(right * ElapsedTime * velocidadEjes);
-            }
 
             //Teclas especiales para moverse rapido y mas facil por el mapa
             TestingInput(input);
 
             //Movimientos flechas
-            if (input.keyDown(Key.LeftArrow))
+            if (input.keyDown(Key.A))
             {
                 rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Down * 1f*ElapsedTime));
                 ActualizarCoordenadaEsferica();
             }
-            if (input.keyDown(Key.RightArrow))
+            if (input.keyDown(Key.D))
             {
                 rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Up * 1f * ElapsedTime));
                 ActualizarCoordenadaEsferica();
             }
-            if (input.keyDown(Key.UpArrow) && !rotationYAnimation)
+            if (input.keyDown(Key.W) && !rotationYAnimation)
             {
                 if (!swapPolarKeys)
                 {
@@ -172,7 +138,7 @@ namespace TGC.Group.Model
                     DownArrow(ElapsedTime);
                 }
             }
-            if (input.keyDown(Key.DownArrow) && !rotationYAnimation)
+            if (input.keyDown(Key.S) && !rotationYAnimation)
             {
                 if (!swapPolarKeys)
                 {
@@ -208,7 +174,7 @@ namespace TGC.Group.Model
             {
                 if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos) {
                     tiempoDesdeUltimoDisparo = 0f;
-                    managerDisparos.AgregarElemento(new Misil(posicion,this.CalcularOffsetUnAla(),-1));//creo que la position no se actualiza
+                    managerDisparos.AgregarElemento(new Misil(posicion, this.CalcularOffsetUnAla(), coordenadaEsferica));//creo que la position no se actualiza
                 }
             }
 

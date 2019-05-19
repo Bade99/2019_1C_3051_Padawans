@@ -104,6 +104,7 @@ namespace TGC.Group.Form
             //Juego a ejecutar, si quisiéramos tener diferentes modelos aquí podemos cambiar la instancia e invocar a otra clase.
             Modelo = new GameModel(currentDirectory + Game.Default.MediaDirectory,
                 currentDirectory + Game.Default.ShadersDirectory);
+           
 
             //Cargar juego.
             ExecuteModel();
@@ -203,6 +204,11 @@ namespace TGC.Group.Form
             //Liberar Device al finalizar la aplicacion
             D3DDevice.Instance.Dispose();
             TexturesPool.Instance.clearAll();
+        }
+
+        private void panel3D_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

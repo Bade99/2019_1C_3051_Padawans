@@ -26,57 +26,18 @@ public class FollowingCamera : InteractiveElement
     public void Update(TGC.Core.Camara.TgcCamera Camara, TgcD3dInput Input, float ElapsedTime)
     {
         cameraDestination = CommonHelper.SumarVectores(xwing.GetPosition(), GetDistancePoint());
-        TGCVector3 delta = CommonHelper.RestarVectores(cameraDestination, cameraPosition);
-        aceleracion = xwing.GetVelocidadGeneral() / 25;
-
-        if (delta.X > velocidadVectorial.X / 5)
-        {
-            velocidadVectorial.X += aceleracion;
-        }
-        else
-        {
-            velocidadVectorial.X -= aceleracion;
-        }
-        if (delta.Y > velocidadVectorial.Y / 5)
-        {
-            velocidadVectorial.Y += aceleracion;
-        }
-        else
-        {
-            velocidadVectorial.Y -= aceleracion;
-        }
-        if (delta.Z > velocidadVectorial.Z / 5)
-        {
-            velocidadVectorial.Z += aceleracion;
-        } else
-        {
-            velocidadVectorial.Z -= aceleracion;
-        }
 
         cameraPosition.X += velocidadVectorial.X * ElapsedTime;
         cameraPosition.Y += velocidadVectorial.Y * ElapsedTime;
         cameraPosition.Z += velocidadVectorial.Z * ElapsedTime;
 
-        //cameraPosition = CommonHelper.SumarVectores(xwing.GetPosition(), GetDistancePoint());
+        cameraPosition = CommonHelper.SumarVectores(xwing.GetPosition(), GetDistancePoint());
 
         if (Input.WheelPos == 0)
         {
             lookAtCamera = xwing.GetPosition();
             Camara.SetCamera(cameraPosition, lookAtCamera);
         }
-        /*
-        //Ruedita para alejar/acercar camara
-        else if (Input.WheelPos == -1)//rueda para atras
-        {
-            fixedDistanceCamera.Add(new TGCVector3(0, 1, 2));
-            //Camara.SetCamera(cameraPosition + new TGCVector3(0, 2, 2), Camara.LookAt);
-        }
-        else if (Input.WheelPos == 1)//rueda para adelante
-        {
-            fixedDistanceCamera.Subtract(new TGCVector3(0, 1, 2));
-            //Camara.SetCamera(cameraPosition + new TGCVector3(0, -2, -2), Camara.LookAt);
-        }
-        */
     }
 
     private TGCVector3 GetDistancePoint()

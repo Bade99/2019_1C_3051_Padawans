@@ -36,7 +36,7 @@ namespace TGC.Group.Model
             nave.Meshes.ForEach(mesh => { mesh.Position += velocidad*elapsedTime; });
             if(DistanciaATarget() < 50f)
             {
-                managerDisparos.AgregarElemento(new Misil(this.nave.Meshes[0].Position, this.CalcularOffsetUnAla(), 1));
+                //managerDisparos.AgregarElemento(new Misil(this.nave.Meshes[0].Position, this.CalcularOffsetUnAla(), ));
             }
         }
 
