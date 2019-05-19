@@ -64,6 +64,19 @@ public class FollowingCamera : InteractiveElement
             lookAtCamera = xwing.GetPosition();
             Camara.SetCamera(cameraPosition, lookAtCamera);
         }
+        /*
+        //Ruedita para alejar/acercar camara
+        else if (Input.WheelPos == -1)//rueda para atras
+        {
+            fixedDistanceCamera.Add(new TGCVector3(0, 1, 2));
+            //Camara.SetCamera(cameraPosition + new TGCVector3(0, 2, 2), Camara.LookAt);
+        }
+        else if (Input.WheelPos == 1)//rueda para adelante
+        {
+            fixedDistanceCamera.Subtract(new TGCVector3(0, 1, 2));
+            //Camara.SetCamera(cameraPosition + new TGCVector3(0, -2, -2), Camara.LookAt);
+        }
+        */
     }
 
     private TGCVector3 GetDistancePoint()
