@@ -100,6 +100,7 @@
     <Compile Include="Model\CoordenadaEsferica.cs" />
     <Compile Include="Model\IActiveElement.cs" />
     <Compile Include="Model\TemporaryElementManager.cs" />
+    <Compile Include="Model\VariablesGlobales.cs" />
     <Compile Include="Model\WorldSphere.cs" />
     <Compile Include="Model\InteractiveElement.cs" />
     <Compile Include="Model\CommonHelper.cs" />
