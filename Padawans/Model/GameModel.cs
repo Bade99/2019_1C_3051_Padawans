@@ -31,6 +31,7 @@ namespace TGC.Group.Model
         {
             var d3dDevice = D3DDevice.Instance.Device;
             var loader = new TgcSceneLoader();
+            VariablesGlobales.mediaDir = this.MediaDir;
             pistaReferencia = new MainRunway(loader, 5);
             managerElementosTemporales = new TemporaryElementManager();
             xwing = new Xwing(loader,managerElementosTemporales, this.MediaDir);
@@ -65,7 +66,11 @@ namespace TGC.Group.Model
             DrawText.drawText("Velocidad Xwing: " + xwing.GetVelocidadGeneral(), 0, 50, Color.OrangeRed);
             DrawText.drawText("La nave dispara con click izquierdo ", 0, 60, Color.White);
             DrawText.drawText("Elementos temporales: " + managerElementosTemporales.CantidadElementos(), 0, 70, Color.White);
-
+            DrawText.drawText("Polar: " + xwing.GetPolar(), 0, 60, Color.OrangeRed);
+            DrawText.drawText("Acimutal: " + xwing.GetAcimutal(), 0, 70, Color.OrangeRed);
+            DrawText.drawText("RotationZ: " + xwing.GetRotation().Z, 0, 80, Color.OrangeRed);
+            DrawText.drawText("RotationY: " + xwing.GetRotation().Y, 0, 90, Color.OrangeRed);
+            
             xwing.Render();
             pistaReferencia.Render();
             worldSphere.Render();
