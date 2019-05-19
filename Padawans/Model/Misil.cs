@@ -35,7 +35,7 @@ namespace TGC.Group.Model
             escala = new TGCVector3(100f, 100f, 100f);
             posicion = posicionXwing;
             this.coordenadaEsferica = coordenadaEsferica;
-            misil.AutoTransform = false;
+            misil.AutoTransformEnable = false;
             misil.Color = Color.Red;
             misil.Enabled = true;
             sonido = new TgcMp3Player();

@@ -65,8 +65,8 @@ namespace TGC.Group.Model
             posicion = new TGCVector3();
             rotation = new TGCVector3(0, FastMath.PI_HALF, 0);
 
-            xwing.AutoTransform = false;
-            alaXwing.AutoTransform = false;
+            xwing.AutoTransformEnable = false;
+            alaXwing.AutoTransformEnable = false;
 
             velocidadGeneral = minimaVelocidad;
             barrelRoll = false;

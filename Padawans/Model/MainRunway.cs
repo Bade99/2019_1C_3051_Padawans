@@ -62,7 +62,7 @@ namespace TGC.Group.Model
 
                     //mesh. = TGCMatrix.Scaling(escalador.X, escalador.Y, escalador.Z);
                     //mesh.Scale = escalador;
-                    mesh.AutoTransform = false;
+                    mesh.AutoTransformEnable = false;
                     mesh.AutoUpdateBoundingBox = true;
                     //mesh.Transform = TGCMatrix.Scaling(escalador);
                     var centro = new TGCVector3();
