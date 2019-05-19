@@ -12,13 +12,13 @@
       <Value Profile="(Default)">SpaceShip - Juego de Naves de Star Wars</Value>
     </Setting>
     <Setting Name="ShadersDirectory" Type="System.String" Scope="User">
-      <Value Profile="(Default)">..\..\Shaders\</Value>
-    </Setting>
-    <Setting Name="MediaDirectory" Type="System.String" Scope="User">
-      <Value Profile="(Default)">..\..\Media\</Value>
+      <Value Profile="(Default)">..\..\..\Shaders\</Value>
     </Setting>
     <Setting Name="TexturaCaja" Type="System.String" Scope="User">
       <Value Profile="(Default)">cajaMadera4.jpg</Value>
+    </Setting>
+    <Setting Name="MediaDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">..\..\..\Padawans_media\</Value>
     </Setting>
   </Settings>
 </SettingsFile>
