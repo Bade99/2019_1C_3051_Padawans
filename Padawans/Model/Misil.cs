@@ -38,11 +38,11 @@ namespace TGC.Group.Model
             this.rotacionNave = rotacionNave;
             
             loader = new TgcSceneLoader();
-            misil = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "\\PilarEgipcio\\PilarEgipcio-TgcScene.xml").Meshes[0];//crear un mesh caja
+            misil = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "\\Misil\\Misil-TgcScene.xml").Meshes[0];//crear un mesh caja
             misil.AutoTransformEnable = false;
                     
             rotacionBase = new TGCVector3(FastMath.PI_HALF,0,0);
-            escala = new TGCVector3(.1f, .1f, .1f);
+            escala = new TGCVector3(.5f, .5f, .5f);
             posicion = posicionXwing+offset;
             
             this.coordenadaEsferica = coordenadaEsferica;
@@ -75,7 +75,7 @@ namespace TGC.Group.Model
 
                 posicion = CommonHelper.SumarVectores(posicion, delta);
 
-                misil.Transform = TGCMatrix.Scaling(escala) * TGCMatrix.RotationZ(FastMath.PI_HALF) * TGCMatrix.RotationYawPitchRoll(rotacionNave.Y,rotacionNave.X,rotacionNave.Z) * TGCMatrix.Translation(posicion);
+                misil.Transform = TGCMatrix.Scaling(escala) * TGCMatrix.RotationY(FastMath.PI_HALF) * TGCMatrix.RotationYawPitchRoll(rotacionNave.Y,rotacionNave.X,rotacionNave.Z) * TGCMatrix.Translation(posicion);
             }
             if (!sonidoTerminado)
             {
