@@ -31,6 +31,7 @@ namespace TGC.Group.Model
         {
             var d3dDevice = D3DDevice.Instance.Device;
             var loader = new TgcSceneLoader();
+            VariablesGlobales.loader = new TgcSceneLoader();
             VariablesGlobales.mediaDir = this.MediaDir;
             pistaReferencia = new MainRunway(loader, 5);
             managerElementosTemporales = new TemporaryElementManager();

@@ -31,14 +31,13 @@ namespace TGC.Group.Model
         private TGCVector3 rotacionBase;
         private TGCVector3 rotacionNave;
 
-        TgcSceneLoader loader;
+       
 
         public Misil(TGCVector3 posicionXwing, TGCVector3 offset, CoordenadaEsferica coordenadaEsferica, TGCVector3 rotacionNave)
         {
             this.rotacionNave = rotacionNave;
             
-            loader = new TgcSceneLoader();
-            misil = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "\\Misil\\Misil-TgcScene.xml").Meshes[0];//crear un mesh caja
+            misil = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + "\\Misil\\Misil-TgcScene.xml").Meshes[0];//crear un mesh caja
             misil.AutoTransformEnable = false;
                     
             rotacionBase = new TGCVector3(FastMath.PI_HALF,0,0);
