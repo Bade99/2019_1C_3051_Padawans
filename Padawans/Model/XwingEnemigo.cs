@@ -19,6 +19,8 @@ namespace TGC.Group.Model
         private TGCVector3 velocidad;
         private Xwing target;
         private TemporaryElementManager managerDisparos;
+        private float tiempoEntreDisparos = .5f;
+        private float tiempoDesdeUltimoDisparo = .5f;
 
         public XwingEnemigo(TGCVector3 posicionInicial,Xwing target,TemporaryElementManager managerDisparos)
         {
@@ -34,9 +36,17 @@ namespace TGC.Group.Model
         public void Update(float elapsedTime)
         {
             nave.Meshes.ForEach(mesh => { mesh.Position += velocidad*elapsedTime; });
-            if(DistanciaATarget() < 50f)
+            if (DistanciaATarget() < 50f)
             {
-                //managerDisparos.AgregarElemento(new Misil(this.nave.Meshes[0].Position, this.CalcularOffsetUnAla(), ));
+
+                //Disparar
+                tiempoDesdeUltimoDisparo += elapsedTime;
+                if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos)
+                {
+                    tiempoDesdeUltimoDisparo = 0f;
+                    //@corregir el angulo de disparo
+                    managerDisparos.AgregarElemento(new Misil(this.nave.Meshes[0].Position, this.CalcularOffsetUnAla(), new CoordenadaEsferica(new TGCVector3(0,0,0)), new TGCVector3(0, 0, 0)));//creo que la position no se actualiza
+                }
             }
         }
 
@@ -60,7 +70,7 @@ namespace TGC.Group.Model
         {
             nave.DisposeAll();
         }
-        public float DistanciaATarget()
+        public float DistanciaATarget()//@en vez de hacer sqrt deberiamos poner el otro valor al cuadrado
         {
             return FastMath.Sqrt(FastMath.Pow2(this.nave.Meshes[0].Position.X-target.GetPosition().X)+ FastMath.Pow2(this.nave.Meshes[0].Position.Y - target.GetPosition().Y) + FastMath.Pow2(this.nave.Meshes[0].Position.Z - target.GetPosition().Z));
         }
