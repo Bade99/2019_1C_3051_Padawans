@@ -33,13 +33,18 @@ namespace TGC.Group.Model
         {
             if (renderBoundingBoxes)
             {
-                foreach (SceneElement element in parameters)
-                {
-                    element.RenderBoundingBox();
+                if (parameters.Length > 0) { 
+                    foreach (SceneElement element in parameters)//@@@@error: no estamos revisando que haya al menos 1 elemento
+                    {
+                        element.RenderBoundingBox();
+                    }
                 }
-                foreach (ActiveElementManager element in parametrosTemporales)
+                if (parametrosTemporales.Length > 0)
                 {
-                    element.RenderBoundingBox();
+                    foreach (ActiveElementManager element in parametrosTemporales)
+                    {
+                        element.RenderBoundingBox();
+                    }
                 }
             }
         }

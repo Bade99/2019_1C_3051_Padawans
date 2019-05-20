@@ -56,6 +56,7 @@ namespace TGC.Group.Model
         }
         public int CantidadElementos()
         {
+            if (this.Terminado() == true) return 0;
             return elementos.Count();
         }
     }
