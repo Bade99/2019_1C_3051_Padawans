@@ -17,46 +17,65 @@ namespace TGC.Group.Model
 {
     public class Misil : IActiveElement
     {
-        private TGCBox misil;
+        TgcMesh misil; //buscar o crear un mesh que sea una caja
         private TGCVector3 escala;
         private TGCVector3 posicion;
         private CoordenadaEsferica coordenadaEsferica;
-        private float tiempoDeVida=10f;
-        private readonly float velocidadGeneral = 0.05f;
+        private float tiempoDeVida = 10f;
+        private readonly float velocidadGeneral = 500f;
         private bool terminado = false;
         private TgcMp3Player sonido;
-        string mediaDir;
-        private float tiempoDeVidaSonido=1f;
+        private float tiempoDeVidaSonido = 1f;
         private bool sonidoTerminado = false;
-        public Misil(TGCVector3 posicionXwing, TGCVector3 offset, CoordenadaEsferica coordenadaEsferica)
+
+        private TGCVector3 rotacionBase;
+        private TGCVector3 rotacionNave;
+
+        TgcSceneLoader loader;
+
+        public Misil(TGCVector3 posicionXwing, TGCVector3 offset, CoordenadaEsferica coordenadaEsferica, TGCVector3 rotacionNave)
         {
+            this.rotacionNave = rotacionNave;
             
-            misil = new TGCBox();
-            escala = new TGCVector3(100f, 100f, 100f);
-            posicion = posicionXwing;
-            this.coordenadaEsferica = coordenadaEsferica;
+            loader = new TgcSceneLoader();
+            misil = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "\\PilarEgipcio\\PilarEgipcio-TgcScene.xml").Meshes[0];//crear un mesh caja
             misil.AutoTransformEnable = false;
-            misil.Color = Color.Red;
-            misil.Enabled = true;
+                    
+            rotacionBase = new TGCVector3(FastMath.PI_HALF,0,0);
+            escala = new TGCVector3(.1f, .1f, .1f);
+            posicion = posicionXwing+offset;
+            
+            this.coordenadaEsferica = coordenadaEsferica;
+           
             sonido = new TgcMp3Player();
-            sonido.FileName = mediaDir+"\\Sonidos\\TIE_fighter_fire_1.mp3";
-            //sonido.play(true);
+            sonido.FileName = VariablesGlobales.mediaDir+"\\Sonidos\\TIE_fighter_fire_1.mp3";
+
+            try{
+                sonido.play(true);
+            } catch (System.Exception e)
+            {
+                sonidoTerminado = true;
+            }
         }
 
         public void Update(float ElapsedTime)
         {
+
             tiempoDeVida -= ElapsedTime;
             
             if (tiempoDeVida < 0f)
             {
-                //terminado = true;
+                terminado = true;
             }
             else {
                 TGCVector3 delta = new TGCVector3(
                     coordenadaEsferica.GetXCoord() * velocidadGeneral * ElapsedTime,
                     coordenadaEsferica.GetYCoord() * velocidadGeneral * ElapsedTime,
                     coordenadaEsferica.GetZCoord() * velocidadGeneral * ElapsedTime);
-                posicion = CommonHelper.SumarVectores(posicion, TGCVector3.Empty);
+
+                posicion = CommonHelper.SumarVectores(posicion, delta);
+
+                misil.Transform = TGCMatrix.Scaling(escala) * TGCMatrix.RotationZ(FastMath.PI_HALF) * TGCMatrix.RotationYawPitchRoll(rotacionNave.Y,rotacionNave.X,rotacionNave.Z) * TGCMatrix.Translation(posicion);
             }
             if (!sonidoTerminado)
             {
@@ -77,15 +96,23 @@ namespace TGC.Group.Model
 
         public void Render()
         {
+
+            
+            misil.Render();
+
             if (!terminado)
             {
-                misil.Transform = TGCMatrix.Scaling(escala) * TGCMatrix.RotationYawPitchRoll(1,1,1) * TGCMatrix.Translation(posicion);
                 misil.Render();
             }
         }
 
         public void RenderBoundingBox()
         {
+
+
+
+
+
             if (!terminado)
             {
                 misil.BoundingBox.Render();
