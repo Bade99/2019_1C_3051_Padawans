@@ -77,11 +77,6 @@ namespace TGC.Group.Model
             rotationYAnimacionAdvance = 0;
         }
 
-        public TGCVector3 posicionn()
-        {
-            return posicion;
-        }
-
         public override void Render()
         {
             xwing.Render();
@@ -179,7 +174,7 @@ namespace TGC.Group.Model
             {
                 if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos) {
                     tiempoDesdeUltimoDisparo = 0f;
-                    managerDisparos.AgregarElemento(new Misil(this.posicion, this.CalcularOffsetUnAla(), coordenadaEsferica,rotation));//creo que la position no se actualiza
+                    managerDisparos.AgregarElemento(new Misil(posicion, coordenadaEsferica,rotation));//creo que la position no se actualiza
                 }
             }
 

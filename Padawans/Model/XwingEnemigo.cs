@@ -45,7 +45,7 @@ namespace TGC.Group.Model
                 {
                     tiempoDesdeUltimoDisparo = 0f;
                     //@corregir el angulo de disparo
-                    managerDisparos.AgregarElemento(new Misil(this.nave.Meshes[0].Position, this.CalcularOffsetUnAla(), new CoordenadaEsferica(new TGCVector3(0,0,0)), new TGCVector3(0, 0, 0)));//creo que la position no se actualiza
+                    managerDisparos.AgregarElemento(new Misil(this.nave.Meshes[0].Position + this.CalcularOffsetUnAla(), new CoordenadaEsferica(new TGCVector3(0,0,0)), new TGCVector3(0, 0, 0)));//creo que la position no se actualiza
                 }
             }
         }

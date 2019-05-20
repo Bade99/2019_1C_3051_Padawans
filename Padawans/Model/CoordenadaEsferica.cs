@@ -24,7 +24,7 @@ namespace TGC.Group.Model
 
         public CoordenadaEsferica(TGCVector3 rotation)
         {
-            polar = CommonHelper.ClampPositiveRadians(-rotation.Z + (FastMath.PI / 2));
+            polar = CommonHelper.ClampPositiveRadians(-rotation.Z + (FastMath.PI_HALF));
             acimutal = CommonHelper.ClampPositiveRadians(-rotation.Y);
         }
 

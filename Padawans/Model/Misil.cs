@@ -33,7 +33,7 @@ namespace TGC.Group.Model
 
        
 
-        public Misil(TGCVector3 posicionXwing, TGCVector3 offset, CoordenadaEsferica coordenadaEsferica, TGCVector3 rotacionNave)
+        public Misil(TGCVector3 posicionXwingAla, CoordenadaEsferica coordenadaEsferica, TGCVector3 rotacionNave)
         {
             this.rotacionNave = rotacionNave;
             
@@ -42,7 +42,7 @@ namespace TGC.Group.Model
                     
             rotacionBase = new TGCVector3(FastMath.PI_HALF,0,0);
             escala = new TGCVector3(.5f, .5f, .5f);
-            posicion = posicionXwing+offset;
+            posicion = posicionXwingAla;
             
             this.coordenadaEsferica = coordenadaEsferica;
            
