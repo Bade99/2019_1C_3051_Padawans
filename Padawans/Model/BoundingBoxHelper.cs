@@ -37,7 +37,7 @@ namespace TGC.Group.Model
                 {
                     element.RenderBoundingBox();
                 }
-                foreach (IActiveElement element in parametrosTemporales)
+                foreach (ActiveElementManager element in parametrosTemporales)
                 {
                     element.RenderBoundingBox();
                 }
