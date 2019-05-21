@@ -12,8 +12,8 @@ public class FollowingCamera
     private TGCVector3 lookAtCamera;
     private readonly float fixedDistanceCamera = -20;
     private Xwing xwing;
-    private float velocidadAngular = 0.7f;
-    private float alcanzarMaximaVelocidadAngularEn = FastMath.PI / 8;
+    private float velocidadAngular = 0.75f;
+    private float alcanzarMaximaVelocidadAngularEn = FastMath.PI / 6;
 
     /// <summary>
     ///     Es el encargado de modificar la camara siguiendo a la nave
