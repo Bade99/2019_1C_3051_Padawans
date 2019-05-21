@@ -28,6 +28,12 @@ namespace TGC.Group.Model
             acimutal = CommonHelper.ClampPositiveRadians(-rotation.Y);
         }
 
+        public CoordenadaEsferica(float acimutal, float polar)
+        {
+            this.polar = polar;
+            this.acimutal = acimutal;
+        }
+
         public float GetXCoord()
         {
             return FastMath.Cos(acimutal) * FastMath.Sin(polar);

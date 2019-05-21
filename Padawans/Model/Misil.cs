@@ -22,7 +22,8 @@ namespace TGC.Group.Model
         private TGCVector3 posicion;
         private CoordenadaEsferica coordenadaEsferica;
         private float tiempoDeVida = 10f;
-        private readonly float velocidadGeneral = 500f;
+        private float distanciaOrigenMisil = 100;
+        private readonly float velocidadGeneral = 900f;
         private bool terminado = false;
         private TgcMp3Player sonido;
         private float tiempoDeVidaSonido = 1f;
@@ -33,18 +34,18 @@ namespace TGC.Group.Model
 
        
 
-        public Misil(TGCVector3 posicionXwingAla, CoordenadaEsferica coordenadaEsferica, TGCVector3 rotacionNave)
+        public Misil(TGCVector3 posicionNave, CoordenadaEsferica coordenadaEsfericaP, TGCVector3 rotacionNave)
         {
             this.rotacionNave = rotacionNave;
+            this.coordenadaEsferica = coordenadaEsfericaP;
             
             misil = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + "\\Misil\\Misil-TgcScene.xml").Meshes[0];//crear un mesh caja
             misil.AutoTransformEnable = false;
                     
             rotacionBase = new TGCVector3(FastMath.PI_HALF,0,0);
-            escala = new TGCVector3(.5f, .5f, .5f);
-            posicion = posicionXwingAla;
+            escala = new TGCVector3(.5f, .5f, 8f);
+            posicion = calcularPosicionInicialMisil(posicionNave);
             
-            this.coordenadaEsferica = coordenadaEsferica;
            
             sonido = new TgcMp3Player();
             sonido.FileName = VariablesGlobales.mediaDir+"\\Sonidos\\TIE_fighter_fire_1.mp3";
@@ -55,6 +56,18 @@ namespace TGC.Group.Model
             {
                 sonidoTerminado = true;
             }
+        }
+        /**
+         * Devuelve la posicion inicial desde donde sale el misil en funcion de la posicion y la rotacion de la nave.
+         * */
+        private TGCVector3 calcularPosicionInicialMisil(TGCVector3 posicionNave)
+        {
+            Random random = new Random();
+            int signo = Math.Sign(random.NextDouble() - 0.5);
+            CoordenadaEsferica direccionAlaDesdeElCentro = new CoordenadaEsferica(coordenadaEsferica.acimutal + 0.1f * signo, coordenadaEsferica.polar);
+            TGCVector3 deltaInicioMisil = new TGCVector3(direccionAlaDesdeElCentro.GetXCoord() * distanciaOrigenMisil,
+                direccionAlaDesdeElCentro.GetYCoord() * distanciaOrigenMisil, direccionAlaDesdeElCentro.GetZCoord() * distanciaOrigenMisil);
+            return CommonHelper.SumarVectores(posicionNave, deltaInicioMisil);
         }
 
         public void Update(float ElapsedTime)
@@ -107,11 +120,6 @@ namespace TGC.Group.Model
 
         public void RenderBoundingBox()
         {
-
-
-
-
-
             if (!terminado)
             {
                 misil.BoundingBox.Render();
