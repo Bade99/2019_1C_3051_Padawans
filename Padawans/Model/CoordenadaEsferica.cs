@@ -30,8 +30,10 @@ namespace TGC.Group.Model
 
         public CoordenadaEsferica(float acimutal, float polar)
         {
-            this.polar = polar;
-            this.acimutal = acimutal;
+            //El polar va entre 0 y pi
+            this.polar = CommonHelper.ClampPositiveRadians(polar, FastMath.PI);
+            //El acimutal va entre 0 y 2pi
+            this.acimutal = CommonHelper.ClampPositiveRadians(acimutal);
         }
 
         public float GetXCoord()

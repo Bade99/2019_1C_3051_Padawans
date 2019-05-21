@@ -35,14 +35,24 @@ namespace TGC.Group.Model
         {
             return new TGCVector3(v.X * f, v.Y * f, v.Z * f);
         }
+        /**
+         * Clampea el angulo del primer parametro entre 0 y el valor del segundo parametro
+         * */
+        public static float ClampPositiveRadians(float radians, float angulo)
+        {
+            if (radians < 0)
+            {
+                return ClampPositiveRadians(radians + (angulo));
+            }
+            return radians % (angulo);
+        }
 
+        /**
+         * Clampea el angulo por parametro entre 0 y 2pi
+         * */
         public static float ClampPositiveRadians(float radians)
         {
-            if (radians<0)
-            {
-                return ClampPositiveRadians(radians + (FastMath.PI * 2));
-            }
-            return radians % (FastMath.PI * 2);
+            return ClampPositiveRadians(radians, FastMath.PI * 2);
         }
 
         public static void ClampRotationZ(TgcMesh rotando)

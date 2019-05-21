@@ -120,12 +120,12 @@ namespace TGC.Group.Model
             //Movimientos flechas
             if (input.keyDown(Key.A))
             {
-                rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Down * 1f*ElapsedTime));
+                rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Down *ElapsedTime));
                 ActualizarCoordenadaEsferica();
             }
             if (input.keyDown(Key.D))
             {
-                rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Up * 1f * ElapsedTime));
+                rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Up * ElapsedTime));
                 ActualizarCoordenadaEsferica();
             }
             if (input.keyDown(Key.W) && !rotationYAnimation)
