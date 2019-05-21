@@ -17,7 +17,11 @@ namespace TGC.Group.Model
     /// </summary>
     public class CommonHelper
     {
-       public static TGCVector3 SumarVectores(TGCVector3 vector1, TGCVector3 vector2)
+
+        public static TGCVector3 vectorMitad = new TGCVector3(0.5f, 0.5f, 0.5f);
+        public static TGCVector3 vectorDecima = new TGCVector3(0.1f, 0.1f, 0.1f);
+
+        public static TGCVector3 SumarVectores(TGCVector3 vector1, TGCVector3 vector2)
         {
             return new TGCVector3(vector1.X + vector2.X, vector1.Y + vector2.Y, vector1.Z + vector2.Z);
         }

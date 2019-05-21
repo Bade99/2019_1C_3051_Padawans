@@ -55,71 +55,6 @@ namespace TGC.Group.Model
 
         private void PlaceMeshRnd() { }//@funcion a realizar
 
-        private TGCVector3 PlaceSceneLineRot(TgcScene escena, TGCVector3 posicion, TGCVector3 escalador, int repeticiones, int mesh_pivot,float distancia_extra,TGCVector3 rotacion)//NO usar
-        //no funciona del todo porque las bounding boxes no se actualizan con rotaciones, WHAT
-        {
-            for (int i = 0; i < repeticiones; i++)
-            {
-                foreach (TgcMesh mesh in escena.Meshes)
-                {
-                    //mesh.AutoTransform = false;
-                    //mesh.AutoUpdateBoundingBox = false;
-
-                    //mesh. = TGCMatrix.Scaling(escalador.X, escalador.Y, escalador.Z);
-                    //mesh.Scale = escalador;
-                    mesh.AutoTransformEnable = false;
-                    mesh.AutoUpdateBoundingBox = true;
-                    //mesh.Transform = TGCMatrix.Scaling(escalador);
-                    var centro = new TGCVector3();
-                    mesh.GetPosition(centro);
-                    mesh.Transform = TGCMatrix.Transformation(centro,TGCQuaternion.Identity/*new TGCQuaternion(escalador.X,escalador.Y,escalador.Z,1f)*/,escalador,centro,new TGCQuaternion(rotacion.X,rotacion.Y,rotacion.Z,1f),posicion);
-                    //mesh.Transform = TGCMatrix.RotationYawPitchRoll(rotacion.X, rotacion.Y, rotacion.Z);
-                    //mesh.Transform = TGCMatrix.Scaling(escalador) * TGCMatrix.RotationYawPitchRoll(rotacion.Y, rotacion.X, rotacion.Z) * TGCMatrix.Translation(posicion);
-                    //mesh.Transform.RotateX(rotacion.X);
-                    //mesh.Transform.RotateY(rotacion.Y);
-                    //mesh.Transform.RotateZ(rotacion.Z);
-
-                    //mesh.createBoundingBox();
-                    mesh.BoundingBox.Render();
-                    //mesh.Transform.Transform
-                    //mesh.Rotation = rotacion;
-                    //mesh.Position = posicion;
-                    //mesh.MoveOrientedY
-
-                }
-                //var size = new TGCVector3(0,0,0);
-                //size = escena.Meshes[mesh_pivot].BoundingBox.calculateSize();
-                //posicion = new TGCVector3(escena.Meshes[mesh_pivot].Position.X                                     - size.X * FastMath.Sin(rotacion.Y) + size.X * FastMath.Cos(rotacion.Z),//- size.X * FastMath.Cos(rotacion.X)
-                //                          escena.Meshes[mesh_pivot].Position.Y - size.Y * FastMath.Cos(rotacion.X)                                     + size.Y * FastMath.Cos(rotacion.Z),
-                //                          escena.Meshes[mesh_pivot].Position.Z - size.Z * FastMath.Cos(rotacion.X) - size.Z * FastMath.Sin(rotacion.Y) - distancia_extra);//- size.Z * FastMath.Sin(rotacion.Z)
-
-                posicion = new TGCVector3(escena.Meshes[mesh_pivot].Position.X,
-                                            escena.Meshes[mesh_pivot].Position.Y,
-                                            escena.Meshes[mesh_pivot].Position.Z -
-                                                escena.Meshes[mesh_pivot].BoundingBox.calculateSize().Z - distancia_extra);
-
-                //foreach(TgcMesh mesh in escena.Meshes)
-                //{
-                //    //mesh.AutoTransform = false;
-
-                //    //mesh.UpdateMeshTransform();
-                //    mesh.createBoundingBox();
-                //    //mesh.updateBoundingBox();
-                //    mesh.BoundingBox.Render();
-
-                //}
-
-                //var esquinas = new TGCVector3[8];
-                //esquinas = escena.Meshes[mesh_pivot].BoundingBox.computeCorners();
-
-                //posicion = esquinas[3];
-
-                escena.RenderAll();
-
-            }
-            return posicion;//retorna la proxima posicion
-        }
-
         private void RenderMeshList (List <TgcMesh> meshes)
         {
             meshes.ForEach(mesh=>{ mesh.Render(); });
@@ -185,7 +120,7 @@ namespace TGC.Group.Model
             escalador = new TGCVector3(50f, 50f, 30f);
             mesh_pivot = 1;
             rotacion = new TGCVector3(0,FastMath.TWO_PI, 0f);
-            PlaceSceneLine(escena_alrededores, posicion, escalador, n, mesh_pivot, 0,rotacion);
+           // PlaceSceneLine(escena_alrededores, posicion, escalador, n, mesh_pivot, 0,rotacion);
 
             posicion = new TGCVector3(0f, 800f, -500f);
             mesh_pivot = 2;
@@ -203,14 +138,14 @@ namespace TGC.Group.Model
             escalador = new TGCVector3(.65f, .3f, 1f);
             mesh_pivot = 0;
             rotacion = new TGCVector3(0f, 0f, 0f);
-            PlaceSceneLine(tubo_rojo_gira, posicion, escalador, n, mesh_pivot, 400f, rotacion);
+         //   PlaceSceneLine(tubo_rojo_gira, posicion, escalador, n, mesh_pivot, 400f, rotacion);
 
             posicion = distancia * .4f + new TGCVector3(30f,0,0);
             escalador = new TGCVector3(.3f, .3f, 5f);
-            PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0,rotacion);
+         //   PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0,rotacion);
 
             posicion = distancia * .6f + new TGCVector3(-30f, 0, 0);
-            PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0, rotacion);
+       //     PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0, rotacion);
 
             escalador = new TGCVector3(30f, 50f, 50f);
             mesh_pivot = 0;

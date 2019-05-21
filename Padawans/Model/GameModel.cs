@@ -45,11 +45,10 @@ namespace TGC.Group.Model
         public override void Update()
         {
             PreUpdate();
-            followingCamera.UpdateInput(Input, ElapsedTime);
-            followingCamera.Update(Camara,Input,ElapsedTime);
             worldSphere.Update();
             xwing.UpdateInput(Input,ElapsedTime);
             xwing.Update();
+            followingCamera.Update(Camara,Input,ElapsedTime);
             managerElementosTemporales.Update(ElapsedTime);
             managerEnemigos.Update(ElapsedTime);
             boundingBoxHelper.UpdateInput(Input, ElapsedTime);

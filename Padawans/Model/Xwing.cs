@@ -23,7 +23,7 @@ namespace TGC.Group.Model
         private TemporaryElementManager managerDisparos;
 
         //Constantes
-        private readonly float minimaVelocidad = 25f;
+        private readonly float minimaVelocidad = 10f;
         private readonly float velocidadEjes = 10f;
         private readonly float aceleracion = 80;//@necesitamos saber el elapsed time para poder tener esto bien seteado, preguntar de donde lo sacamos
         private readonly float friccion = 10f;
@@ -56,6 +56,7 @@ namespace TGC.Group.Model
 
         public Xwing(TgcSceneLoader loader,TemporaryElementManager managerElementosTemporales)
         {
+
             this.managerDisparos = managerElementosTemporales;
             this.loader = loader;
             xwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"\\XWing\\xwing-TgcScene.xml").Meshes[0];
@@ -109,7 +110,7 @@ namespace TGC.Group.Model
 
         }
 
-        public void UpdateInput(TgcD3dInput input,float ElapsedTime) //@@@no se está teniendo en cuenta el ElapsedTime!!
+        public void UpdateInput(TgcD3dInput input,float ElapsedTime)
         {
             ElapsedTime = 0.01f; //Lo hardcodeo hasta que sepamos bien como hacer esto
 
