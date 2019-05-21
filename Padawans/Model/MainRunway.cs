@@ -9,6 +9,8 @@ using TGC.Core.Input;
 using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
+using TGC.Core.Collision;
+using TGC.Core.BoundingVolumes;
 
 namespace TGC.Group.Model
 {
@@ -23,12 +25,15 @@ namespace TGC.Group.Model
         //bloques de construccion
         //TgcScene piso;
         private int n;
+        TgcFrustum frustum;
+        private bool frustum_culling = true;
         /// <summary>
         ///     n representa la cantidad de pistas que va a graficar
         /// </summary>
-        public MainRunway(TgcSceneLoader loader, int n)
+        public MainRunway(TgcSceneLoader loader, int n, TgcFrustum frustum)
         {
             this.loader = loader;
+            this.frustum = frustum;
 
             escena_bomba = loader.loadSceneFromFile("Padawans_media\\XWing\\TRENCH_RUN-TgcScene.xml");
             escena_alrededores = loader.loadSceneFromFile("Padawans_media\\XWing\\death+star-TgcScene.xml");
@@ -217,12 +222,33 @@ namespace TGC.Group.Model
 
         public override void Render()
         {
-            main_escena_instancia.ForEach(escena => { RenderMeshList(escena); });//@@esta bien que renderize cada vez si no hay cambios??
+            if (frustum_culling)
+            {
+                foreach (var listMesh in main_escena_instancia)
+                {
+                    foreach (var mesh in listMesh)
+                    {
+                        if (mesh.Enabled)
+                        {
+                            //Solo mostrar la malla si colisiona contra el Frustum
+                            var huboColision = TgcCollisionUtils.classifyFrustumAABB(this.frustum, mesh.BoundingBox);
+                            if (huboColision != TgcCollisionUtils.FrustumResult.OUTSIDE)
+                            {
+                                mesh.Render();
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                main_escena_instancia.ForEach(escena => { RenderMeshList(escena); });//@@esta bien que renderize cada vez si no hay cambios??
+            }
         }
 
         public override void Update()
         {
-
+         
         }
 
         public override void Dispose()

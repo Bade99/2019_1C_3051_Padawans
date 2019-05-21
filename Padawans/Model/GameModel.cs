@@ -33,7 +33,7 @@ namespace TGC.Group.Model
             var loader = new TgcSceneLoader();
             VariablesGlobales.loader = new TgcSceneLoader();
             VariablesGlobales.mediaDir = this.MediaDir;
-            pistaReferencia = new MainRunway(loader, 5);
+            pistaReferencia = new MainRunway(loader, 5, this.Frustum);
             managerElementosTemporales = new TemporaryElementManager();
             xwing = new Xwing(loader,managerElementosTemporales);
             managerEnemigos = new EnemyManager();
@@ -74,6 +74,8 @@ namespace TGC.Group.Model
             managerElementosTemporales.Render();
             boundingBoxHelper.RenderBoundingBoxes();
             managerEnemigos.Render();
+
+            //this.Frustum.render();
 
             PostRender();
         }
