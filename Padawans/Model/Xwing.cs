@@ -54,7 +54,7 @@ namespace TGC.Group.Model
         private TGCVector3 posicion;
         public TGCVector3 rotation;
 
-        public Xwing(TgcSceneLoader loader,TemporaryElementManager managerElementosTemporales)
+        public Xwing(TgcSceneLoader loader,TemporaryElementManager managerElementosTemporales, TGCVector3 posicionInicial)
         {
 
             this.managerDisparos = managerElementosTemporales;
@@ -63,7 +63,7 @@ namespace TGC.Group.Model
             alaXwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"XWing\\xwing-TgcScene.xml").Meshes[1];
             //Posicion, rotacion y escala inicial
             matrizXwingInicial = TGCMatrix.Scaling(0.1f, 0.1f, 0.1f);
-            posicion = new TGCVector3(0,1000f,2000);
+            posicion = posicionInicial;
             rotation = new TGCVector3(0, FastMath.PI_HALF, -FastMath.QUARTER_PI*.8f);
 
             xwing.AutoTransformEnable = false;

@@ -42,7 +42,7 @@ namespace TGC.Group.Model
 
             pistaReferencia = new MainRunway(loader, 5, this.Frustum);
             managerElementosTemporales = new TemporaryElementManager();
-            xwing = new Xwing(loader,managerElementosTemporales);
+            xwing = new Xwing(loader,managerElementosTemporales, new TGCVector3(0, 1000f, 2000));
             managerEnemigos = new EnemyManager();
             managerEnemigos.AgregarElemento(new XwingEnemigo(new TGCVector3(0f, 10f, -1000f), xwing,managerElementosTemporales));
             worldSphere = new WorldSphere(loader, xwing);
