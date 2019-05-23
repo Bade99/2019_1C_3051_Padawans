@@ -59,8 +59,8 @@ namespace TGC.Group.Model
 
             this.managerDisparos = managerElementosTemporales;
             this.loader = loader;
-            xwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"\\XWing\\xwing-TgcScene.xml").Meshes[0];
-            alaXwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"\\XWing\\xwing-TgcScene.xml").Meshes[1];
+            xwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"XWing\\xwing-TgcScene.xml").Meshes[0];
+            alaXwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"XWing\\xwing-TgcScene.xml").Meshes[1];
             //Posicion, rotacion y escala inicial
             matrizXwingInicial = TGCMatrix.Scaling(0.1f, 0.1f, 0.1f);
             posicion = new TGCVector3();
@@ -76,6 +76,8 @@ namespace TGC.Group.Model
             //Rotationy animation
             rotationYAnimation = false;
             rotationYAnimacionAdvance = 0;
+
+            VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_engine.wav",10,1,-1));
         }
 
         public override void Render()
@@ -112,7 +114,7 @@ namespace TGC.Group.Model
 
         public void UpdateInput(TgcD3dInput input,float ElapsedTime)
         {
-            ElapsedTime = 0.01f; //Lo hardcodeo hasta que sepamos bien como hacer esto
+            //ElapsedTime = 0.01f; //Lo hardcodeo hasta que sepamos bien como hacer esto
 
             //Teclas especiales para moverse rapido y mas facil por el mapa
             TestingInput(input);
@@ -175,7 +177,8 @@ namespace TGC.Group.Model
             {
                 if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos) {
                     tiempoDesdeUltimoDisparo = 0f;
-                    managerDisparos.AgregarElemento(new Misil(posicion, coordenadaEsferica,rotation));
+                    managerDisparos.AgregarElemento(new Misil(posicion, coordenadaEsferica,rotation, "Misil\\misil_xwing-TgcScene.xml"));
+                    VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_1_disparo.wav", 1,1f,1));
                 }
             }
 

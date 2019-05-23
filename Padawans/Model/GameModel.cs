@@ -20,6 +20,7 @@ namespace TGC.Group.Model
         private BoundingBoxHelper boundingBoxHelper;
         private TemporaryElementManager managerElementosTemporales;
         private EnemyManager managerEnemigos;
+        private SoundManager managerSonido;
         public GameModel(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
         {
             Category = Game.Default.Category;
@@ -31,8 +32,14 @@ namespace TGC.Group.Model
         {
             var d3dDevice = D3DDevice.Instance.Device;
             var loader = new TgcSceneLoader();
-            VariablesGlobales.loader = new TgcSceneLoader();
+            managerSonido = new SoundManager();
+            
             VariablesGlobales.mediaDir = this.MediaDir;
+            VariablesGlobales.loader = new TgcSceneLoader();
+            VariablesGlobales.soundDevice = DirectSound.DsDevice;
+            //VariablesGlobales.elapsedTime debe ser actualizado por tanto va a Update()
+            VariablesGlobales.managerSonido = managerSonido;
+
             pistaReferencia = new MainRunway(loader, 5, this.Frustum);
             managerElementosTemporales = new TemporaryElementManager();
             xwing = new Xwing(loader,managerElementosTemporales);
@@ -45,12 +52,14 @@ namespace TGC.Group.Model
         public override void Update()
         {
             PreUpdate();
+            VariablesGlobales.elapsedTime = ElapsedTime;
             worldSphere.Update();
             xwing.UpdateInput(Input,ElapsedTime);
             xwing.Update();
             followingCamera.Update(Camara,Input,ElapsedTime);
             managerElementosTemporales.Update(ElapsedTime);
             managerEnemigos.Update(ElapsedTime);
+            managerSonido.Update();
             boundingBoxHelper.UpdateInput(Input, ElapsedTime);
             Thread.Sleep(1);//@mientras mas chico el numero mas ganas en performance, tmb podemos sacar esto y listo
 
@@ -66,7 +75,9 @@ namespace TGC.Group.Model
             DrawText.drawText("Velocidad Xwing: " + xwing.GetVelocidadGeneral(), 0, 50, Color.OrangeRed);
             DrawText.drawText("La nave dispara con click izquierdo ", 0, 60, Color.White);
             DrawText.drawText("Elementos temporales: " + managerElementosTemporales.CantidadElementos(), 0, 70, Color.White);
-            
+            DrawText.drawText("Sonidos: " + managerSonido.CantidadElementos(), 0, 80, Color.White);
+
+
             xwing.Render();
             pistaReferencia.Render();
             worldSphere.Render();
@@ -86,6 +97,7 @@ namespace TGC.Group.Model
             worldSphere.Dispose();
             managerElementosTemporales.Dispose();
             managerEnemigos.Dispose();
+            managerSonido.Dispose();
         }
     }
 }

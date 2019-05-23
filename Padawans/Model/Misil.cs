@@ -25,37 +25,23 @@ namespace TGC.Group.Model
         private float distanciaOrigenMisil = 100;
         private readonly float velocidadGeneral = 900f;
         private bool terminado = false;
-        private TgcMp3Player sonido;
-        private float tiempoDeVidaSonido = 1f;
-        private bool sonidoTerminado = false;
 
         private TGCVector3 rotacionBase;
         private TGCVector3 rotacionNave;
-
        
 
-        public Misil(TGCVector3 posicionNave, CoordenadaEsferica coordenadaEsfericaP, TGCVector3 rotacionNave)
+        public Misil(TGCVector3 posicionNave, CoordenadaEsferica coordenadaEsfericaP, TGCVector3 rotacionNave,string pathScene)
         {
             this.rotacionNave = rotacionNave;
             this.coordenadaEsferica = coordenadaEsfericaP;
             
-            misil = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + "\\Misil\\Misil-TgcScene.xml").Meshes[0];//crear un mesh caja
+            misil = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + pathScene).Meshes[0];//crear un mesh caja
             misil.AutoTransformEnable = false;
                     
             rotacionBase = new TGCVector3(FastMath.PI_HALF,0,0);
-            escala = new TGCVector3(.5f, .5f, 8f);
+            escala = new TGCVector3(.2f, .2f, 8f);
             posicion = calcularPosicionInicialMisil(posicionNave);
             
-           
-            sonido = new TgcMp3Player();
-            sonido.FileName = VariablesGlobales.mediaDir+"\\Sonidos\\TIE_fighter_fire_1.mp3";
-
-            try{
-                sonido.play(true);
-            } catch (System.Exception e)
-            {
-                sonidoTerminado = true;
-            }
         }
         /**
          * Devuelve la posicion inicial desde donde sale el misil en funcion de la posicion y la rotacion de la nave.
@@ -89,15 +75,6 @@ namespace TGC.Group.Model
 
                 misil.Transform = TGCMatrix.Scaling(escala) * TGCMatrix.RotationY(FastMath.PI_HALF) * TGCMatrix.RotationYawPitchRoll(rotacionNave.Y,rotacionNave.X,rotacionNave.Z) * TGCMatrix.Translation(posicion);
             }
-            if (!sonidoTerminado)
-            {
-                if (tiempoDeVidaSonido < 0f)
-                {
-                    sonido.closeFile();
-                    sonidoTerminado = true;
-                }
-                else tiempoDeVidaSonido -= ElapsedTime;
-            }
 
         }
 
@@ -108,10 +85,6 @@ namespace TGC.Group.Model
 
         public void Render()
         {
-
-            
-            misil.Render();
-
             if (!terminado)
             {
                 misil.Render();

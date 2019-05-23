@@ -120,7 +120,7 @@ namespace TGC.Group.Model
             escalador = new TGCVector3(50f, 50f, 30f);
             mesh_pivot = 1;
             rotacion = new TGCVector3(0,FastMath.TWO_PI, 0f);
-           // PlaceSceneLine(escena_alrededores, posicion, escalador, n, mesh_pivot, 0,rotacion);
+            PlaceSceneLine(escena_alrededores, posicion, escalador, n, mesh_pivot, 0,rotacion);
 
             posicion = new TGCVector3(0f, 800f, -500f);
             mesh_pivot = 2;
@@ -138,14 +138,14 @@ namespace TGC.Group.Model
             escalador = new TGCVector3(.65f, .3f, 1f);
             mesh_pivot = 0;
             rotacion = new TGCVector3(0f, 0f, 0f);
-         //   PlaceSceneLine(tubo_rojo_gira, posicion, escalador, n, mesh_pivot, 400f, rotacion);
+            PlaceSceneLine(tubo_rojo_gira, posicion, escalador, n, mesh_pivot, 400f, rotacion);
 
             posicion = distancia * .4f + new TGCVector3(30f,0,0);
             escalador = new TGCVector3(.3f, .3f, 5f);
-         //   PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0,rotacion);
+            PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0,rotacion);
 
             posicion = distancia * .6f + new TGCVector3(-30f, 0, 0);
-       //     PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0, rotacion);
+            PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0, rotacion);
 
             escalador = new TGCVector3(30f, 50f, 50f);
             mesh_pivot = 0;

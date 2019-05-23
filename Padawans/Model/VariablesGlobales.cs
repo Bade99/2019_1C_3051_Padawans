@@ -11,5 +11,8 @@ namespace TGC.Group.Model
     {
         public static string mediaDir;
         public static TgcSceneLoader loader;
+        public static Microsoft.DirectX.DirectSound.Device soundDevice;
+        public static float elapsedTime;
+        public static SoundManager managerSonido;
     }
 }

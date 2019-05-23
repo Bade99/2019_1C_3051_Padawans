@@ -25,7 +25,7 @@ namespace TGC.Group.Model
         public XwingEnemigo(TGCVector3 posicionInicial,Xwing target,TemporaryElementManager managerDisparos)
         {
             velocidad = new TGCVector3(0,0,10f);
-            nave = new TgcSceneLoader().loadSceneFromFile(VariablesGlobales.mediaDir+"\\XWing\\X-Wing-TgcScene.xml");//@ésta deberia ser nuestra nave, no la enemiga!
+            nave = new TgcSceneLoader().loadSceneFromFile(VariablesGlobales.mediaDir+"XWing\\X-Wing-TgcScene.xml");//@ésta deberia ser nuestra nave, no la enemiga!
             nave.Meshes.ForEach(mesh => { mesh.Position = posicionInicial; });
             nave.Meshes.ForEach(mesh => { mesh.RotateY(-FastMath.PI_HALF); });
             nave.Meshes.ForEach(mesh => { mesh.Scale= new TGCVector3(0.1f, 0.1f, 0.1f); });
@@ -45,7 +45,8 @@ namespace TGC.Group.Model
                 {
                     tiempoDesdeUltimoDisparo = 0f;
                     //@corregir el angulo de disparo
-                    managerDisparos.AgregarElemento(new Misil(this.nave.Meshes[0].Position + this.CalcularOffsetUnAla(), new CoordenadaEsferica(new TGCVector3(0,0,0)), new TGCVector3(0, 0, 0)));//creo que la position no se actualiza
+                    managerDisparos.AgregarElemento(new Misil(this.nave.Meshes[0].Position + this.CalcularOffsetUnAla(), new CoordenadaEsferica(new TGCVector3(0, 0, 0)), new TGCVector3(0, 0, 0), "\\Misil\\misil_xwing_enemigo-TgcScene.xml"));
+                    VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\TIE_fighter_1_disparo.wav", 1, 1f, 1));
                 }
             }
         }
