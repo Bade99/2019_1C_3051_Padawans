@@ -44,7 +44,7 @@ namespace TGC.Group.Model
             managerElementosTemporales = new TemporaryElementManager();
             xwing = new Xwing(loader,managerElementosTemporales);
             managerEnemigos = new EnemyManager();
-            managerEnemigos.AgregarElemento(new XwingEnemigo(new TGCVector3(0f, 10f, -100f), xwing,managerElementosTemporales));
+            managerEnemigos.AgregarElemento(new XwingEnemigo(new TGCVector3(0f, 10f, -300f), xwing,managerElementosTemporales));
             worldSphere = new WorldSphere(loader, xwing);
             followingCamera = new FollowingCamera(xwing);
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ActiveElementManager[] { managerElementosTemporales });
