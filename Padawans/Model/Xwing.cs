@@ -63,13 +63,13 @@ namespace TGC.Group.Model
             alaXwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"XWing\\xwing-TgcScene.xml").Meshes[1];
             //Posicion, rotacion y escala inicial
             matrizXwingInicial = TGCMatrix.Scaling(0.1f, 0.1f, 0.1f);
-            posicion = new TGCVector3();
-            rotation = new TGCVector3(0, FastMath.PI_HALF, 0);
+            posicion = new TGCVector3(0,1000f,2000);
+            rotation = new TGCVector3(0, FastMath.PI_HALF, -FastMath.QUARTER_PI*.8f);
 
             xwing.AutoTransformEnable = false;
             alaXwing.AutoTransformEnable = false;
 
-            velocidadGeneral = minimaVelocidad;
+            velocidadGeneral = 300f;// minimaVelocidad;
             barrelRoll = false;
             ActualizarCoordenadaEsferica();
 
