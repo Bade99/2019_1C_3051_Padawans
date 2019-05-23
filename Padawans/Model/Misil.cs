@@ -23,7 +23,7 @@ namespace TGC.Group.Model
         private CoordenadaEsferica coordenadaEsferica;
         private float tiempoDeVida = 10f;
         private float distanciaOrigenMisil = 100;
-        private readonly float velocidadGeneral = 900f;
+        private readonly float velocidadGeneral = 400f;//pongo menos para poder testear mas facil
         private bool terminado = false;
 
         private TGCVector3 rotacionBase;

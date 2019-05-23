@@ -77,8 +77,8 @@ namespace TGC.Group.Model
             rotationYAnimation = false;
             rotationYAnimacionAdvance = 0;
 
-            VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_flyby_2.wav", 10, 8, 1));
-            VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_engine.wav",10,1,-1));
+            VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_flyby_2.wav", 0, 8, 1));
+            VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_engine.wav",0,1,-1));
         }
 
         public override void Render()

@@ -22,9 +22,12 @@ namespace TGC.Group.Model
         private float tiempoEntreDisparos = .5f;
         private float tiempoDesdeUltimoDisparo = .5f;
 
+        private float distanciaATarget;
+        private bool flyby = false;
+
         public XwingEnemigo(TGCVector3 posicionInicial,Xwing target,TemporaryElementManager managerDisparos)
         {
-            velocidad = new TGCVector3(0,0,10f);
+            velocidad = new TGCVector3(0,0,70f);
             nave = new TgcSceneLoader().loadSceneFromFile(VariablesGlobales.mediaDir+"XWing\\X-Wing-TgcScene.xml");//@ésta deberia ser nuestra nave, no la enemiga!
             nave.Meshes.ForEach(mesh => { mesh.Position = posicionInicial; });
             nave.Meshes.ForEach(mesh => { mesh.RotateY(-FastMath.PI_HALF); });
@@ -36,17 +39,22 @@ namespace TGC.Group.Model
         public void Update(float elapsedTime)
         {
             nave.Meshes.ForEach(mesh => { mesh.Position += velocidad*elapsedTime; });
-            if (DistanciaATarget() < 50f)
+            distanciaATarget = DistanciaATarget();
+            if (!flyby && distanciaATarget<100f)
             {
-
+                flyby = true;
+                VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\TIE_fighter_flyby_1.wav", 0, 6f, 1));
+            }
+            if (distanciaATarget < 100f)
+            {
                 //Disparar
                 tiempoDesdeUltimoDisparo += elapsedTime;
                 if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos)
                 {
                     tiempoDesdeUltimoDisparo = 0f;
                     //@corregir el angulo de disparo
-                    managerDisparos.AgregarElemento(new Misil(this.nave.Meshes[0].Position + this.CalcularOffsetUnAla(), new CoordenadaEsferica(new TGCVector3(0, 0, 0)), new TGCVector3(0, 0, 0), "\\Misil\\misil_xwing_enemigo-TgcScene.xml"));
-                    VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\TIE_fighter_1_disparo.wav", 1, 1f, 1));
+                    managerDisparos.AgregarElemento(new Misil(this.nave.Meshes[0].Position + this.CalcularOffsetUnAla(), new CoordenadaEsferica(new TGCVector3(0, -FastMath.PI_HALF, 0)), new TGCVector3(0, -FastMath.PI_HALF, 0), "\\Misil\\misil_xwing_enemigo-TgcScene.xml"));
+                    VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\TIE_fighter_1_disparo.wav", 0, 1f, 1));
                 }
             }
         }

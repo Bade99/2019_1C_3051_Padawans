@@ -16,13 +16,14 @@ namespace TGC.Group.Model
         //int repeticiones;
         bool infinito = false;
 
-        public Sonido(string path,int volumen,float duracion,int repeticiones/*-1 para infinito*/)//@el volumen NO lo uso porque de momento crashea
+        public Sonido(string path,int volumen,float duracion,int repeticiones/*-1 para infinito*/)//@volumen es atenuacion en hundredths of a decibel -> entre 0 y -10000 https://docs.microsoft.com/en-us/previous-versions/ms817348(v=msdn.10)
         {
             this.sonido = new TgcStaticSound();
-            sonido.loadSound(VariablesGlobales.mediaDir + path, VariablesGlobales.soundDevice);
+            if (volumen > 0) volumen = 0; 
+            sonido.loadSound(VariablesGlobales.mediaDir + path,volumen, VariablesGlobales.soundDevice);
 
             this.duracion = duracion*repeticiones;
-            if (repeticiones == -1) infinito = true;
+            if (repeticiones < 0) infinito = true;
             //this.repeticiones = repeticiones;
         }
         public void Update()
