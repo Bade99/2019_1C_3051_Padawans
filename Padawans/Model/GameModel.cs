@@ -48,6 +48,8 @@ namespace TGC.Group.Model
             worldSphere = new WorldSphere(loader, xwing);
             followingCamera = new FollowingCamera(xwing);
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ActiveElementManager[] { managerElementosTemporales });
+            
+            managerSonido.AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav",0,0,-1));//sonido batalla de fondo
         }
         public override void Update()
         {
