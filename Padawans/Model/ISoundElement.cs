@@ -10,6 +10,8 @@ namespace TGC.Group.Model
     {
         void Update();
         bool Terminado();
+        void Terminar();
+        string GetPath();
         void Dispose();
     }
 }

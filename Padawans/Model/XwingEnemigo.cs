@@ -48,7 +48,7 @@ namespace TGC.Group.Model
                 if (!flyby && distanciaATarget < 100f)
                 {
                     flyby = true;
-                    VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\TIE_fighter_flyby_1.wav", 0, 6f, 1));
+                    VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\TIE_fighter_flyby_1.wav", 0, 6f, 1,0));
                 }
                 if (distanciaATarget < 100f)
                 {
@@ -59,7 +59,7 @@ namespace TGC.Group.Model
                         tiempoDesdeUltimoDisparo = 0f;
                         //@corregir el angulo de disparo
                         managerDisparos.AgregarElemento(new Misil(this.nave.Meshes[0].Position + this.CalcularOffsetUnAla(), new CoordenadaEsferica(new TGCVector3(0, -FastMath.PI_HALF, 0)), new TGCVector3(0, -FastMath.PI_HALF, 0), "\\Misil\\misil_xwing_enemigo-TgcScene.xml"));
-                        VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\TIE_fighter_1_disparo.wav", 0, 1f, 1));
+                        VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\TIE_fighter_1_disparo.wav", 0, 1f, 1,0));
                     }
                 }
             }

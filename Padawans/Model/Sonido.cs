@@ -8,16 +8,18 @@ using TGC.Core.Sound;
 
 namespace TGC.Group.Model
 {
-    class Sonido : ISoundElement//voy a tratar de que se pueda usar tanto para wav como mp3
+    class Sonido : ISoundElement//WAV
     {
+        private string path;
         private TgcStaticSound sonido;
         bool terminado = false;
         float duracion;
-        //int repeticiones;
+        float delay;
         bool infinito = false;
 
-        public Sonido(string path,int volumen,float duracion,int repeticiones/*-1 para infinito*/)//@volumen es atenuacion en hundredths of a decibel -> entre 0 y -10000 https://docs.microsoft.com/en-us/previous-versions/ms817348(v=msdn.10)
+        public Sonido(string path,int volumen,float duracion,int repeticiones/*-1 = infinito*/,float delay)//volumen es atenuacion en hundredths of a decibel -> entre 0 y -10000 https://docs.microsoft.com/en-us/previous-versions/ms817348(v=msdn.10)
         {
+            this.path = path;
             this.sonido = new TgcStaticSound();
             if (volumen > 0) volumen = 0; 
             sonido.loadSound(VariablesGlobales.mediaDir + path,volumen, VariablesGlobales.soundDevice);
@@ -28,6 +30,11 @@ namespace TGC.Group.Model
         }
         public void Update()
         {
+            if (delay > 0f)
+            {
+                delay -= VariablesGlobales.elapsedTime;
+                return;
+            }
             if (infinito) sonido.play(true);
             else if (!terminado)
             {
@@ -35,7 +42,7 @@ namespace TGC.Group.Model
                 {
                     duracion -= VariablesGlobales.elapsedTime;
 
-                    try //necesario por las dudas para los mp3
+                    try
                     {
                         sonido.play(true);
                     }
@@ -55,6 +62,10 @@ namespace TGC.Group.Model
         {
             sonido.dispose();
         }
+
+        public string GetPath() { return path; }
+
+        public void Terminar() { terminado = true; }
 
         public bool Terminado()
         {

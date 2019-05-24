@@ -77,8 +77,8 @@ namespace TGC.Group.Model
             rotationYAnimation = false;
             rotationYAnimacionAdvance = 0;
 
-            VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_flyby_2.wav", 0, 8, 1));
-            VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_engine.wav",0,1,-1));
+            VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_flyby_2.wav", 0, 8, 1,0));
+            VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_engine.wav",0,1,-1,0));
         }
 
         public override void Render()
@@ -179,7 +179,7 @@ namespace TGC.Group.Model
                 if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos) {
                     tiempoDesdeUltimoDisparo = 0f;
                     managerDisparos.AgregarElemento(new Misil(posicion, coordenadaEsferica,rotation, "Misil\\misil_xwing-TgcScene.xml"));
-                    VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_1_disparo.wav", 1,1f,1));
+                    VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_1_disparo.wav", 1,1f,1,0));
                 }
             }
 

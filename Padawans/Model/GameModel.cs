@@ -21,6 +21,8 @@ namespace TGC.Group.Model
         private TemporaryElementManager managerElementosTemporales;
         private EnemyManager managerEnemigos;
         private SoundManager managerSonido;
+        private MenuManager managerMenu;
+
         public GameModel(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
         {
             Category = Game.Default.Category;
@@ -40,6 +42,7 @@ namespace TGC.Group.Model
             //VariablesGlobales.elapsedTime debe ser actualizado por tanto va a Update()
             VariablesGlobales.managerSonido = managerSonido;
 
+            managerMenu = new MenuManager(new StartMenu(Key.Return));
             pistaReferencia = new MainRunway(loader, 5, this.Frustum);
             managerElementosTemporales = new TemporaryElementManager();
             xwing = new Xwing(loader,managerElementosTemporales, new TGCVector3(0, 1000f, 2000));
@@ -49,11 +52,14 @@ namespace TGC.Group.Model
             followingCamera = new FollowingCamera(xwing);
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ActiveElementManager[] { managerElementosTemporales });
             
-            managerSonido.AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav",0,0,-1));//sonido batalla de fondo
+            managerSonido.AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav",0,0,-1,0));//sonido batalla de fondo
         }
         public override void Update()
         {
+            //seguir menu inicio
             PreUpdate();
+            managerMenu.Update(Input);
+            if (!managerMenu.IsCurrent()) { //si no estoy en un menu ->
             VariablesGlobales.elapsedTime = ElapsedTime;
             worldSphere.Update();
             xwing.UpdateInput(Input,ElapsedTime);
@@ -63,6 +69,7 @@ namespace TGC.Group.Model
             managerEnemigos.Update(ElapsedTime);
             managerSonido.Update();
             boundingBoxHelper.UpdateInput(Input, ElapsedTime);
+            }
             Thread.Sleep(1);//@mientras mas chico el numero mas ganas en performance, tmb podemos sacar esto y listo
 
             PostUpdate();
@@ -78,14 +85,18 @@ namespace TGC.Group.Model
             DrawText.drawText("La nave dispara con click izquierdo ", 0, 60, Color.White);
             DrawText.drawText("Elementos temporales: " + managerElementosTemporales.CantidadElementos(), 0, 70, Color.White);
             DrawText.drawText("Sonidos: " + managerSonido.CantidadElementos(), 0, 80, Color.White);
+            DrawText.drawText("En un menu: " + managerMenu.IsCurrent(), 0, 90, Color.White);
 
-
+            if (managerMenu.IsCurrent()) managerMenu.Render();
+            else
+            {
             xwing.Render();
             pistaReferencia.Render();
             worldSphere.Render();
             managerElementosTemporales.Render();
             boundingBoxHelper.RenderBoundingBoxes();
             managerEnemigos.Render();
+            }
 
             //this.Frustum.render();
 
@@ -94,6 +105,7 @@ namespace TGC.Group.Model
 
         public override void Dispose()
         {
+            managerMenu.Dispose();
             xwing.Dispose();
             pistaReferencia.Dispose();
             worldSphere.Dispose();

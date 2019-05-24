@@ -28,5 +28,9 @@ namespace TGC.Group.Model
         {
             elems.ForEach(elem => { elem.Dispose(); });
         }
+        public void Remove(string path)
+        {
+            elems.Find(elem =>  elem.GetPath()==path ).Terminar();
+        }
     }
 }
