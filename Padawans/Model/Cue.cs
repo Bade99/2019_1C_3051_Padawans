@@ -10,27 +10,34 @@ using TGC.Core.Mathematica;
 
 namespace TGC.Group.Model
 {
-    class WASDCue : ICue //lanzador de bitmaps para dar ayudas al jugador ante distintos eventos, ej: al inicio usar WASD para moverse
+    class Cue : ICue //lanzador de bitmaps para dar ayudas al jugador ante distintos eventos, ej: al inicio usar WASD para moverse
     {
         //puedo usar png con el CustomBitmap!!!
         private CustomSprite cue;
         private CustomBitmap bitmap;
         private Drawer2D drawer2D;
-        private float delay=1;
-        private float duracion=3;
+        private float delay;
+        private float duracion;
         private bool terminado = false;
         private bool play_sound = true;
+        private string sonido_path;
+        private float sonido_duracion;
+        private int sonido_volumen;
 
-        public WASDCue()
-        {
+        public Cue(string bitmap_path,TGCVector2 bitmap_scaling,TGCVector2 relative_pos,float delay,float duracion,string sonido_path,float sonido_duracion,int sonido_volumen)
+        {//despues agrego mas condiciones para que una cue inicie, ademas de delay
             drawer2D = new Drawer2D();
             cue = new CustomSprite();
-            bitmap = new CustomBitmap(VariablesGlobales.mediaDir + "Bitmaps\\WASD.png", D3DDevice.Instance.Device);
+            bitmap = new CustomBitmap(VariablesGlobales.mediaDir + bitmap_path, D3DDevice.Instance.Device);
             //@no se xq tiene ese borde azul cuando lo renderiza???
             cue.Bitmap = bitmap;
-            cue.Scaling = new TGCVector2(.7f,.7f);
-            cue.Position = new TGCVector2(D3DDevice.Instance.Width*.1f,D3DDevice.Instance.Height*.7f);
-            
+            cue.Scaling = bitmap_scaling;
+            cue.Position = new TGCVector2(D3DDevice.Instance.Width* relative_pos.X, D3DDevice.Instance.Height* relative_pos.Y);
+            this.delay = delay;
+            this.duracion = duracion;
+            this.sonido_path = sonido_path;
+            this.sonido_duracion = sonido_duracion;
+            this.sonido_volumen = sonido_volumen;
         }
         public bool IsCurrent()
         {
@@ -56,7 +63,7 @@ namespace TGC.Group.Model
         {
             if (duracion > 0)
             {
-                if (play_sound) { VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\obi_wan_luke.wav", 0, .5f, 1, 0)); play_sound = false; }
+                if (play_sound) { VariablesGlobales.managerSonido.AgregarElemento(new Sonido(sonido_path, sonido_volumen, sonido_duracion, 1, 0)); play_sound = false; }
                 drawer2D.BeginDrawSprite();
                 drawer2D.DrawSprite(cue);
                 drawer2D.EndDrawSprite();

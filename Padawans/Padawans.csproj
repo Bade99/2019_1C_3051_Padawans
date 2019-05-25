@@ -118,7 +118,7 @@
     <Compile Include="Model\BoundingBoxHelper.cs" />
     <Compile Include="Model\CueManager.cs" />
     <Compile Include="Model\PauseMenu.cs" />
-    <Compile Include="Model\WASDCue.cs" />
+    <Compile Include="Model\Cue.cs" />
     <Compile Include="Model\CustomBitmap.cs" />
     <Compile Include="Model\CustomSprite.cs" />
     <Compile Include="Model\Drawer2D.cs" />

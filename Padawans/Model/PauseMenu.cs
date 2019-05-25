@@ -165,20 +165,9 @@ namespace TGC.Group.Model
             d3dDevice.VertexFormat = CustomVertex.PositionTextured.Format;
             d3dDevice.SetStreamSource(0, screenQuadVB, 0);
 
-            //Ver si el efecto de oscurecer esta activado, configurar Technique del shader segun corresponda
-            /*
-            var activar_efecto = activarEfectoModifier.Value;
-            if (activar_efecto)
-                effect.Technique = "OndasTechnique";
-            else
-                effect.Technique = "DefaultTechnique";
-            */
-
             //Cargamos parametros en el shader de Post-Procesado
             effect.SetValue("render_target2D", renderTarget2D);
             effect.SetValue("scaleFactor", .5f);
-            //effect.SetValue("ondas_vertical_length", waveLengthModifier.Value);
-            //effect.SetValue("ondas_size", waveSizeModifier.Value);
 
             //Limiamos la pantalla y ejecutamos el render del shader
             d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);

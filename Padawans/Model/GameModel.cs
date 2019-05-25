@@ -55,7 +55,9 @@ namespace TGC.Group.Model
             worldSphere = new WorldSphere(loader, xwing);
             followingCamera = new FollowingCamera(xwing);
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ActiveElementManager[] { managerElementosTemporales });
-            cues = new CueManager(new WASDCue());
+            cues = new CueManager(new Cue("Bitmaps\\WASD.png", new TGCVector2(.7f, .7f),new TGCVector2(.1f,.7f),1,3, "Sonidos\\obi_wan_luke.wav",.5f,0),
+                                  new Cue("Bitmaps\\Pause.png", new TGCVector2(.7f, .7f), new TGCVector2(.1f, .7f),2,3, "Sonidos\\obi_wan_luke.wav",.5f,0)
+                                  );
             managerSonido.AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav",-1800,0,-1,0));//sonido batalla de fondo
             managerMenu = new MenuManager(new StartMenu(Key.Return),new PauseMenu(Key.Escape));
         }
