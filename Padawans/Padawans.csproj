@@ -116,6 +116,7 @@
     </Compile>
     <Compile Include="Model\ActiveElementManager.cs" />
     <Compile Include="Model\BoundingBoxHelper.cs" />
+    <Compile Include="Model\Cues.cs" />
     <Compile Include="Model\CustomBitmap.cs" />
     <Compile Include="Model\CustomSprite.cs" />
     <Compile Include="Model\Drawer2D.cs" />

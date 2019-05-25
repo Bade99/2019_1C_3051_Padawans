@@ -23,6 +23,8 @@ namespace TGC.Group.Model
         private SoundManager managerSonido;
         private MenuManager managerMenu;
 
+        private TgcMesh coca;
+
         public GameModel(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
         {
             Category = Game.Default.Category;
@@ -41,6 +43,9 @@ namespace TGC.Group.Model
             VariablesGlobales.soundDevice = DirectSound.DsDevice;
             //VariablesGlobales.elapsedTime debe ser actualizado por tanto va a Update()
             VariablesGlobales.managerSonido = managerSonido;
+
+            coca = loader.loadSceneFromFile(MediaDir+ "Test\\CocaCola-TgcScene.xml").Meshes[0];
+            coca.Position = new TGCVector3(0, 50f, 100f);
 
             managerMenu = new MenuManager(new StartMenu(Key.Return));
             pistaReferencia = new MainRunway(loader, 5, this.Frustum);
@@ -90,6 +95,9 @@ namespace TGC.Group.Model
             if (managerMenu.IsCurrent()) managerMenu.Render();
             else
             {
+
+                coca.Render();
+
             xwing.Render();
             pistaReferencia.Render();
             worldSphere.Render();
