@@ -22,7 +22,7 @@ namespace TGC.Group.Model
         private EnemyManager managerEnemigos;
         private SoundManager managerSonido;
         private MenuManager managerMenu;
-        private CueManager cues;
+        private CueManager cues;//@@agregar cue de tecla escape
 
         private TgcMesh coca;
 
@@ -38,16 +38,15 @@ namespace TGC.Group.Model
             var d3dDevice = D3DDevice.Instance.Device;
             var loader = new TgcSceneLoader();
             managerSonido = new SoundManager();
-            
+            VariablesGlobales.gameModel = this;
             VariablesGlobales.mediaDir = this.MediaDir;
+            VariablesGlobales.shadersDir = this.ShadersDir;
             VariablesGlobales.loader = new TgcSceneLoader();
             VariablesGlobales.soundDevice = DirectSound.DsDevice;
             //VariablesGlobales.elapsedTime debe ser actualizado por tanto va a Update()
             VariablesGlobales.managerSonido = managerSonido;
-
             coca = loader.loadSceneFromFile(MediaDir+ "Test\\CocaCola-TgcScene.xml").Meshes[0];
             coca.Position = new TGCVector3(0, 50f, 100f);
-
             pistaReferencia = new MainRunway(loader, 5, this.Frustum);
             managerElementosTemporales = new TemporaryElementManager();
             xwing = new Xwing(loader,managerElementosTemporales, new TGCVector3(0, 1000f, 2000));
@@ -57,7 +56,7 @@ namespace TGC.Group.Model
             followingCamera = new FollowingCamera(xwing);
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ActiveElementManager[] { managerElementosTemporales });
             cues = new CueManager(new WASDCue());
-            managerSonido.AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav",-2400,0,-1,0));//sonido batalla de fondo
+            managerSonido.AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav",-1800,0,-1,0));//sonido batalla de fondo
             managerMenu = new MenuManager(new StartMenu(Key.Return),new PauseMenu(Key.Escape));
         }
         public override void Update()
@@ -81,10 +80,41 @@ namespace TGC.Group.Model
 
             PostUpdate();
         }
+        public void RenderizarTodo()
+        {
+            xwing.Render();
+            pistaReferencia.Render();
+            worldSphere.Render();
+            managerElementosTemporales.Render();
+            boundingBoxHelper.RenderBoundingBoxes();
+            managerEnemigos.Render();
+        }
+        public void PedirPreRender()
+        {
+            PreRender();
+        }
+        public void PedirPostRender()
+        {
+            PostRender();
+        }
         public override void Render()
         {
             PreRender();
 
+            if (managerMenu.IsCurrent()) managerMenu.Render();
+            else
+            {
+
+                cues.Render();
+                RenderizarTodo();
+            }
+
+            //this.Frustum.render();
+
+            CustomPostRender();
+        }
+        public void CustomPostRender()
+        {
             DrawText.drawText($"Con la tecla F se dibuja el bounding box.", 0, 20, Color.OrangeRed);
             DrawText.drawText("Con la ruedita aleja/acerca la camara [Actual]: " + TGCVector3.PrintVector3(Camara.Position), 0, 30, Color.OrangeRed);
             DrawText.drawText("Posicion Xwing: " + TGCVector3.PrintVector3(xwing.GetPosition()), 0, 40, Color.OrangeRed);
@@ -93,27 +123,8 @@ namespace TGC.Group.Model
             DrawText.drawText("Elementos temporales: " + managerElementosTemporales.CantidadElementos(), 0, 70, Color.White);
             DrawText.drawText("Sonidos: " + managerSonido.CantidadElementos(), 0, 80, Color.White);
             DrawText.drawText("En un menu: " + managerMenu.IsCurrent(), 0, 90, Color.White);
-
-            if (managerMenu.IsCurrent()) managerMenu.Render();
-            else
-            {
-            cues.Render();
-            }
-
-            coca.Render();
-
-            xwing.Render();
-            pistaReferencia.Render();
-            worldSphere.Render();
-            managerElementosTemporales.Render();
-            boundingBoxHelper.RenderBoundingBoxes();
-            managerEnemigos.Render();
-
-            //this.Frustum.render();
-
             PostRender();
         }
-
         public override void Dispose()
         {
             managerMenu.Dispose();
@@ -125,5 +136,43 @@ namespace TGC.Group.Model
             managerSonido.Dispose();
             cues.Dispose();
         }
+
+
+        /*solo para saber qué hacen
+        protected virtual void PreRender()
+        {
+            BeginRenderScene();
+            ClearTextures(); //TODO no se si falta algo mas previo.
+        }
+
+        protected virtual void PostRender()
+        {
+            RenderAxis();
+            RenderFPS();
+            EndRenderScene();
+        }
+
+        protected void BeginRenderScene()
+        {
+            D3DDevice.Instance.Device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, BackgroundColor, 1.0f, 0);
+            BeginScene();
+        }
+
+        public void BeginScene()
+        {
+            D3DDevice.Instance.Device.BeginScene();
+        }
+
+        protected void EndRenderScene()
+        {
+            EndScene();
+            D3DDevice.Instance.Device.Present();
+        }
+
+        private static void EndScene()
+        {
+            D3DDevice.Instance.Device.EndScene();
+        }
+        */
     }
 }
