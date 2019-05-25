@@ -22,6 +22,7 @@ namespace TGC.Group.Model
         private EnemyManager managerEnemigos;
         private SoundManager managerSonido;
         private MenuManager managerMenu;
+        private CueManager cues;
 
         private TgcMesh coca;
 
@@ -56,8 +57,8 @@ namespace TGC.Group.Model
             worldSphere = new WorldSphere(loader, xwing);
             followingCamera = new FollowingCamera(xwing);
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ActiveElementManager[] { managerElementosTemporales });
-            
-            managerSonido.AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav",0,0,-1,0));//sonido batalla de fondo
+            cues = new CueManager(new WASDCue());
+            managerSonido.AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav",-2400,0,-1,0));//sonido batalla de fondo
         }
         public override void Update()
         {
@@ -66,6 +67,7 @@ namespace TGC.Group.Model
             managerMenu.Update(Input);
             if (!managerMenu.IsCurrent()) { //si no estoy en un menu ->
             VariablesGlobales.elapsedTime = ElapsedTime;
+            cues.Update();
             worldSphere.Update();
             xwing.UpdateInput(Input,ElapsedTime);
             xwing.Update();
@@ -96,8 +98,8 @@ namespace TGC.Group.Model
             else
             {
 
-                coca.Render();
-
+            coca.Render();
+            cues.Render();
             xwing.Render();
             pistaReferencia.Render();
             worldSphere.Render();
@@ -120,6 +122,7 @@ namespace TGC.Group.Model
             managerElementosTemporales.Dispose();
             managerEnemigos.Dispose();
             managerSonido.Dispose();
+            cues.Dispose();
         }
     }
 }

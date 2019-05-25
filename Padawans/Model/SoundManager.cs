@@ -27,6 +27,7 @@ namespace TGC.Group.Model
         public void Dispose()
         {
             elems.ForEach(elem => { elem.Dispose(); });
+            RemoverTodosLosElementos();
         }
         public void Remove(string path)
         {

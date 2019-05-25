@@ -10,16 +10,13 @@ namespace TGC.Group.Model
     {
         public List<T> elems;
         
-        public void AgregarElemento(T nuevoElemento)
+        public virtual void AgregarElemento(T nuevoElemento)
         {
             elems.Add(nuevoElemento);
         }
-        public void RemoverTodosLosElementos()
+        protected void RemoverTodosLosElementos()
         {
-            if (this.Terminado() == false)
-            {
-                elems.Clear();
-            }
+            elems.Clear();
         }
         public bool Terminado()
         {
