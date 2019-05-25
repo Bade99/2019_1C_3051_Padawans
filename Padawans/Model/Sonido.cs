@@ -8,7 +8,7 @@ using TGC.Core.Sound;
 
 namespace TGC.Group.Model
 {
-    class Sonido : ISoundElement//WAV
+    class Sonido : ISoundElement//WAV desde 8 a 32 bit
     {
         private string path;
         private TgcStaticSound sonido;
@@ -16,6 +16,7 @@ namespace TGC.Group.Model
         float duracion;
         float delay;
         bool infinito = false;
+        bool paused = false;
 
         public Sonido(string path,int volumen,float duracion,int repeticiones/*-1 = infinito*/,float delay)//volumen es atenuacion en hundredths of a decibel -> entre 0 y -10000 https://docs.microsoft.com/en-us/previous-versions/ms817348(v=msdn.10)
         {
@@ -30,6 +31,7 @@ namespace TGC.Group.Model
         }
         public void Update()
         {
+            if (paused) return;
             if (delay > 0f)
             {
                 delay -= VariablesGlobales.elapsedTime;
@@ -61,6 +63,17 @@ namespace TGC.Group.Model
         public void Dispose()
         {
             sonido.dispose();
+        }
+
+        public void Pause()
+        {
+            sonido.stop();
+            paused = true;
+        }
+        public void Resume()
+        {
+            sonido.play(true);
+            paused = false;
         }
 
         public string GetPath() { return path; }

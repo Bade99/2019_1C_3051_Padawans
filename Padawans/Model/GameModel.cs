@@ -48,7 +48,6 @@ namespace TGC.Group.Model
             coca = loader.loadSceneFromFile(MediaDir+ "Test\\CocaCola-TgcScene.xml").Meshes[0];
             coca.Position = new TGCVector3(0, 50f, 100f);
 
-            managerMenu = new MenuManager(new StartMenu(Key.Return));
             pistaReferencia = new MainRunway(loader, 5, this.Frustum);
             managerElementosTemporales = new TemporaryElementManager();
             xwing = new Xwing(loader,managerElementosTemporales, new TGCVector3(0, 1000f, 2000));
@@ -59,12 +58,14 @@ namespace TGC.Group.Model
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ActiveElementManager[] { managerElementosTemporales });
             cues = new CueManager(new WASDCue());
             managerSonido.AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav",-2400,0,-1,0));//sonido batalla de fondo
+            managerMenu = new MenuManager(new StartMenu(Key.Return),new PauseMenu(Key.Escape));
         }
         public override void Update()
         {
             //seguir menu inicio
             PreUpdate();
             managerMenu.Update(Input);
+            managerSonido.Update();
             if (!managerMenu.IsCurrent()) { //si no estoy en un menu ->
             VariablesGlobales.elapsedTime = ElapsedTime;
             cues.Update();
@@ -74,7 +75,6 @@ namespace TGC.Group.Model
             followingCamera.Update(Camara,Input,ElapsedTime);
             managerElementosTemporales.Update(ElapsedTime);
             managerEnemigos.Update(ElapsedTime);
-            managerSonido.Update();
             boundingBoxHelper.UpdateInput(Input, ElapsedTime);
             }
             Thread.Sleep(1);//@mientras mas chico el numero mas ganas en performance, tmb podemos sacar esto y listo
@@ -97,16 +97,17 @@ namespace TGC.Group.Model
             if (managerMenu.IsCurrent()) managerMenu.Render();
             else
             {
+            cues.Render();
+            }
 
             coca.Render();
-            cues.Render();
+
             xwing.Render();
             pistaReferencia.Render();
             worldSphere.Render();
             managerElementosTemporales.Render();
             boundingBoxHelper.RenderBoundingBoxes();
             managerEnemigos.Render();
-            }
 
             //this.Frustum.render();
 

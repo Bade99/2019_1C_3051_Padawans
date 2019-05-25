@@ -31,7 +31,16 @@ namespace TGC.Group.Model
         }
         public void Remove(string path)
         {
-            elems.Find(elem =>  elem.GetPath()==path ).Terminar();
+            var sonidoATerminar = elems.Find(elem =>  elem.GetPath()==path );
+            if (sonidoATerminar != null) sonidoATerminar.Terminar();
+        }
+        public void PauseAll()
+        {
+            elems.ForEach(elem=>elem.Pause());
+        }
+        public void ResumeAll()
+        {
+            elems.ForEach(elem => elem.Resume());
         }
     }
 }

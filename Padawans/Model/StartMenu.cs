@@ -18,6 +18,7 @@ namespace TGC.Group.Model
         private Drawer2D drawer2D;
         private bool isCurrent= true;
         private Microsoft.DirectX.DirectInput.Key mappedKey;
+        private string path = "Sonidos\\main_menu.wav";
 
         public StartMenu(Microsoft.DirectX.DirectInput.Key mappedKey) {//recibe un key.algo para la key que abre y cierra el menu
             this.mappedKey = mappedKey;
@@ -27,7 +28,8 @@ namespace TGC.Group.Model
             fondo.Bitmap = bitmap;
             var tamanio_textura = fondo.Bitmap.Size;
             fondo.Position = new TGCVector2(FastMath.Max(D3DDevice.Instance.Width / 2 - tamanio_textura.Width / 2, 0), FastMath.Max(D3DDevice.Instance.Height / 2 - tamanio_textura.Height / 2, 0));
-            VariablesGlobales.managerSonido.AgregarElemento(new SonidoMP3("Sonidos\\main_menu.mp3",0,-1,0));
+            VariablesGlobales.managerSonido.PauseAll();
+            VariablesGlobales.managerSonido.AgregarElemento(new Sonido(path,0,0,-1,0));
         }
         public bool CheckStartKey(TgcD3dInput input)
         {
@@ -38,14 +40,14 @@ namespace TGC.Group.Model
         {
             if (input.keyPressed(mappedKey)) {
                 isCurrent = false;
-                VariablesGlobales.managerSonido.Remove("Sonidos\\main_menu.mp3");
+                VariablesGlobales.managerSonido.Remove(path);
+                VariablesGlobales.managerSonido.ResumeAll();
             }
         }
         public void Render() {
             drawer2D.BeginDrawSprite();
 
             //Dibujar sprite (si hubiese mas, deberian ir todos aquí)
-            drawer2D.DrawSprite(fondo);
             drawer2D.DrawSprite(fondo);
 
             //Finalizar el dibujado de Sprites

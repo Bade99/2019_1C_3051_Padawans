@@ -13,5 +13,7 @@ namespace TGC.Group.Model
         void Terminar();
         string GetPath();
         void Dispose();
+        void Pause();
+        void Resume();
     }
 }

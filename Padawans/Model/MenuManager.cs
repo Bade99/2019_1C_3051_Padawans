@@ -18,13 +18,12 @@ namespace TGC.Group.Model
             foreach (IMenu p in parameters) elems.Add(p);
         }
         public void Update(TgcD3dInput input) {
-            if (currentMenu != null && currentMenu.IsCurrent()) {
+             if (currentMenu != null && currentMenu.IsCurrent()) {
                 currentMenu.Update(input);
             } 
             else
             {
-                elems.ForEach(elem => { if (elem.CheckStartKey(input)) { currentMenu = elem; return; } } );
-
+                elems.ForEach(elem => { if (elem.CheckStartKey(input)) { currentMenu = elem;return; } } );
             }
 
         }
