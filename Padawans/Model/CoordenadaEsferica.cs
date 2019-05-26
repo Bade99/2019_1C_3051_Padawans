@@ -35,6 +35,10 @@ namespace TGC.Group.Model
             //El acimutal va entre 0 y 2pi
             this.acimutal = CommonHelper.ClampPositiveRadians(acimutal);
         }
+        public TGCVector3 GetXYZCoord()
+        {
+            return new TGCVector3(GetXCoord(), GetYCoord(), GetZCoord());
+        }
 
         public float GetXCoord()
         {

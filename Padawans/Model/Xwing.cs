@@ -10,6 +10,7 @@ using TGC.Core.Input;
 using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
+using BulletSharp;
 
 namespace TGC.Group.Model
 {
@@ -21,6 +22,7 @@ namespace TGC.Group.Model
         private TgcSceneLoader loader;
         TgcMesh xwing,alaXwing;
         private TemporaryElementManager managerDisparos;
+        public RigidBody body_xwing;
 
         //Constantes
         private readonly float minimaVelocidad = 10f;
@@ -53,6 +55,8 @@ namespace TGC.Group.Model
         //propiedades de la nave
         private TGCVector3 posicion;
         public TGCVector3 rotation;
+        private TGCVector3 escala;
+        private float escalar = .1f;
 
         public Xwing(TgcSceneLoader loader,TemporaryElementManager managerElementosTemporales, TGCVector3 posicionInicial)
         {
@@ -62,7 +66,8 @@ namespace TGC.Group.Model
             xwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"XWing\\xwing-TgcScene.xml").Meshes[0];
             alaXwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"XWing\\xwing-TgcScene.xml").Meshes[1];
             //Posicion, rotacion y escala inicial
-            matrizXwingInicial = TGCMatrix.Scaling(0.1f, 0.1f, 0.1f);
+            escala = new TGCVector3(escalar,escalar,escalar);//(0.1f, 0.1f, 0.1f);
+            matrizXwingInicial = TGCMatrix.Scaling(escala);
             posicion = posicionInicial;
             rotation = new TGCVector3(0, FastMath.PI_HALF, -FastMath.QUARTER_PI*.8f);
 
@@ -73,10 +78,14 @@ namespace TGC.Group.Model
             barrelRoll = false;
             ActualizarCoordenadaEsferica();
 
-            //Rotationy animation
+            //Rotation y animation
             rotationYAnimation = false;
             rotationYAnimacionAdvance = 0;
 
+            //agrego al physics engine
+            body_xwing = VariablesGlobales.physicsEngine.AgregarPersonaje( CommonHelper.MultiplicarVectores(xwing.BoundingBox.calculateSize(),escala),
+                                                                           1, posicion,rotation,.5f,.1f,.1f,.5f,true);
+            //
             VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_flyby_2.wav", -600, 8, 1,0));
             VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_engine.wav",-600,1,-1,0));
         }
@@ -85,7 +94,6 @@ namespace TGC.Group.Model
         {
             xwing.Render();
             alaXwing.Render();
-           
         }
 
         public override void RenderBoundingBox()
@@ -96,7 +104,11 @@ namespace TGC.Group.Model
 
         public override void Update()
         {
-            xwing.Transform = matrizXwingInicial * GetRotationMatrix() * TGCMatrix.Translation(posicion);
+            //TGCMatrix bullet_transform = new TGCMatrix(body_xwing.InterpolationWorldTransform);
+            //xwing.Transform = matrizXwingInicial * bullet_transform * TGCMatrix.Translation(posicion);
+            
+            //alaXwing.Transform = matrizXwingInicial * bullet_transform * TGCMatrix.Translation(posicion);
+            xwing.Transform = matrizXwingInicial * GetRotationMatrix()* TGCMatrix.Translation(posicion);
             alaXwing.Transform = matrizXwingInicial * GetRotationMatrix() * TGCMatrix.Translation(posicion);
         }
 
@@ -125,6 +137,9 @@ namespace TGC.Group.Model
             {
                 rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Down *ElapsedTime));
                 ActualizarCoordenadaEsferica();
+                body_xwing.ActivationState = ActivationState.ActiveTag;
+                body_xwing.AngularVelocity = coordenadaEsferica.GetXYZCoord().ToBulletVector3();
+                body_xwing.ApplyCentralImpulse(5 * left.ToBulletVector3());
             }
             if (input.keyDown(Key.D))
             {

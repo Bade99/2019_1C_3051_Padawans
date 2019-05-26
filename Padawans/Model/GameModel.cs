@@ -39,10 +39,14 @@ namespace TGC.Group.Model
         {
             var d3dDevice = D3DDevice.Instance.Device;
             var loader = new TgcSceneLoader();
-
-            physicsEngine = new PhysicsEngine();
-
             cues_relative_posicion = new TGCVector2(.1f, .7f);
+            /*
+            D3DDevice.Instance.Device.Transform.Projection = TGCMatrix.PerspectiveFovLH(D3DDevice.Instance.FieldOfView, D3DDevice.Instance.AspectRatio,
+                    D3DDevice.Instance.ZNearPlaneDistance, D3DDevice.Instance.ZFarPlaneDistance).ToMatrix();
+            */
+            physicsEngine = new PhysicsEngine();
+            VariablesGlobales.physicsEngine = physicsEngine;
+
             managerSonido = new SoundManager();
             VariablesGlobales.gameModel = this;
             VariablesGlobales.mediaDir = this.MediaDir;
@@ -72,15 +76,16 @@ namespace TGC.Group.Model
             managerMenu.Update(Input);
             managerSonido.Update();
             if (!managerMenu.IsCurrent()) { //si no estoy en un menu ->
-            VariablesGlobales.elapsedTime = ElapsedTime;
-            cues.Update();
-            worldSphere.Update();
-            xwing.UpdateInput(Input,ElapsedTime);
-            xwing.Update();
-            followingCamera.Update(Camara,Input,ElapsedTime);
-            managerElementosTemporales.Update(ElapsedTime);
-            managerEnemigos.Update(ElapsedTime);
-            boundingBoxHelper.UpdateInput(Input, ElapsedTime);
+                VariablesGlobales.elapsedTime = ElapsedTime;
+                physicsEngine.Update();
+                cues.Update();
+                worldSphere.Update();
+                xwing.UpdateInput(Input,ElapsedTime);
+                xwing.Update();
+                followingCamera.Update(Camara,Input,ElapsedTime);
+                managerElementosTemporales.Update(ElapsedTime);
+                managerEnemigos.Update(ElapsedTime);
+                boundingBoxHelper.UpdateInput(Input, ElapsedTime);
             }
             Thread.Sleep(1);//@mientras mas chico el numero mas ganas en performance, tmb podemos sacar esto y listo
 
@@ -96,14 +101,7 @@ namespace TGC.Group.Model
             managerEnemigos.Render();
             cues.Render();
         }
-        public void PedirPreRender()
-        {
-            PreRender();
-        }
-        public void PedirPostRender()
-        {
-            PostRender();
-        }
+
         public override void Render()
         {
             PreRender();
@@ -128,6 +126,8 @@ namespace TGC.Group.Model
             DrawText.drawText("Elementos temporales: " + managerElementosTemporales.CantidadElementos(), 0, 70, Color.White);
             DrawText.drawText("Sonidos: " + managerSonido.CantidadElementos(), 0, 80, Color.White);
             DrawText.drawText("En un menu: " + managerMenu.IsCurrent(), 0, 90, Color.White);
+            TGCVector3 pos_body = new TGCVector3( xwing.body_xwing.CenterOfMassPosition );
+            DrawText.drawText("Pos body:"+"x="+pos_body.X + "y=" + pos_body.Y + "z=" + pos_body.Z, 0, 100, Color.White);
             PostRender();
         }
         public override void Dispose()
@@ -140,6 +140,7 @@ namespace TGC.Group.Model
             managerEnemigos.Dispose();
             managerSonido.Dispose();
             cues.Dispose();
+            physicsEngine.Dispose();
         }
 
 

@@ -153,6 +153,10 @@ namespace TGC.Group.Model
             //PlaceSceneLine(hierro, posicion, escalador, (int)(n * .8f), mesh_pivot, 0,rotacion);
 
             //-----
+
+            //agregar al physics engine (por ahora no guardo los rigidbody, no se si sirven para algo)
+            main_escena_instancia.ForEach(mesh_list => VariablesGlobales.physicsEngine.AgregarEscenario(mesh_list));
+            //
         }
 
         public override void Render()

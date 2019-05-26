@@ -16,5 +16,6 @@ namespace TGC.Group.Model
         public static float elapsedTime;
         public static SoundManager managerSonido;
         public static GameModel gameModel;
+        public static PhysicsEngine physicsEngine;
     }
 }

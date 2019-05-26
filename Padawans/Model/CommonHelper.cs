@@ -31,6 +31,11 @@ namespace TGC.Group.Model
             return new TGCVector3(vector1.X - restando.X, vector1.Y - restando.Y, vector1.Z - restando.Z);
         }
 
+        public static TGCVector3 MultiplicarVectores(TGCVector3 a,TGCVector3 b)
+        {
+            return new TGCVector3(a.X*b.X, a.Y * b.Y, a.Z * b.Z);
+        }
+
         public static TGCVector3 VectorXEscalar(TGCVector3 v, float f)
         {
             return new TGCVector3(v.X * f, v.Y * f, v.Z * f);

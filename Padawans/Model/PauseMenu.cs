@@ -40,10 +40,8 @@ namespace TGC.Group.Model
             fondo = new CustomSprite();
             bitmap = new CustomBitmap(VariablesGlobales.mediaDir + "Bitmaps\\pause_menu.png", D3DDevice.Instance.Device);
             fondo.Bitmap = bitmap;
-            //fondo.ScalingCenter = new TGCVector2( D3DDevice.Instance.Width / 2, D3DDevice.Instance.Height / 2);
-            fondo.Scaling = new TGCVector2(1,.6f);
-            var tamanio_textura = fondo.Bitmap.Size;
-            fondo.Position = new TGCVector2(FastMath.Max(D3DDevice.Instance.Width / 2 - tamanio_textura.Width / 2, 0), FastMath.Max(D3DDevice.Instance.Height / 2 - tamanio_textura.Height / 2, 0));
+            CalcularFullScreenScaling(fondo);
+            fondo.Position = new TGCVector2(FastMath.Max((float)D3DDevice.Instance.Width / 2f - (float)fondo.Bitmap.Size.Width / 2f, 0), FastMath.Max((float)D3DDevice.Instance.Height / 2f - (float)fondo.Bitmap.Size.Height / 2f, 0));
             IniciarShader();
         }
         public void IniciarShader()
@@ -80,7 +78,7 @@ namespace TGC.Group.Model
             if (input.keyPressed(mappedKey)) {
                 isCurrent = true;
                 VariablesGlobales.managerSonido.PauseAll();
-                //este agregar es el problema!!!!
+                
                 VariablesGlobales.managerSonido.AgregarElemento(new Sonido(path, 0, 0, -1, 0));
                 return true;
             } 
@@ -135,7 +133,24 @@ namespace TGC.Group.Model
         {
             return isCurrent;
         }
+        public void CalcularFullScreenScaling(CustomSprite fondo)
+        {
+            var tamanio_textura = fondo.Bitmap.Size;
+            fondo.ScalingCenter = new TGCVector2((float)tamanio_textura.Width / 2f, (float)tamanio_textura.Height / 2f);
 
+            if (D3DDevice.Instance.AspectRatio < 1.9f)//16:9 o parecido
+            {
+                float width = (float)D3DDevice.Instance.Width / (float)tamanio_textura.Width;
+                float height = (float)D3DDevice.Instance.Height / (float)tamanio_textura.Height;
+                fondo.Scaling = new TGCVector2(width, height);
+            }
+            else //21:9 o parecido
+            {
+                float width = ((float)D3DDevice.Instance.Width * 16f / 21f) / (float)tamanio_textura.Width;
+                float height = (float)D3DDevice.Instance.Height / (float)tamanio_textura.Height;
+                fondo.Scaling = new TGCVector2(width, height);
+            }
+        }
 
         /// <summary>
         ///     Dibujamos toda la escena pero en vez de a la pantalla, la dibujamos al Render Target que se cargo antes.

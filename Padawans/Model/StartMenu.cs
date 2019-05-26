@@ -26,8 +26,10 @@ namespace TGC.Group.Model
             fondo = new CustomSprite();
             bitmap = new CustomBitmap(VariablesGlobales.mediaDir + "Bitmaps\\startmenu.bmp", D3DDevice.Instance.Device);
             fondo.Bitmap = bitmap;
-            var tamanio_textura = fondo.Bitmap.Size;
-            fondo.Position = new TGCVector2(FastMath.Max(D3DDevice.Instance.Width / 2 - tamanio_textura.Width / 2, 0), FastMath.Max(D3DDevice.Instance.Height / 2 - tamanio_textura.Height / 2, 0));
+
+            CalcularFullScreenScaling(fondo);
+
+            fondo.Position = new TGCVector2(FastMath.Max((float)D3DDevice.Instance.Width / 2f - (float)fondo.Bitmap.Size.Width / 2f, 0), FastMath.Max((float)D3DDevice.Instance.Height / 2f - (float)fondo.Bitmap.Size.Height / 2f, 0));
             VariablesGlobales.managerSonido.PauseAll();
             VariablesGlobales.managerSonido.AgregarElemento(new Sonido(path,0,0,-1,0));
         }
@@ -60,6 +62,24 @@ namespace TGC.Group.Model
         public bool IsCurrent()
         {
             return isCurrent;
+        }
+        public void CalcularFullScreenScaling(CustomSprite fondo)
+        {
+            var tamanio_textura = fondo.Bitmap.Size;
+            fondo.ScalingCenter = new TGCVector2((float)tamanio_textura.Width / 2f, (float)tamanio_textura.Height / 2f);
+
+            if (D3DDevice.Instance.AspectRatio < 1.9f)//16:9 o parecido
+            {
+                float width = (float)D3DDevice.Instance.Width / (float)tamanio_textura.Width;
+                float height = (float)D3DDevice.Instance.Height / (float)tamanio_textura.Height;
+                fondo.Scaling = new TGCVector2(width, height);
+            }
+            else //21:9 o parecido
+            {
+                float width = ((float)D3DDevice.Instance.Width * 16f / 21f) / (float)tamanio_textura.Width;
+                float height = (float)D3DDevice.Instance.Height / (float)tamanio_textura.Height;
+                fondo.Scaling = new TGCVector2(width, height);
+            }
         }
     }
 }

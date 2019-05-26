@@ -25,7 +25,6 @@ public class FollowingCamera
     }
     public void Update(TGC.Core.Camara.TgcCamera Camara, TgcD3dInput Input, float ElapsedTime)
     {
-        ElapsedTime = 0.01f;//Hardcodeo hasta que sepamos como usarlo
         CalcularDeltaAcimutal(ElapsedTime);
         CalcularDeltaPolar(ElapsedTime);
 

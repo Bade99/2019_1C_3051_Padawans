@@ -11,7 +11,7 @@ using TGC.Core.SceneLoader;
 
 namespace TGC.Group.Model
 {
-    class PhysicsEngine //solo se usa para agregar meshes al world, e indicar atributos -> te devuelve el rigid body a usar, 
+    public class PhysicsEngine //solo se usa para agregar meshes al world, e indicar atributos -> te devuelve el rigid body a usar, 
                         //cada entidad debe guardar su rigidbody para operar con él
     {
         protected DiscreteDynamicsWorld dynamicsWorld;
@@ -36,7 +36,7 @@ namespace TGC.Group.Model
             //
             
         }
-        public List<RigidBody> AgregarEscenarios(List<TgcMesh> meshesEscenario)
+        public List<RigidBody> AgregarEscenario(List<TgcMesh> meshesEscenario)
         {
             List<RigidBody> bodies = new List<RigidBody>();
             meshesEscenario.ForEach(mesh =>
@@ -50,27 +50,34 @@ namespace TGC.Group.Model
             });
             return bodies;
         }
-        public RigidBody AgregarPersonajePrincipal(TgcMesh personaje_ppal)//solo recibo uno de los dos meshes del xwing, dsps vemos si necesito el otro
+        public RigidBody AgregarPersonaje(TGCVector3 size,float mass,TGCVector3 position,TGCVector3 rotation,float friction, float linDamping,float angDamping,float restitution,bool inertia)//solo recibo uno de los dos meshes del xwing, dsps vemos si necesito el otro
         {
             //new RigidBodyConstructionInfo(10, new DefaultMotionState(), shape...);
-            var personaje = BulletRigidBodyFactory.Instance.CreateRigidBodyFromTgcMesh(personaje_ppal);
-            //atributos q luego recibirá la funcion
-            personaje.SetDamping(0.1f, 0f);
-            personaje.Restitution = 0.1f;
-            personaje.Friction = 1;
+            var personaje_body = BulletRigidBodyFactory.Instance.CreateBox(
+                            size, 
+                            mass,
+                            position,
+                            rotation.Y, rotation.X, rotation.Z,
+                            friction,
+                            inertia);
+            //+ atributos
+            personaje_body.SetDamping(linDamping,angDamping);
+            personaje_body.Restitution = restitution;
             //
-            dynamicsWorld.AddRigidBody(personaje);
-            return personaje;
+            dynamicsWorld.AddRigidBody(personaje_body);
+            return personaje_body;
         }
 
         public void Update()
         {
-            dynamicsWorld.StepSimulation(VariablesGlobales.elapsedTime,1);
+            dynamicsWorld.StepSimulation(VariablesGlobales.elapsedTime,10);
         }
+        /*
         public void Render()
         {
 
         }
+        */
         public void Dispose()
         {
             dynamicsWorld.Dispose();
