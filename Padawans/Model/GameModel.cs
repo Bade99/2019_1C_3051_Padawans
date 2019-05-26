@@ -9,6 +9,7 @@ using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
 
+
 namespace TGC.Group.Model
 {
     public class GameModel : TgcExample
@@ -22,9 +23,10 @@ namespace TGC.Group.Model
         private EnemyManager managerEnemigos;
         private SoundManager managerSonido;
         private MenuManager managerMenu;
-        private CueManager cues;//@@agregar cue de tecla escape
+        private CueManager cues;
+        private PhysicsEngine physicsEngine;
 
-        private TgcMesh coca;
+        private TGCVector2 cues_relative_posicion;
 
         public GameModel(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
         {
@@ -37,6 +39,10 @@ namespace TGC.Group.Model
         {
             var d3dDevice = D3DDevice.Instance.Device;
             var loader = new TgcSceneLoader();
+
+            physicsEngine = new PhysicsEngine();
+
+            cues_relative_posicion = new TGCVector2(.1f, .7f);
             managerSonido = new SoundManager();
             VariablesGlobales.gameModel = this;
             VariablesGlobales.mediaDir = this.MediaDir;
@@ -45,8 +51,6 @@ namespace TGC.Group.Model
             VariablesGlobales.soundDevice = DirectSound.DsDevice;
             //VariablesGlobales.elapsedTime debe ser actualizado por tanto va a Update()
             VariablesGlobales.managerSonido = managerSonido;
-            coca = loader.loadSceneFromFile(MediaDir+ "Test\\CocaCola-TgcScene.xml").Meshes[0];
-            coca.Position = new TGCVector3(0, 50f, 100f);
             pistaReferencia = new MainRunway(loader, 5, this.Frustum);
             managerElementosTemporales = new TemporaryElementManager();
             xwing = new Xwing(loader,managerElementosTemporales, new TGCVector3(0, 1000f, 2000));
@@ -55,8 +59,8 @@ namespace TGC.Group.Model
             worldSphere = new WorldSphere(loader, xwing);
             followingCamera = new FollowingCamera(xwing);
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ActiveElementManager[] { managerElementosTemporales });
-            cues = new CueManager(new Cue("Bitmaps\\WASD.png", new TGCVector2(.7f, .7f),new TGCVector2(.1f,.7f),1,3, "Sonidos\\obi_wan_luke.wav",.5f,0),
-                                  new Cue("Bitmaps\\Pause.png", new TGCVector2(.7f, .7f), new TGCVector2(.1f, .7f),2,3, "Sonidos\\obi_wan_luke.wav",.5f,0)
+            cues = new CueManager(new Cue("Bitmaps\\WASD.png", new TGCVector2(.7f, .7f), cues_relative_posicion, 1,3, "Sonidos\\obi_wan_luke.wav",.5f,0),
+                                  new Cue("Bitmaps\\Pause.png", new TGCVector2(.7f, .7f), cues_relative_posicion, 2,3, "Sonidos\\obi_wan_luke.wav",.5f,0)
                                   );
             managerSonido.AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav",-1800,0,-1,0));//sonido batalla de fondo
             managerMenu = new MenuManager(new StartMenu(Key.Return),new PauseMenu(Key.Escape));
@@ -90,6 +94,7 @@ namespace TGC.Group.Model
             managerElementosTemporales.Render();
             boundingBoxHelper.RenderBoundingBoxes();
             managerEnemigos.Render();
+            cues.Render();
         }
         public void PedirPreRender()
         {
@@ -106,8 +111,6 @@ namespace TGC.Group.Model
             if (managerMenu.IsCurrent()) managerMenu.Render();
             else
             {
-
-                cues.Render();
                 RenderizarTodo();
             }
 

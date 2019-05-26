@@ -132,6 +132,7 @@
     <Compile Include="Model\Misil.cs" />
     <Compile Include="Model\CoordenadaEsferica.cs" />
     <Compile Include="Model\IActiveElement.cs" />
+    <Compile Include="Model\PhysicsEngine.cs" />
     <Compile Include="Model\Sonido.cs" />
     <Compile Include="Model\SonidoMP3.cs" />
     <Compile Include="Model\SoundManager.cs" />
