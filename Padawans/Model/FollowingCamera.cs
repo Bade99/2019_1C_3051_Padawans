@@ -15,7 +15,7 @@ public class FollowingCamera
     private Xwing xwing;
     private float velocidadAngular = 0.75f;
     private float alcanzarMaximaVelocidadAngularEn = FastMath.PI / 6;
-    private float restar=0,sumar=0;
+    private readonly static float DESVIO_ANGULO_POLAR = 0.2f;
     /// <summary>
     ///     Es el encargado de modificar la camara siguiendo a la nave
     /// </summary>
@@ -26,8 +26,12 @@ public class FollowingCamera
     }
     public void Update(TGC.Core.Camara.TgcCamera Camara, TgcD3dInput Input, float ElapsedTime)
     {
-        CalcularDeltaAcimutal(ElapsedTime);
-        CalcularDeltaPolar(ElapsedTime);
+
+        ElapsedTime = 0.01f;//Hardcodeo hasta que sepamos como usarlo
+        CoordenadaEsferica anguloNave = new CoordenadaEsferica(xwing.GetCoordenadaEsferica().acimutal, xwing.GetCoordenadaEsferica().polar + DESVIO_ANGULO_POLAR);
+        CalcularDeltaAcimutal(ElapsedTime, anguloNave);
+        CalcularDeltaPolar(ElapsedTime, anguloNave);
+
 
         //Ruedita para alejar/acercar camara
         if (Input.WheelPos == -1)//rueda para atras
@@ -38,7 +42,7 @@ public class FollowingCamera
                 fixedDistanceCamera -= restar;
             }
         }
-        else if (Input.WheelPos == 1)//rueda para adelante	
+        else if (Input.WheelPos == 1)//rueda para adelante
         {
             if (fixedDistanceCamera < minDistance)
             {
@@ -63,9 +67,9 @@ public class FollowingCamera
         return distance_point;
     }
 
-    private void CalcularDeltaAcimutal(float ElapsedTime)
+    private void CalcularDeltaAcimutal(float ElapsedTime, CoordenadaEsferica anguloNave)
     {
-        float deltaAcimutal = xwing.GetCoordenadaEsferica().acimutal - this.coordenadaEsferica.acimutal;
+        float deltaAcimutal = anguloNave.acimutal - this.coordenadaEsferica.acimutal;
         if (Math.Abs(deltaAcimutal) > velocidadAngular * ElapsedTime)
         {
             if (deltaAcimutal < 0 && deltaAcimutal > -FastMath.PI || deltaAcimutal > FastMath.PI)
@@ -95,9 +99,9 @@ public class FollowingCamera
             }
         }
     }
-    private void CalcularDeltaPolar(float ElapsedTime)
+    private void CalcularDeltaPolar(float ElapsedTime, CoordenadaEsferica anguloNave)
     {
-        float deltaPolar = xwing.GetCoordenadaEsferica().polar - this.coordenadaEsferica.polar;
+        float deltaPolar = anguloNave.polar - this.coordenadaEsferica.polar;
         if (Math.Abs(deltaPolar) > velocidadAngular * ElapsedTime)
         {
             if (deltaPolar < 0 && deltaPolar > -FastMath.PI/2 || deltaPolar > FastMath.PI)
