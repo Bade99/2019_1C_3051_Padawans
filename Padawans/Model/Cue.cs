@@ -24,20 +24,30 @@ namespace TGC.Group.Model
         private float sonido_duracion;
         private int sonido_volumen;
 
-        public Cue(string bitmap_path,TGCVector2 bitmap_scaling,TGCVector2 relative_pos,float delay,float duracion,string sonido_path,float sonido_duracion,int sonido_volumen)
+        public Cue(string bitmap_path,float relative_scale,TGCVector2 relative_pos,float delay,float duracion,string sonido_path,float sonido_duracion,int sonido_volumen)
         {//despues agrego mas condiciones para que una cue inicie, ademas de delay
             drawer2D = new Drawer2D();
             cue = new CustomSprite();
             bitmap = new CustomBitmap(VariablesGlobales.mediaDir + bitmap_path, D3DDevice.Instance.Device);
             //@no se xq tiene ese borde azul cuando lo renderiza???
             cue.Bitmap = bitmap;
-            cue.Scaling = bitmap_scaling;
+
+            cue.ScalingCenter = new TGCVector2((float)cue.Bitmap.Size.Width / 2f, (float)cue.Bitmap.Size.Height / 2f);
+
+            cue.Scaling = CalculeRelativeScaling(bitmap,relative_scale);
             cue.Position = new TGCVector2(D3DDevice.Instance.Width* relative_pos.X, D3DDevice.Instance.Height* relative_pos.Y);
             this.delay = delay;
             this.duracion = duracion;
             this.sonido_path = sonido_path;
             this.sonido_duracion = sonido_duracion;
             this.sonido_volumen = sonido_volumen;
+        }
+        public TGCVector2 CalculeRelativeScaling(CustomBitmap bitmap,float scale)
+        {//hace el calculo sobre width
+            float screen_occupation = D3DDevice.Instance.Width * scale;
+            //float screen_ratio = D3DDevice.Instance.Width / bitmap.Width;
+            float escala_real = screen_occupation/ bitmap.Width;
+            return new TGCVector2(escala_real, escala_real); 
         }
         public bool IsCurrent()
         {
