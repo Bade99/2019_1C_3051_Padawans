@@ -66,6 +66,7 @@ namespace TGC.Group.Model
             cues = new CueManager(new Cue("Bitmaps\\WASD.png", .3f, cues_relative_posicion, 1,3, "Sonidos\\obi_wan_luke.wav",.5f,0),
                                   new Cue("Bitmaps\\Pause.png", .3f, cues_relative_posicion, 2,3, "Sonidos\\obi_wan_luke.wav",.5f,0)
                                   );
+            //@agregar cue de click para disparar
             managerSonido.AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav",-1800,0,-1,0));//sonido batalla de fondo
             managerMenu = new MenuManager(new StartMenu(Key.Return),new PauseMenu(Key.Escape));
         }

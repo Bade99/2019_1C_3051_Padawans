@@ -26,7 +26,7 @@ namespace TGC.Group.Model
             fondo = new CustomSprite();
             bitmap = new CustomBitmap(VariablesGlobales.mediaDir + "Bitmaps\\startmenu.bmp", D3DDevice.Instance.Device);
             fondo.Bitmap = bitmap;
-
+            //@arreglar position, ver si puedo usar ahora los valores reales con (float)
             CalcularFullScreenScaling(fondo);
 
             fondo.Position = new TGCVector2(FastMath.Max((float)D3DDevice.Instance.Width / 2f - (float)fondo.Bitmap.Size.Width / 2f, 0), FastMath.Max((float)D3DDevice.Instance.Height / 2f - (float)fondo.Bitmap.Size.Height / 2f, 0));

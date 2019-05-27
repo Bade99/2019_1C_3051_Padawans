@@ -27,7 +27,8 @@ namespace TGC.Group.Model
         //Constantes
         private readonly float minimaVelocidad = 10f;
         private readonly float velocidadEjes = 10f;
-        private readonly float aceleracion = 1;
+        private readonly float aceleracion = 80;
+        //private readonly float aceleracion = 1;//Bullet
         private readonly float friccion = 10f;
         private readonly float maximaVelocidad = 300;
         private readonly float limiteAnguloPolar=0.1f;
@@ -74,7 +75,8 @@ namespace TGC.Group.Model
             xwing.AutoTransformEnable = false;
             alaXwing.AutoTransformEnable = false;
 
-            velocidadGeneral = 5f;// minimaVelocidad;
+            velocidadGeneral = 300f;// minimaVelocidad;
+            //velocidadGeneral = 5f;//Bullet
             barrelRoll = false;
             ActualizarCoordenadaEsferica();
 
@@ -104,12 +106,15 @@ namespace TGC.Group.Model
 
         public override void Update()
         {
+            //Bullet
             TGCMatrix bullet_transform = new TGCMatrix(body_xwing.InterpolationWorldTransform);
             xwing.Transform = matrizXwingInicial * bullet_transform;//* TGCMatrix.Translation(posicion);
-            
             alaXwing.Transform = matrizXwingInicial * bullet_transform;// * TGCMatrix.Translation(posicion);
-            //xwing.Transform = matrizXwingInicial * GetRotationMatrix()* TGCMatrix.Translation(posicion);
-            //alaXwing.Transform = matrizXwingInicial * GetRotationMatrix() * TGCMatrix.Translation(posicion);
+            //
+            //Forma normal
+            xwing.Transform = matrizXwingInicial * GetRotationMatrix()* TGCMatrix.Translation(posicion);
+            alaXwing.Transform = matrizXwingInicial * GetRotationMatrix() * TGCMatrix.Translation(posicion);
+            //
         }
 
         private void TestingInput(TgcD3dInput input)
@@ -318,7 +323,8 @@ namespace TGC.Group.Model
 
         public TGCVector3 GetPosition()
         {
-            return new TGCVector3(body_xwing.CenterOfMassPosition);
+            //return new TGCVector3(body_xwing.CenterOfMassPosition);//Bullet
+            return posicion;//forma normal
         }
 
         public CoordenadaEsferica GetCoordenadaEsferica()
