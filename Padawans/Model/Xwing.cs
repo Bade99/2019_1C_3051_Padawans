@@ -196,7 +196,7 @@ namespace TGC.Group.Model
             {
                 if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos) {
                     tiempoDesdeUltimoDisparo = 0f;
-                    managerDisparos.AgregarElemento(new Misil(posicion, coordenadaEsferica,rotation, "Misil\\misil_xwing-TgcScene.xml"));
+                    managerDisparos.AgregarElemento(new Misil(posicion, coordenadaEsferica,rotation, "Misil\\misil_xwing-TgcScene.xml", true));
                     VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_1_disparo.wav", 1,1f,1,0));
                 }
             }
