@@ -123,7 +123,6 @@
     <Compile Include="Model\CustomSprite.cs" />
     <Compile Include="Model\Drawer2D.cs" />
     <Compile Include="Model\EnemyManager.cs" />
-<<<<<<< HEAD
     <Compile Include="Model\HUD.cs" />
     <Compile Include="Model\ICue.cs" />
     <Compile Include="Model\IMenu.cs" />
@@ -138,11 +137,6 @@
     <Compile Include="Model\SonidoMP3.cs" />
     <Compile Include="Model\SoundManager.cs" />
     <Compile Include="Model\StartMenu.cs" />
-=======
-    <Compile Include="Model\Misil.cs" />
-    <Compile Include="Model\CoordenadaEsferica.cs" />
-    <Compile Include="Model\IActiveElement.cs" />
->>>>>>> ISSUE #3 Desvio angulo nave solucionado
     <Compile Include="Model\TemporaryElementManager.cs" />
     <Compile Include="Model\VariablesGlobales.cs" />
     <Compile Include="Model\WorldSphere.cs" />
@@ -684,7 +678,7 @@
     <Error Condition="!Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets'))" />
   </Target>
   <Import Project="..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

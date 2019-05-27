@@ -17,30 +17,45 @@ namespace TGC.Group.Model
 {
     public class Misil : IActiveElement
     {
-        TgcMesh misil; //buscar o crear un mesh que sea una caja
+        TgcMesh misil;
         private TGCVector3 escala;
         private TGCVector3 posicion;
         private CoordenadaEsferica coordenadaEsferica;
         private float tiempoDeVida = 10f;
         private float distanciaOrigenMisil = 100;
-        private readonly float velocidadGeneral = 400f;//pongo menos para poder testear mas facil
+        private readonly float velocidadGeneral = 400f;
         private bool terminado = false;
 
         private TGCVector3 rotacionBase;
         private TGCVector3 rotacionNave;
        
-
-        public Misil(TGCVector3 posicionNave, CoordenadaEsferica coordenadaEsfericaP, TGCVector3 rotacionNave,string pathScene)
+        /**
+         * Posicion nave: Posicion inicial del misil
+         * coordenadaEsfericaP: Direccion y sentido del misil
+         * Rotacion nave: Constante con el que misil se rota inicialmente para estar alineado a la trayectoria
+         * pathscene: Path donde esta ubicado el mesh
+         * desfasajeAlas: True para calcular un desfasaje extra desde el inicio. Unicamente para xwing
+         * */
+        public Misil(TGCVector3 posicionNave, CoordenadaEsferica coordenadaEsfericaP, TGCVector3 rotacionNave, string pathScene, bool desfasajeAlas)
         {
             this.rotacionNave = rotacionNave;
             this.coordenadaEsferica = coordenadaEsfericaP;
             
-            misil = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + pathScene).Meshes[0];//crear un mesh caja
+            misil = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + pathScene).Meshes[0];
             misil.AutoTransformEnable = false;
                     
             rotacionBase = new TGCVector3(FastMath.PI_HALF,0,0);
             escala = new TGCVector3(.2f, .2f, 8f);
-            posicion = calcularPosicionInicialMisil(posicionNave);
+
+            //Calcula un pequenio desfasaje para dar el efecto de que el misil sale desde las alas.
+            //Solo setear en true para el xwing
+            if (desfasajeAlas)
+            {
+                posicion = calcularPosicionInicialMisil(posicionNave);
+            } else
+            {
+                posicion = posicionNave;
+            }
             
         }
         /**
