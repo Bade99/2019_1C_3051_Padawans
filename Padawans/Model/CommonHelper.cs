@@ -20,6 +20,7 @@ namespace TGC.Group.Model
 
         public static TGCVector3 vectorMitad = new TGCVector3(0.5f, 0.5f, 0.5f);
         public static TGCVector3 vectorDecima = new TGCVector3(0.1f, 0.1f, 0.1f);
+        public readonly static float PI = (float)FastMath.PI;
 
         public static TGCVector3 SumarVectores(TGCVector3 vector1, TGCVector3 vector2)
         {

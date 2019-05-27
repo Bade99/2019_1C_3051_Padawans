@@ -22,9 +22,12 @@ namespace TGC.Group.Model
         private TGCVector3 posicion;
         private CoordenadaEsferica coordenadaEsferica;
         private float tiempoDeVida = 10f;
-        private float distanciaOrigenMisil = 100;
         private readonly float velocidadGeneral = 400f;
         private bool terminado = false;
+        private float DISTANCIA_ORIGEN_MISIL_DIRECCION_NAVE = 84;
+        private float DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL = 6;
+        private float EXTRA_ANGULO_POLAR_CANION_ABAJO = 0.3f;
+        private float EXTRA_DISTANCIA_CANION_ABAJO = 0.5f;
 
         private TGCVector3 rotacionBase;
         private TGCVector3 rotacionNave;
@@ -63,12 +66,50 @@ namespace TGC.Group.Model
          * */
         private TGCVector3 calcularPosicionInicialMisil(TGCVector3 posicionNave)
         {
+            //Random de las 4 opciones posibles de caniones
             Random random = new Random();
-            int signo = Math.Sign(random.NextDouble() - 0.5);
-            CoordenadaEsferica direccionAlaDesdeElCentro = new CoordenadaEsferica(coordenadaEsferica.acimutal + 0.1f * signo, coordenadaEsferica.polar);
-            TGCVector3 deltaInicioMisil = new TGCVector3(direccionAlaDesdeElCentro.GetXCoord() * distanciaOrigenMisil,
-                direccionAlaDesdeElCentro.GetYCoord() * distanciaOrigenMisil, direccionAlaDesdeElCentro.GetZCoord() * distanciaOrigenMisil);
-            return CommonHelper.SumarVectores(posicionNave, deltaInicioMisil);
+            int canion = (int)Math.Round(random.NextDouble() * 4);
+            int signo = 0;
+            bool canionInferior = false;
+            //Caniones izquierdos o derechos
+            if (canion==0 || canion ==2)
+            {
+                signo = 1;
+            } else
+            {
+                signo = -1;
+            }
+            //Caniones inferiores o superiores
+            if (canion == 2 || canion == 3)
+            {
+                canionInferior = true;
+            } else
+            {
+                canionInferior = false;
+            }
+            //Delta en la direccion nave (para que no parezca que sale de atras)
+            TGCVector3 deltaDireccionNave = new TGCVector3(coordenadaEsferica.GetXCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_NAVE,
+                coordenadaEsferica.GetYCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_NAVE, coordenadaEsferica.GetZCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_NAVE);
+            //Delta en la direccion ortogonal a la direccion de la nave (para que salga desde alguna de las alas)
+            //Caniones inferiores
+            if (canionInferior)
+            {
+                CoordenadaEsferica direccionOrtogonal = new CoordenadaEsferica(coordenadaEsferica.acimutal + (FastMath.PI / 2) * signo, FastMath.PI / 2 + EXTRA_ANGULO_POLAR_CANION_ABAJO);
+                TGCVector3 deltaOrtogonalNave =
+                    new TGCVector3(direccionOrtogonal.GetXCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL,
+                    direccionOrtogonal.GetYCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL,
+                    direccionOrtogonal.GetZCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL);
+                return CommonHelper.SumarVectores(CommonHelper.SumarVectores(posicionNave, deltaDireccionNave), deltaOrtogonalNave);
+            } else
+            //Caniones superiores
+            {
+                CoordenadaEsferica direccionOrtogonal = new CoordenadaEsferica(coordenadaEsferica.acimutal + (FastMath.PI / 2) * signo, FastMath.PI / 2);
+                TGCVector3 deltaOrtogonalNave =
+                    new TGCVector3(direccionOrtogonal.GetXCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL,
+                    direccionOrtogonal.GetYCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL,
+                    direccionOrtogonal.GetZCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL);
+                return CommonHelper.SumarVectores(CommonHelper.SumarVectores(posicionNave, deltaDireccionNave), deltaOrtogonalNave);
+            }
         }
 
         public void Update(float ElapsedTime)
