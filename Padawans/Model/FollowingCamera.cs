@@ -16,6 +16,7 @@ public class FollowingCamera
     private float velocidadAngular = 0.75f;
     private float alcanzarMaximaVelocidadAngularEn = FastMath.PI / 6;
     private readonly static float DESVIO_ANGULO_POLAR = 0.2f;
+    private float restar = 0, sumar = 0;
     /// <summary>
     ///     Es el encargado de modificar la camara siguiendo a la nave
     /// </summary>
