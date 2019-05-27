@@ -128,6 +128,7 @@ namespace TGC.Group.Model
             DrawText.drawText("En un menu: " + managerMenu.IsCurrent(), 0, 90, Color.White);
             TGCVector3 pos_body = new TGCVector3( xwing.body_xwing.CenterOfMassPosition );
             DrawText.drawText("Pos body:"+"x="+pos_body.X + "y=" + pos_body.Y + "z=" + pos_body.Z, 0, 100, Color.White);
+            DrawText.drawText("Cam distance: "+followingCamera.fixedDistanceCamera , 0, 110, Color.White);
             PostRender();
         }
         public override void Dispose()

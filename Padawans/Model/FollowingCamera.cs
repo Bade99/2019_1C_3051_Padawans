@@ -10,11 +10,12 @@ public class FollowingCamera
     private TGCVector3 cameraPosition;
     private CoordenadaEsferica coordenadaEsferica;
     private TGCVector3 lookAtCamera;
-    private readonly float fixedDistanceCamera = -20;
+    public float fixedDistanceCamera = -20;
+    private float minDistance = -15, maxDistance = -50;
     private Xwing xwing;
     private float velocidadAngular = 0.75f;
     private float alcanzarMaximaVelocidadAngularEn = FastMath.PI / 6;
-
+    private float restar=0,sumar=0;
     /// <summary>
     ///     Es el encargado de modificar la camara siguiendo a la nave
     /// </summary>
@@ -28,20 +29,38 @@ public class FollowingCamera
         CalcularDeltaAcimutal(ElapsedTime);
         CalcularDeltaPolar(ElapsedTime);
 
-        if (Input.WheelPos == 0)
+        //Ruedita para alejar/acercar camara
+        if (Input.WheelPos == -1)//rueda para atras
         {
-            cameraPosition = CommonHelper.SumarVectores(xwing.GetPosition(), GetDistancePoint());
-            lookAtCamera = xwing.GetPosition();
-            Camara.SetCamera(cameraPosition, lookAtCamera);
+            if (fixedDistanceCamera > maxDistance)
+            {
+                restar += .1f;
+                fixedDistanceCamera -= restar;
+            }
         }
+        else if (Input.WheelPos == 1)//rueda para adelante	
+        {
+            if (fixedDistanceCamera < minDistance)
+            {
+                sumar += .1f;
+                fixedDistanceCamera += sumar;
+            }
+        }
+        else {
+            if (restar>0) restar -= .01f;
+            if (sumar>0) sumar -= .01f;
+        }
+
+        cameraPosition = CommonHelper.SumarVectores(xwing.GetPosition(), GetDistancePoint());
+        lookAtCamera = xwing.GetPosition();
+        Camara.SetCamera(cameraPosition, lookAtCamera);
+
     }
 
     private TGCVector3 GetDistancePoint()
     {
-        float x = fixedDistanceCamera * this.coordenadaEsferica.GetXCoord();
-        float y = fixedDistanceCamera * this.coordenadaEsferica.GetYCoord();
-        float z = fixedDistanceCamera * this.coordenadaEsferica.GetZCoord();
-        return new TGCVector3(x,y,z);
+        TGCVector3 distance_point =  this.coordenadaEsferica.GetXYZCoord() * fixedDistanceCamera;
+        return distance_point;
     }
 
     private void CalcularDeltaAcimutal(float ElapsedTime)
