@@ -88,17 +88,14 @@ namespace TGC.Group.Model
                 canionInferior = false;
             }
             //Delta en la direccion nave (para que no parezca que sale de atras)
-            TGCVector3 deltaDireccionNave = new TGCVector3(coordenadaEsferica.GetXCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_NAVE,
-                coordenadaEsferica.GetYCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_NAVE, coordenadaEsferica.GetZCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_NAVE);
+            TGCVector3 deltaDireccionNave = new TGCVector3(coordenadaEsferica.GetXYZCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_NAVE);
             //Delta en la direccion ortogonal a la direccion de la nave (para que salga desde alguna de las alas)
             //Caniones inferiores
             if (canionInferior)
             {
                 CoordenadaEsferica direccionOrtogonal = new CoordenadaEsferica(coordenadaEsferica.acimutal + (FastMath.PI / 2) * signo, FastMath.PI / 2 + EXTRA_ANGULO_POLAR_CANION_ABAJO);
                 TGCVector3 deltaOrtogonalNave =
-                    new TGCVector3(direccionOrtogonal.GetXCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL,
-                    direccionOrtogonal.GetYCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL,
-                    direccionOrtogonal.GetZCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL);
+                    new TGCVector3(direccionOrtogonal.GetXYZCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL);
                 return CommonHelper.SumarVectores(CommonHelper.SumarVectores(posicionNave, deltaDireccionNave), deltaOrtogonalNave);
             } else
             //Caniones superiores
