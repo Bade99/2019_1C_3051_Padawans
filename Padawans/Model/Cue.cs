@@ -13,6 +13,7 @@ namespace TGC.Group.Model
     class Cue : ICue //lanzador de bitmaps para dar ayudas al jugador ante distintos eventos, ej: al inicio usar WASD para moverse
     {
         //puedo usar png con el CustomBitmap!!!
+        private ICueLauncher cueLauncher;
         private CustomSprite cue;
         private CustomBitmap bitmap;
         private Drawer2D drawer2D;
@@ -24,8 +25,9 @@ namespace TGC.Group.Model
         private float sonido_duracion;
         private int sonido_volumen;
 
-        public Cue(string bitmap_path,float relative_scale,TGCVector2 relative_pos,float delay,float duracion,string sonido_path,float sonido_duracion,int sonido_volumen)
+        public Cue(ICueLauncher cueLauncher,string bitmap_path,float relative_scale,TGCVector2 relative_pos,float delay,float duracion,string sonido_path,float sonido_duracion,int sonido_volumen)
         {//despues agrego mas condiciones para que una cue inicie, ademas de delay
+            this.cueLauncher = cueLauncher;
             drawer2D = new Drawer2D();
             cue = new CustomSprite();
             bitmap = new CustomBitmap(VariablesGlobales.mediaDir + bitmap_path, D3DDevice.Instance.Device);
@@ -51,14 +53,7 @@ namespace TGC.Group.Model
         }
         public bool IsCurrent()
         {
-            if (delay < 0)
-            {
-                return true;
-            }
-            else {
-                delay -= VariablesGlobales.elapsedTime;
-                return false;
-            }
+            return cueLauncher.IsReady();
         }
         public void Update()
         {

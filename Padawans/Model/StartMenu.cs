@@ -26,7 +26,6 @@ namespace TGC.Group.Model
             fondo = new CustomSprite();
             bitmap = new CustomBitmap(VariablesGlobales.mediaDir + "Bitmaps\\startmenu.bmp", D3DDevice.Instance.Device);
             fondo.Bitmap = bitmap;
-            //@arreglar position, ver si puedo usar ahora los valores reales con (float)
             CalcularFullScreenScalingAndPosition(fondo);
             VariablesGlobales.managerSonido.PauseAll();
             VariablesGlobales.managerSonido.AgregarElemento(new Sonido(path,0,0,-1,0));
