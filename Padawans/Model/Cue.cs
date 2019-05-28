@@ -25,7 +25,7 @@ namespace TGC.Group.Model
         private float sonido_duracion;
         private int sonido_volumen;
 
-        public Cue(ICueLauncher cueLauncher,string bitmap_path,float relative_scale,TGCVector2 relative_pos,float delay,float duracion,string sonido_path,float sonido_duracion,int sonido_volumen)
+        public Cue(ICueLauncher cueLauncher,string bitmap_path,float relative_scale,TGCVector2 relative_pos,float duracion,string sonido_path,float sonido_duracion,int sonido_volumen)
         {//despues agrego mas condiciones para que una cue inicie, ademas de delay
             this.cueLauncher = cueLauncher;
             drawer2D = new Drawer2D();
