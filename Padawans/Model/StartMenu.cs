@@ -27,9 +27,7 @@ namespace TGC.Group.Model
             bitmap = new CustomBitmap(VariablesGlobales.mediaDir + "Bitmaps\\startmenu.bmp", D3DDevice.Instance.Device);
             fondo.Bitmap = bitmap;
             //@arreglar position, ver si puedo usar ahora los valores reales con (float)
-            CalcularFullScreenScaling(fondo);
-
-            fondo.Position = new TGCVector2(FastMath.Max((float)D3DDevice.Instance.Width / 2f - (float)fondo.Bitmap.Size.Width / 2f, 0), FastMath.Max((float)D3DDevice.Instance.Height / 2f - (float)fondo.Bitmap.Size.Height / 2f, 0));
+            CalcularFullScreenScalingAndPosition(fondo);
             VariablesGlobales.managerSonido.PauseAll();
             VariablesGlobales.managerSonido.AgregarElemento(new Sonido(path,0,0,-1,0));
         }
@@ -63,20 +61,22 @@ namespace TGC.Group.Model
         {
             return isCurrent;
         }
-        public void CalcularFullScreenScaling(CustomSprite fondo)
-        {
+        public void CalcularFullScreenScalingAndPosition(CustomSprite fondo)
+        {//para 1280x720 lo transforma en 2048x1024 (no tiene mucha precision)
             var tamanio_textura = fondo.Bitmap.Size;
-            fondo.ScalingCenter = new TGCVector2((float)tamanio_textura.Width / 2f, (float)tamanio_textura.Height / 2f);
-
-            if (D3DDevice.Instance.AspectRatio < 1.9f)//16:9 o parecido
+            fondo.ScalingCenter = new TGCVector2(0, 0);
+            if (D3DDevice.Instance.AspectRatio < 2.1f)//16:9 o parecido
             {
+                fondo.Position = new TGCVector2(0, 0);
+
                 float width = (float)D3DDevice.Instance.Width / (float)tamanio_textura.Width;
                 float height = (float)D3DDevice.Instance.Height / (float)tamanio_textura.Height;
                 fondo.Scaling = new TGCVector2(width, height);
             }
             else //21:9 o parecido
             {
-                float width = ((float)D3DDevice.Instance.Width * 16f / 21f) / (float)tamanio_textura.Width;
+                fondo.Position = new TGCVector2(((float)D3DDevice.Instance.Width - ((float)D3DDevice.Instance.Width * 16f / 21.6f))/2, 0);
+                float width = ((float)D3DDevice.Instance.Width * 16f / 21.6f) / (float)tamanio_textura.Width;
                 float height = (float)D3DDevice.Instance.Height / (float)tamanio_textura.Height;
                 fondo.Scaling = new TGCVector2(width, height);
             }
