@@ -56,10 +56,11 @@ namespace TGC.Group.Model
             //VariablesGlobales.elapsedTime debe ser actualizado por tanto va a Update()
             VariablesGlobales.managerSonido = managerSonido;
             pistaReferencia = new MainRunway(loader, 5, this.Frustum);
+
             managerElementosTemporales = new TemporaryElementManager();
             xwing = new Xwing(loader,managerElementosTemporales, new TGCVector3(0, 1000f, 2000));
             managerEnemigos = new EnemyManager();
-            managerEnemigos.AgregarElemento(new XwingEnemigo(new TGCVector3(0f, 10f, -1000f), xwing,managerElementosTemporales));
+            managerEnemigos.AgregarElemento(new XwingEnemigo(new TGCVector3(0f, 600f, -3000f), xwing,managerElementosTemporales));
             worldSphere = new WorldSphere(loader, xwing);
             followingCamera = new FollowingCamera(xwing);
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ActiveElementManager[] { managerElementosTemporales });
