@@ -42,7 +42,6 @@ namespace TGC.Group.Model
         private float DISTANCIA_ORIGEN_MISIL_DIRECCION_NAVE = 84;
         private float DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL = 6;
         private float EXTRA_ANGULO_POLAR_CANION_ABAJO = 0.3f;
-        private float EXTRA_DISTANCIA_CANION_ABAJO = 0.5f;
 
         private float velocidadGeneral;
         private bool barrelRoll;
@@ -137,7 +136,7 @@ namespace TGC.Group.Model
 
         public void UpdateInput(TgcD3dInput input,float ElapsedTime)
         {
-            //ElapsedTime = 0.01f; //Lo hardcodeo hasta que sepamos bien como hacer esto
+            ElapsedTime = 0.01f; //Lo hardcodeo hasta que sepamos bien como hacer esto
 
             //Teclas especiales para moverse rapido y mas facil por el mapa
             TestingInput(input);
