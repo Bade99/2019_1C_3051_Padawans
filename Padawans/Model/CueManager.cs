@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace TGC.Group.Model
 {
     class CueManager : Manager<ICue>
-        //cueManager va a ser basicamente una cola de fifo
+        //@@cueManager va a ser basicamente una cola de fifo, capaz conviene que no sea asi ahora que tenemos cue launchers
     {
         private ICue currentCue;
         public CueManager(params ICue[] parameters)
