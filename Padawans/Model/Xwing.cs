@@ -39,6 +39,11 @@ namespace TGC.Group.Model
         private TGCVector3 front = new TGCVector3(0, 0, 1);
         private TGCVector3 back = new TGCVector3(0, 0, -1);
 
+        private float DISTANCIA_ORIGEN_MISIL_DIRECCION_NAVE = 84;
+        private float DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL = 6;
+        private float EXTRA_ANGULO_POLAR_CANION_ABAJO = 0.3f;
+        private float EXTRA_DISTANCIA_CANION_ABAJO = 0.5f;
+
         private float velocidadGeneral;
         private bool barrelRoll;
         private int barrelRollAvance=0;
@@ -201,7 +206,7 @@ namespace TGC.Group.Model
             {
                 if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos) {
                     tiempoDesdeUltimoDisparo = 0f;
-                    managerDisparos.AgregarElemento(new Misil(posicion, coordenadaEsferica,rotation, "Misil\\misil_xwing-TgcScene.xml", true));
+                    managerDisparos.AgregarElemento(new Misil(CalcularPosicionInicialMisil(), coordenadaEsferica,rotation, "Misil\\misil_xwing-TgcScene.xml"));
                     VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_1_disparo.wav", 1,1f,1,0));
                 }
             }
@@ -340,6 +345,57 @@ namespace TGC.Group.Model
             var anchoOffset = rndAncho * this.alaXwing.BoundingBox.calculateSize().Y * .5f;
             var distancia = -this.alaXwing.BoundingBox.calculateSize().X * 1.5f;
             return new TGCVector3(largoOffset, anchoOffset, distancia);
+        }
+
+        /**
+ * Devuelve la posicion inicial desde donde sale el misil en funcion de la posicion y la rotacion de la nave.
+ * */
+        private TGCVector3 CalcularPosicionInicialMisil()
+        {
+            //Random de las 4 opciones posibles de caniones
+            Random random = new Random();
+            int canion = (int)Math.Round(random.NextDouble() * 4);
+            int signo = 0;
+            bool canionInferior = false;
+            //Caniones izquierdos o derechos
+            if (canion == 0 || canion == 2)
+            {
+                signo = 1;
+            }
+            else
+            {
+                signo = -1;
+            }
+            //Caniones inferiores o superiores
+            if (canion == 2 || canion == 3)
+            {
+                canionInferior = true;
+            }
+            else
+            {
+                canionInferior = false;
+            }
+            //Delta en la direccion nave (para que no parezca que sale de atras)
+            TGCVector3 deltaDireccionNave = new TGCVector3(coordenadaEsferica.GetXYZCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_NAVE);
+            //Delta en la direccion ortogonal a la direccion de la nave (para que salga desde alguna de las alas)
+            //Caniones inferiores
+            if (canionInferior)
+            {
+                CoordenadaEsferica direccionOrtogonal = new CoordenadaEsferica(coordenadaEsferica.acimutal + (FastMath.PI / 2) * signo, FastMath.PI / 2 + EXTRA_ANGULO_POLAR_CANION_ABAJO);
+                TGCVector3 deltaOrtogonalNave =
+                    new TGCVector3(direccionOrtogonal.GetXYZCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL);
+                return CommonHelper.SumarVectores(CommonHelper.SumarVectores(posicion, deltaDireccionNave), deltaOrtogonalNave);
+            }
+            else
+            //Caniones superiores
+            {
+                CoordenadaEsferica direccionOrtogonal = new CoordenadaEsferica(coordenadaEsferica.acimutal + (FastMath.PI / 2) * signo, FastMath.PI / 2);
+                TGCVector3 deltaOrtogonalNave =
+                    new TGCVector3(direccionOrtogonal.GetXCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL,
+                    direccionOrtogonal.GetYCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL,
+                    direccionOrtogonal.GetZCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL);
+                return CommonHelper.SumarVectores(CommonHelper.SumarVectores(posicion, deltaDireccionNave), deltaOrtogonalNave);
+            }
         }
     }
 }
