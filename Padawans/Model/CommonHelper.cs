@@ -117,5 +117,14 @@ namespace TGC.Group.Model
 
             return m;
         } 
+        public TGCVector3 DividirPorEscalar(TGCVector3 v, float e)
+        {
+            return new TGCVector3(v.X / e, v.Y / e, v.Z / e);
+        }
+        public TGCVector3 Normalize(TGCVector3 v)
+        {
+            float magnitude=FastMath.Sqrt(FastMath.Pow2(v.X) + FastMath.Pow2(v.Y) + FastMath.Pow2(v.Z));
+            return DividirPorEscalar(v,magnitude);
+        }
     }
 }

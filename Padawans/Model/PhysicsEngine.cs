@@ -65,6 +65,9 @@ namespace TGC.Group.Model
             personaje_body.Restitution = restitution;
             //
             dynamicsWorld.AddRigidBody(personaje_body);
+            personaje_body.ActivationState = ActivationState.ActiveTag;
+            personaje_body.AngularVelocity = rotation.ToBulletVector3();
+            //personaje_body.ApplyCentralForce(new BulletSharp.Math.Vector3(0, 0, -10)*5);
             return personaje_body;
         }
 

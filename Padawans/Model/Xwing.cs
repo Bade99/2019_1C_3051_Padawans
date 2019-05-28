@@ -19,6 +19,8 @@ namespace TGC.Group.Model
     /// </summary>
     public class Xwing : SceneElement, InteractiveElement
     {
+        private bool BULLET = true;
+
         private TgcSceneLoader loader;
         TgcMesh xwing,alaXwing;
         private TemporaryElementManager managerDisparos;
@@ -63,8 +65,12 @@ namespace TGC.Group.Model
         private TGCVector3 escala;
         private float escalar = .1f;
 
+        private float velocidadBullet;
+
         public Xwing(TgcSceneLoader loader,TemporaryElementManager managerElementosTemporales, TGCVector3 posicionInicial)
         {
+
+            //TGCMatrix rotation_matrix = TGCMatrix.RotationX(1); 
 
             this.managerDisparos = managerElementosTemporales;
             this.loader = loader;
@@ -110,15 +116,21 @@ namespace TGC.Group.Model
 
         public override void Update()
         {
+            if (BULLET)
+            {
             //Bullet
             TGCMatrix bullet_transform = new TGCMatrix(body_xwing.InterpolationWorldTransform);
             xwing.Transform = matrizXwingInicial * bullet_transform;//* TGCMatrix.Translation(posicion);
             alaXwing.Transform = matrizXwingInicial * bullet_transform;// * TGCMatrix.Translation(posicion);
             //
+            } else
+            {
+            //
             //Forma normal
             xwing.Transform = matrizXwingInicial * GetRotationMatrix()* TGCMatrix.Translation(posicion);
             alaXwing.Transform = matrizXwingInicial * GetRotationMatrix() * TGCMatrix.Translation(posicion);
             //
+            }
         }
 
         private void TestingInput(TgcD3dInput input)
@@ -327,14 +339,15 @@ namespace TGC.Group.Model
 
         public TGCVector3 GetPosition()
         {
-            //return new TGCVector3(body_xwing.CenterOfMassPosition);//Bullet
-            return posicion;//forma normal
+            if(BULLET) return new TGCVector3(body_xwing.CenterOfMassPosition);//Bullet
+            else return posicion;//forma normal
         }
 
         public CoordenadaEsferica GetCoordenadaEsferica()
         {
             return coordenadaEsferica;
         }
+        /*
         private TGCVector3 CalcularOffsetUnAla()
         {
             Random rnd = new Random();
@@ -345,6 +358,7 @@ namespace TGC.Group.Model
             var distancia = -this.alaXwing.BoundingBox.calculateSize().X * 1.5f;
             return new TGCVector3(largoOffset, anchoOffset, distancia);
         }
+        */
 
         /**
  * Devuelve la posicion inicial desde donde sale el misil en funcion de la posicion y la rotacion de la nave.
@@ -383,7 +397,7 @@ namespace TGC.Group.Model
                 CoordenadaEsferica direccionOrtogonal = new CoordenadaEsferica(coordenadaEsferica.acimutal + (FastMath.PI / 2) * signo, FastMath.PI / 2 + EXTRA_ANGULO_POLAR_CANION_ABAJO);
                 TGCVector3 deltaOrtogonalNave =
                     new TGCVector3(direccionOrtogonal.GetXYZCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL);
-                return CommonHelper.SumarVectores(CommonHelper.SumarVectores(posicion, deltaDireccionNave), deltaOrtogonalNave);
+                return CommonHelper.SumarVectores(CommonHelper.SumarVectores(GetPosition(), deltaDireccionNave), deltaOrtogonalNave);
             }
             else
             //Caniones superiores
@@ -393,7 +407,7 @@ namespace TGC.Group.Model
                     new TGCVector3(direccionOrtogonal.GetXCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL,
                     direccionOrtogonal.GetYCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL,
                     direccionOrtogonal.GetZCoord() * DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL);
-                return CommonHelper.SumarVectores(CommonHelper.SumarVectores(posicion, deltaDireccionNave), deltaOrtogonalNave);
+                return CommonHelper.SumarVectores(CommonHelper.SumarVectores(GetPosition(), deltaDireccionNave), deltaOrtogonalNave);
             }
         }
     }
