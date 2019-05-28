@@ -41,7 +41,7 @@ namespace TGC.Group.Model
         private TGCVector3 front = new TGCVector3(0, 0, 1);
         private TGCVector3 back = new TGCVector3(0, 0, -1);
 
-        private float DISTANCIA_ORIGEN_MISIL_DIRECCION_NAVE = 84;
+        private float DISTANCIA_ORIGEN_MISIL_DIRECCION_NAVE = 44;
         private float DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL = 6;
         private float EXTRA_ANGULO_POLAR_CANION_ABAJO = 0.3f;
 

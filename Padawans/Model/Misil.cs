@@ -43,7 +43,7 @@ namespace TGC.Group.Model
             misil.AutoTransformEnable = false;
                     
             rotacionBase = new TGCVector3(FastMath.PI_HALF,0,0);
-            escala = new TGCVector3(.2f, .2f, 8f);
+            escala = new TGCVector3(.2f, .2f, 4f);
             
         }
 
