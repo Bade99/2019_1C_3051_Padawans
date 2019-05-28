@@ -32,8 +32,8 @@ namespace TGC.Group.Model
             //@no se xq tiene ese borde azul cuando lo renderiza???
             cue.Bitmap = bitmap;
 
-            cue.ScalingCenter = new TGCVector2((float)cue.Bitmap.Size.Width / 2f, (float)cue.Bitmap.Size.Height / 2f);
-
+            //cue.ScalingCenter = new TGCVector2((float)cue.Bitmap.Size.Width / 2f, (float)cue.Bitmap.Size.Height / 2f);
+            cue.ScalingCenter = new TGCVector2(0, 0);
             cue.Scaling = CalculeRelativeScaling(bitmap,relative_scale);
             cue.Position = new TGCVector2(D3DDevice.Instance.Width* relative_pos.X, D3DDevice.Instance.Height* relative_pos.Y);
             this.delay = delay;

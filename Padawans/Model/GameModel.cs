@@ -39,7 +39,7 @@ namespace TGC.Group.Model
         {
             var d3dDevice = D3DDevice.Instance.Device;
             var loader = new TgcSceneLoader();
-            cues_relative_posicion = new TGCVector2(.1f, .5f);
+            cues_relative_posicion = new TGCVector2(.05f, .5f);
             /*
             D3DDevice.Instance.Device.Transform.Projection = TGCMatrix.PerspectiveFovLH(D3DDevice.Instance.FieldOfView, D3DDevice.Instance.AspectRatio,
                     D3DDevice.Instance.ZNearPlaneDistance, D3DDevice.Instance.ZFarPlaneDistance).ToMatrix();
