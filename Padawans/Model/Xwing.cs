@@ -67,12 +67,11 @@ namespace TGC.Group.Model
 
         private float velocidadBullet;
 
-        public Xwing(TgcSceneLoader loader,TemporaryElementManager managerElementosTemporales, TGCVector3 posicionInicial)
+        public Xwing(TgcSceneLoader loader, TGCVector3 posicionInicial)
         {
 
             //TGCMatrix rotation_matrix = TGCMatrix.RotationX(1); 
 
-            this.managerDisparos = managerElementosTemporales;
             this.loader = loader;
             xwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"XWing\\xwing-TgcScene.xml").Meshes[0];
             alaXwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"XWing\\xwing-TgcScene.xml").Meshes[1];
@@ -274,7 +273,7 @@ namespace TGC.Group.Model
             {
                 if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos) {
                     tiempoDesdeUltimoDisparo = 0f;
-                    managerDisparos.AgregarElemento(new Misil(CalcularPosicionInicialMisil(), coordenadaEsferica,rotation, "Misil\\misil_xwing-TgcScene.xml", Color.Green));
+                    VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(CalcularPosicionInicialMisil(), coordenadaEsferica,rotation, "Misil\\misil_xwing-TgcScene.xml", Color.Green));
                     VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_1_disparo.wav", 1,1f,1,0));
                 }
             }

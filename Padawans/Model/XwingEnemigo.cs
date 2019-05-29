@@ -22,7 +22,7 @@ namespace TGC.Group.Model
         private TGCVector3 scale = new TGCVector3(.1f, .1f, .1f);
         private TGCVector3 posicion;
 
-        public XwingEnemigo(TGCVector3 posicionInicial,Xwing target, TemporaryElementManager managerDisparos)
+        public XwingEnemigo(TGCVector3 posicionInicial,Xwing target)
         {
             posicion = posicionInicial;
             velocidad = new TGCVector3(0,0,70f);
@@ -32,7 +32,6 @@ namespace TGC.Group.Model
                 mesh.Transform = TGCMatrix.Scaling(scale) * TGCMatrix.RotationY(-FastMath.PI_HALF) * TGCMatrix.Translation(posicion);
             });
             this.target = target;
-            this.managerDisparos = managerDisparos;
         }
 
         public void Update(float elapsedTime)

@@ -59,9 +59,9 @@ namespace TGC.Group.Model
             VariablesGlobales.managerElementosTemporales = managerElementosTemporales;
             pistaReferencia = new MainRunway(loader, 5, this.Frustum);
 
-            xwing = new Xwing(loader,managerElementosTemporales, new TGCVector3(0, 1000f, 2000));
+            xwing = new Xwing(loader, new TGCVector3(0, 1000f, 2000));
             managerEnemigos = new EnemyManager();
-            managerEnemigos.AgregarElemento(new XwingEnemigo(new TGCVector3(0f, 600f, -3000f), xwing,managerElementosTemporales));
+            managerEnemigos.AgregarElemento(new XwingEnemigo(new TGCVector3(0f, 600f, -3000f), xwing));
             worldSphere = new WorldSphere(loader, xwing);
             followingCamera = new FollowingCamera(xwing);
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ActiveElementManager[] { managerElementosTemporales });
