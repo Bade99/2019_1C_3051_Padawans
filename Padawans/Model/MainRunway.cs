@@ -26,14 +26,17 @@ namespace TGC.Group.Model
         //TgcScene piso;
         private int n;
         TgcFrustum frustum;
+        private TemporaryElementManager managerElementosTemporales;
+        private Torreta unaTorreta;
         private bool frustum_culling = true;
         /// <summary>
         ///     n representa la cantidad de pistas que va a graficar
         /// </summary>
-        public MainRunway(TgcSceneLoader loader, int n, TgcFrustum frustum)
+        public MainRunway(TgcSceneLoader loader, int n, TgcFrustum frustum, TemporaryElementManager managerElementosTemporales)
         {
             this.loader = loader;
             this.frustum = frustum;
+            this.managerElementosTemporales = managerElementosTemporales;
 
             escena_bomba = loader.loadSceneFromFile("Padawans_media\\XWing\\TRENCH_RUN-TgcScene.xml");
             escena_alrededores = loader.loadSceneFromFile("Padawans_media\\XWing\\death+star-TgcScene.xml");
@@ -41,6 +44,8 @@ namespace TGC.Group.Model
             hierro = loader.loadSceneFromFile("Padawans_media\\XWing\\hierros-TgcScene.xml");
             tubo_rojo_gira = loader.loadSceneFromFile("Padawans_media\\XWing\\pipeline-TgcScene.xml");
             tubo_rojo_derecho = loader.loadSceneFromFile("Padawans_media\\XWing\\tuberia-TgcScene.xml");
+
+            unaTorreta = new Torreta(loader, managerElementosTemporales);
 
             //bloques de construccion
             //piso = loader.loadSceneFromFile("Padawans_media\\XWing\\m1-TgcScene.xml");
@@ -105,6 +110,8 @@ namespace TGC.Group.Model
 
             //escenario principal
             //-----
+            unaTorreta.Posicionar(new TGCVector3(50f, 10f, 0f), FastMath.PI_HALF);
+
             posicion = PlaceSceneLine(escena_bomba, posicion, escalador, n/2, mesh_pivot, 0,rotacion);
 
             posicion.X += 325f;//necesitamos rotacion sin que modifique posicion
@@ -183,6 +190,12 @@ namespace TGC.Group.Model
             {
                 main_escena_instancia.ForEach(escena => { RenderMeshList(escena); });//@@esta bien que renderize cada vez si no hay cambios??
             }
+            unaTorreta.Render();
+        }
+
+        public void UpdateTime(float ElapsedTime)
+        {
+            unaTorreta.UpdateDisparar(ElapsedTime);
         }
 
         public override void Update()
@@ -193,11 +206,13 @@ namespace TGC.Group.Model
         public override void Dispose()
         {
             main_escena_instancia.ForEach(escena => { escena.ForEach(mesh => { mesh.Dispose(); }); });
+            unaTorreta.Dispose();
         }
 
         public override void RenderBoundingBox()
         {
             main_escena_instancia.ForEach(escena => { escena.ForEach(mesh => { mesh.BoundingBox.Render(); }); });
+            unaTorreta.RenderBoundingBox();
         }
     }
 }

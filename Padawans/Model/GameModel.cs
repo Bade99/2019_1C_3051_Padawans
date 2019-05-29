@@ -55,9 +55,9 @@ namespace TGC.Group.Model
             VariablesGlobales.soundDevice = DirectSound.DsDevice;
             //VariablesGlobales.elapsedTime debe ser actualizado por tanto va a Update()
             VariablesGlobales.managerSonido = managerSonido;
-            pistaReferencia = new MainRunway(loader, 5, this.Frustum);
-
             managerElementosTemporales = new TemporaryElementManager();
+            pistaReferencia = new MainRunway(loader, 5, this.Frustum, this.managerElementosTemporales);
+
             xwing = new Xwing(loader,managerElementosTemporales, new TGCVector3(0, 1000f, 2000));
             managerEnemigos = new EnemyManager();
             managerEnemigos.AgregarElemento(new XwingEnemigo(new TGCVector3(0f, 600f, -3000f), xwing,managerElementosTemporales));
@@ -87,6 +87,7 @@ namespace TGC.Group.Model
                 followingCamera.Update(Camara,Input,ElapsedTime);
                 managerElementosTemporales.Update(ElapsedTime);
                 managerEnemigos.Update(ElapsedTime);
+                pistaReferencia.UpdateTime(ElapsedTime);
                 boundingBoxHelper.UpdateInput(Input, ElapsedTime);
             }
             Thread.Sleep(1);//@mientras mas chico el numero mas ganas en performance, tmb podemos sacar esto y listo

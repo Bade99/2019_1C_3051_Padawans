@@ -34,12 +34,13 @@ namespace TGC.Group.Model
          * Rotacion nave: Constante con el que misil se rota inicialmente para estar alineado a la trayectoria
          * pathscene: Path donde esta ubicado el mesh
          * */
-        public Misil(TGCVector3 posicionNave, CoordenadaEsferica coordenadaEsfericaP, TGCVector3 rotacionNave, string pathScene)
+        public Misil(TGCVector3 posicionNave, CoordenadaEsferica coordenadaEsfericaP, TGCVector3 rotacionNave, string pathScene, Color color)
         {
             this.rotacionNave = rotacionNave;
             this.coordenadaEsferica = coordenadaEsfericaP;
             this.posicion = posicionNave;
             misil = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + pathScene).Meshes[0];
+            misil.setColor(color);
             misil.AutoTransformEnable = false;
                     
             rotacionBase = new TGCVector3(FastMath.PI_HALF,0,0);

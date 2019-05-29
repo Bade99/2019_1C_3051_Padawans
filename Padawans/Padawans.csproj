@@ -141,6 +141,7 @@
     <Compile Include="Model\SoundManager.cs" />
     <Compile Include="Model\StartMenu.cs" />
     <Compile Include="Model\TemporaryElementManager.cs" />
+    <Compile Include="Model\Torreta.cs" />
     <Compile Include="Model\VariablesGlobales.cs" />
     <Compile Include="Model\WorldSphere.cs" />
     <Compile Include="Model\InteractiveElement.cs" />
