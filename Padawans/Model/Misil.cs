@@ -40,9 +40,8 @@ namespace TGC.Group.Model
             this.coordenadaEsferica = coordenadaEsfericaP;
             this.posicion = posicionNave;
             misil = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + pathScene).Meshes[0];
-            misil.setColor(color);
             misil.AutoTransformEnable = false;
-                    
+            misil.setColor(color);//dice q es poco performate hacer esto, si necesitamos performance aca queda algo @
             rotacionBase = new TGCVector3(FastMath.PI_HALF,0,0);
             escala = new TGCVector3(.2f, .2f, 4f);
             
