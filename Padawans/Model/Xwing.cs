@@ -85,8 +85,9 @@ namespace TGC.Group.Model
             xwing.AutoTransformEnable = false;
             alaXwing.AutoTransformEnable = false;
 
-            velocidadGeneral = 300f;// minimaVelocidad;
-            //velocidadGeneral = 5f;//Bullet
+            if(BULLET) velocidadGeneral = 5f;//Bullet
+            else velocidadGeneral = 300f;// minimaVelocidad;
+
             barrelRoll = false;
             ActualizarCoordenadaEsferica();
 
@@ -96,7 +97,9 @@ namespace TGC.Group.Model
 
             //agrego al physics engine
             body_xwing = VariablesGlobales.physicsEngine.AgregarPersonaje( CommonHelper.MultiplicarVectores(xwing.BoundingBox.calculateSize(),escala),
-                                                                           1, posicion,rotation,.5f,.1f,.1f,.5f,true);
+                                                                           1, posicion,rotation,1,true);
+
+
             //
             VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_flyby_2.wav", -600, 8, 1,0));
             VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_engine.wav",-600,1,-1,0));
@@ -116,6 +119,12 @@ namespace TGC.Group.Model
 
         public override void Update()
         {
+            if (BULLET)//movimiento constante
+            {
+            /*personaje_body.AngularVelocity = rotation.ToBulletVector3();
+            body_xwing.ApplyCentralForce(new BulletSharp.Math.Vector3(0, 0, -10) * 5);*/
+            }
+
             if (BULLET)
             {
             //Bullet
@@ -156,19 +165,67 @@ namespace TGC.Group.Model
             //Movimientos flechas
             if (input.keyDown(Key.A))
             {
+                if (BULLET)
+                {
+                    //body_xwing.AngularVelocity = coordenadaEsferica.GetXYZCoord().ToBulletVector3();
+                    //body_xwing.ApplyCentralImpulse(new BulletSharp.Math.Vector3(1,0,0));
+                    //body_xwing.ApplyTorque(new BulletSharp.Math.Vector3(1, 0, 0));//piola gira el xwing y parece q puedo usar direcciones (1,0,0) dsps
+                    //body_xwing.ApplyTorqueImpulse(new BulletSharp.Math.Vector3(1, 0, 0));creo que no
+                    //body_xwing.CheckCollideWith(CollisionObject); ver q onda
+                    //body_xwing.CollisionFlags ni idea mirar
+                    //body_xwing.CompanionId hmmm
+                    //body_xwing.ComputeGyroscopicImpulseImplicitBody(step) servira para saber el giro? devuelve vector3
+                    //tiene otras funciones compute tmb
+                    //body_xwing.ContactSolverType ???
+                    //body_xwing.Friction
+                    //body_xwing.ActivationState creo q es al pedo setearlo
+                    //body_xwing.GetConstraintRef tiene esta cosa de constraints ver q onda
+                    //body_xwing.GetVelocityInLocalPoint ???
+                    //body_xwing.GetWorldTransform hmmm
+                    //body_xwing.InterpolationAngularVelocity apa parece util
+                    //body_xwing.InterpolationLinearVelocity + cosas utiles
+                    //body_xwing.InterpolationWorldTransform el q usamos
+                    //body_xwing.InvInertiaDiagLocal ??
+                    //body_xwing.IsKinematicObject como consigo un kinematic object?
+                    //body_xwing.LinearFactor ??
+                    //body_xwing.LinearVelocity apa
+                    //body_xwing.MotionState hmm
+                    //body_xwing.Orientation apa apa (en quaternion)
+                    //body_xwing.PredictIntegratedTransform maemia podes hacer predicciones
+                    //body_xwing.ProceedToTransform le podes enchufar un transform
+                    //body_xwing. hay un custom debug color, no se si lo podemos renderizar o algo
+                    //body_xwing.Restitution algo a setear!
+                    //body_xwing.RollingFriction algo a setear!
+                    //body_xwing.SetContactStiffnessAndDamping algo a setear!
+                    //body_xwing.SetDamping algo a setear!
+                    //body_xwing.SetIgnoreCollisionCheck podes ignorar colisiones con algo
+                    //body_xwing.SetMassProps podes resetear la masa e inercia (tmb hay un ref, no se si te permitirá guardar la inercia?)
+                    //body_xwing.SetSleepingThresholds ni idea pero ver setear!
+                    //body_xwing.SpinningFriction algo a setear!
+                    //body_xwing.TotalForce te dice cuanto es
+                    //body_xwing.TotalTorque te dice cuanto es
+                    //body_xwing.Translate lo puedo mover hmm (tiene ref tmb)
+                    //body_xwing.WorldArrayIndex q he esto ?
+                    //body_xwing.WorldTransform q será esto ?
+                }
+                else
+                {
                 rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Down *ElapsedTime));
                 ActualizarCoordenadaEsferica();
-                body_xwing.ActivationState = ActivationState.ActiveTag;
-                body_xwing.AngularVelocity = coordenadaEsferica.GetXYZCoord().ToBulletVector3();
-                body_xwing.ApplyCentralImpulse(velocidadGeneral * coordenadaEsferica.GetXYZCoord().ToBulletVector3());
+                }
             }
             if (input.keyDown(Key.D))
             {
+                if (BULLET)
+                {
+                    //body_xwing.AngularVelocity = coordenadaEsferica.GetXYZCoord().ToBulletVector3();
+                    body_xwing.ApplyCentralImpulse(new BulletSharp.Math.Vector3(-1, 0, 0));
+                }
+                else
+                {
                 rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Up * ElapsedTime));
                 ActualizarCoordenadaEsferica();
-                body_xwing.ActivationState = ActivationState.ActiveTag;
-                body_xwing.AngularVelocity = coordenadaEsferica.GetXYZCoord().ToBulletVector3();
-                body_xwing.ApplyCentralImpulse(velocidadGeneral * coordenadaEsferica.GetXYZCoord().ToBulletVector3());
+                }
             }
             if (input.keyDown(Key.W) && !rotationYAnimation)
             {
@@ -258,21 +315,32 @@ namespace TGC.Group.Model
                     barrelRollAvance = 0;
                 }
             }
+            if (BULLET)
+            {
 
+            }
+            else
+            {
             //Efecto de friccion, aceleracion o velocidad constante
             posicion = CalcularNuevaPosicion(posicion, ElapsedTime);
             ultimaPosicion = posicion + TGCVector3.One;
+
+            }
         }
 
         private void DownArrow(float ElapsedTime)
         {
             if (coordenadaEsferica.polar < (FastMath.PI - limiteAnguloPolar))
             {
+                if (BULLET)
+                {
+                    //body_xwing.AngularVelocity = coordenadaEsferica.GetXYZCoord().ToBulletVector3();
+                body_xwing.ApplyCentralImpulse(new BulletSharp.Math.Vector3(0, -1, 0));
+                } else
+                {
                 rotation.Add(back * ElapsedTime);
                 ActualizarCoordenadaEsferica();
-                body_xwing.ActivationState = ActivationState.ActiveTag;
-                body_xwing.AngularVelocity = coordenadaEsferica.GetXYZCoord().ToBulletVector3();
-                body_xwing.ApplyCentralImpulse(velocidadGeneral * coordenadaEsferica.GetXYZCoord().ToBulletVector3());
+                }
             }
             else
             {
@@ -285,11 +353,15 @@ namespace TGC.Group.Model
         {
             if (coordenadaEsferica.polar > limiteAnguloPolar)
             {
+                if (BULLET)
+                {
+                    //body_xwing.AngularVelocity = coordenadaEsferica.GetXYZCoord().ToBulletVector3();
+                body_xwing.ApplyCentralImpulse(new BulletSharp.Math.Vector3(0, 1, 0));
+                } else
+                {
                 rotation.Add(front * ElapsedTime);
                 ActualizarCoordenadaEsferica();
-                body_xwing.ActivationState = ActivationState.ActiveTag;
-                body_xwing.AngularVelocity = coordenadaEsferica.GetXYZCoord().ToBulletVector3();
-                body_xwing.ApplyCentralImpulse(velocidadGeneral * coordenadaEsferica.GetXYZCoord().ToBulletVector3());
+                }
             }
             else
             {

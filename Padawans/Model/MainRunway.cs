@@ -26,17 +26,15 @@ namespace TGC.Group.Model
         //TgcScene piso;
         private int n;
         TgcFrustum frustum;
-        private TemporaryElementManager managerElementosTemporales;
         private Torreta unaTorreta;
         private bool frustum_culling = true;
         /// <summary>
         ///     n representa la cantidad de pistas que va a graficar
         /// </summary>
-        public MainRunway(TgcSceneLoader loader, int n, TgcFrustum frustum, TemporaryElementManager managerElementosTemporales)
+        public MainRunway(TgcSceneLoader loader, int n, TgcFrustum frustum)
         {
             this.loader = loader;
             this.frustum = frustum;
-            this.managerElementosTemporales = managerElementosTemporales;
 
             escena_bomba = loader.loadSceneFromFile("Padawans_media\\XWing\\TRENCH_RUN-TgcScene.xml");
             escena_alrededores = loader.loadSceneFromFile("Padawans_media\\XWing\\death+star-TgcScene.xml");
@@ -45,7 +43,7 @@ namespace TGC.Group.Model
             tubo_rojo_gira = loader.loadSceneFromFile("Padawans_media\\XWing\\pipeline-TgcScene.xml");
             tubo_rojo_derecho = loader.loadSceneFromFile("Padawans_media\\XWing\\tuberia-TgcScene.xml");
 
-            unaTorreta = new Torreta(loader, managerElementosTemporales);
+            unaTorreta = new Torreta(loader);
 
             //bloques de construccion
             //piso = loader.loadSceneFromFile("Padawans_media\\XWing\\m1-TgcScene.xml");

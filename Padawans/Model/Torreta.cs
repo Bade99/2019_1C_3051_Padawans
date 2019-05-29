@@ -13,16 +13,14 @@ namespace TGC.Group.Model
     {
         private TgcSceneLoader loader;
         TgcMesh torreta;
-        private TemporaryElementManager managerDisparos;
         private TGCVector3 posicion;
         public TGCVector3 rotation;
         private TGCMatrix matrizInicial;
         private float tiempoEntreDisparos = 1.5f;
         private float tiempoDesdeUltimoDisparo = 1.5f;
 
-        public Torreta(TgcSceneLoader loader, TemporaryElementManager managerElementosTemporales)
+        public Torreta(TgcSceneLoader loader)
         {
-            this.managerDisparos = managerElementosTemporales;
             this.loader = loader;
             torreta = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "XWing\\torreta-TgcScene.xml").Meshes[0];
 
@@ -46,7 +44,7 @@ namespace TGC.Group.Model
             if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos)
             {
                 tiempoDesdeUltimoDisparo = 0f;
-                managerDisparos.AgregarElemento(new Misil(posicion, new CoordenadaEsferica(rotation), rotation, "Misil\\misil_xwing-TgcScene.xml", Color.OrangeRed));
+                VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(posicion, new CoordenadaEsferica(rotation), rotation, "Misil\\misil_xwing-TgcScene.xml", Color.OrangeRed));
             }
 
         }

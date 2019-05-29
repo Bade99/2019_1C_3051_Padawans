@@ -4,10 +4,10 @@ using TGC.Core.Mathematica;
 
 namespace TGC.Group.Model
 {
-    class WorldSphere : SceneElement //ver como randomizar la textura para que no se vea tan tileada
+    class WorldSphere : SceneElement //probé con skybox y no me gustó el resultado
     {
         private TgcSceneLoader loader;
-        TgcScene worldsphere; //@tambien puedo usar tgcskybox, habria que crear los png para las texturas de cada cara
+        TgcScene worldsphere;
         Xwing pivot;
 
         public WorldSphere(TgcSceneLoader loader, Xwing pivot)

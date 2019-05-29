@@ -56,7 +56,8 @@ namespace TGC.Group.Model
             //VariablesGlobales.elapsedTime debe ser actualizado por tanto va a Update()
             VariablesGlobales.managerSonido = managerSonido;
             managerElementosTemporales = new TemporaryElementManager();
-            pistaReferencia = new MainRunway(loader, 5, this.Frustum, this.managerElementosTemporales);
+            VariablesGlobales.managerElementosTemporales = managerElementosTemporales;
+            pistaReferencia = new MainRunway(loader, 5, this.Frustum);
 
             xwing = new Xwing(loader,managerElementosTemporales, new TGCVector3(0, 1000f, 2000));
             managerEnemigos = new EnemyManager();
@@ -132,6 +133,8 @@ namespace TGC.Group.Model
             TGCVector3 pos_body = new TGCVector3( xwing.body_xwing.CenterOfMassPosition );
             DrawText.drawText("Pos body:"+"x="+pos_body.X + "y=" + pos_body.Y + "z=" + pos_body.Z, 0, 100, Color.White);
             DrawText.drawText("Cam distance: "+followingCamera.fixedDistanceCamera , 0, 110, Color.White);
+            TGCVector3 esf_coord = xwing.GetCoordenadaEsferica().GetXYZCoord();
+            DrawText.drawText("xwing coord esf: " + esf_coord.X +" , "+ esf_coord.Y + " , " + esf_coord.Z, 0, 120, Color.White);
             PostRender();
         }
         public override void Dispose()

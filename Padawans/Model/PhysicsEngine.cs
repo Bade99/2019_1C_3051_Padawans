@@ -50,7 +50,8 @@ namespace TGC.Group.Model
             });
             return bodies;
         }
-        public RigidBody AgregarPersonaje(TGCVector3 size,float mass,TGCVector3 position,TGCVector3 rotation,float friction, float linDamping,float angDamping,float restitution,bool inertia)//solo recibo uno de los dos meshes del xwing, dsps vemos si necesito el otro
+        public RigidBody AgregarPersonaje(TGCVector3 size,float mass,TGCVector3 position,TGCVector3 rotation,float friction,bool inertia)
+            //solo pido los atributos basicos para el constructor, el resto lo debe definir el dueño del personaje
         {
             //new RigidBodyConstructionInfo(10, new DefaultMotionState(), shape...);
             var personaje_body = BulletRigidBodyFactory.Instance.CreateBox(
@@ -60,14 +61,7 @@ namespace TGC.Group.Model
                             rotation.Y, rotation.X, rotation.Z,
                             friction,
                             inertia);
-            //+ atributos
-            personaje_body.SetDamping(linDamping,angDamping);
-            personaje_body.Restitution = restitution;
-            //
             dynamicsWorld.AddRigidBody(personaje_body);
-            personaje_body.ActivationState = ActivationState.ActiveTag;
-            personaje_body.AngularVelocity = rotation.ToBulletVector3();
-            //personaje_body.ApplyCentralForce(new BulletSharp.Math.Vector3(0, 0, -10)*5);
             return personaje_body;
         }
 

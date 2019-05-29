@@ -17,5 +17,6 @@ namespace TGC.Group.Model
         public static SoundManager managerSonido;
         public static GameModel gameModel;
         public static PhysicsEngine physicsEngine;
+        public static TemporaryElementManager managerElementosTemporales;
     }
 }
