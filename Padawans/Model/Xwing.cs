@@ -19,7 +19,7 @@ namespace TGC.Group.Model
     /// </summary>
     public class Xwing : SceneElement, InteractiveElement
     {
-        private bool BULLET = false;
+        private bool BULLET = true;
 
         private TgcSceneLoader loader;
         TgcMesh xwing,alaXwing;
@@ -65,7 +65,8 @@ namespace TGC.Group.Model
         private TGCVector3 escala;
         private float escalar = .1f;
 
-        private float velocidadBullet;
+        //private readonly float velocidad_giro_bullet = 5f;
+        private float tiempo =5;
 
         public Xwing(TgcSceneLoader loader, TGCVector3 posicionInicial)
         {
@@ -88,7 +89,6 @@ namespace TGC.Group.Model
             else velocidadGeneral = 300f;// minimaVelocidad;
 
             barrelRoll = false;
-            ActualizarCoordenadaEsferica();
 
             //Rotation y animation
             rotationYAnimation = false;
@@ -96,10 +96,14 @@ namespace TGC.Group.Model
 
             //agrego al physics engine
             body_xwing = VariablesGlobales.physicsEngine.AgregarPersonaje( CommonHelper.MultiplicarVectores(xwing.BoundingBox.calculateSize(),escala),
-                                                                           1, posicion,rotation,1,true);
+                                                                           1, posicion,rotation,.5f,true);
+            //body_xwing.SetDamping(0.1f, 0f);
+            //body_xwing.Restitution = 0.1f;
+            //body_xwing.Friction = 1;
 
 
-            //
+            ActualizarCoordenadaEsferica();
+
             VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_flyby_2.wav", -600, 8, 1,0));
             VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_engine.wav",-600,1,-1,0));
         }
@@ -118,12 +122,6 @@ namespace TGC.Group.Model
 
         public override void Update()
         {
-            if (BULLET)//movimiento constante
-            {
-            /*personaje_body.AngularVelocity = rotation.ToBulletVector3();
-            body_xwing.ApplyCentralForce(new BulletSharp.Math.Vector3(0, 0, -10) * 5);*/
-            }
-
             if (BULLET)
             {
             //Bullet
@@ -160,60 +158,26 @@ namespace TGC.Group.Model
             else UpdateInputManual(input, ElapsedTime);
         }
 
-        public void UpdateInputBullet(TgcD3dInput input, float ElapsedTime)
+        public void UpdateInputBullet(TgcD3dInput input, float ElapsedTime)//no uso elapsedtime x ahora, creo q ni hace falta
         {
-            ElapsedTime = 0.01f; //Lo hardcodeo hasta que sepamos bien como hacer esto
-
+            //movimiento constante
+            //personaje_body.AngularVelocity = rotation.ToBulletVector3();
+            body_xwing.ApplyCentralForce(coordenadaEsferica.GetXYZCoord().ToBulletVector3()*5);
+            //
 
             //Movimientos flechas
             if (input.keyDown(Key.A))
             {
-                rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Down * ElapsedTime));
-                //body_xwing.AngularVelocity = coordenadaEsferica.GetXYZCoord().ToBulletVector3();
-                //body_xwing.ApplyCentralImpulse(new BulletSharp.Math.Vector3(1,0,0));
-                //body_xwing.ApplyTorque(new BulletSharp.Math.Vector3(1, 0, 0));//piola gira el xwing y parece q puedo usar direcciones (1,0,0) dsps
-                //body_xwing.ApplyTorqueImpulse(new BulletSharp.Math.Vector3(1, 0, 0));creo que no
-                //body_xwing.CheckCollideWith(CollisionObject); ver q onda
-                //body_xwing.CollisionFlags ni idea mirar
-                //body_xwing.CompanionId hmmm
-                //body_xwing.ComputeGyroscopicImpulseImplicitBody(step) servira para saber el giro? devuelve vector3
-                //tiene otras funciones compute tmb
-                //body_xwing.ContactSolverType ???
-                //body_xwing.Friction
-                //body_xwing.ActivationState creo q es al pedo setearlo
-                //body_xwing.GetConstraintRef tiene esta cosa de constraints ver q onda
-                //body_xwing.GetVelocityInLocalPoint ???
-                //body_xwing.GetWorldTransform hmmm
-                //body_xwing.InterpolationAngularVelocity apa parece util
-                //body_xwing.InterpolationLinearVelocity + cosas utiles
-                //body_xwing.InterpolationWorldTransform el q usamos
-                //body_xwing.InvInertiaDiagLocal ??
-                //body_xwing.IsKinematicObject como consigo un kinematic object?
-                //body_xwing.LinearFactor ??
-                //body_xwing.LinearVelocity apa
-                //body_xwing.MotionState hmm
-                //body_xwing.Orientation apa apa (en quaternion)
-                //body_xwing.PredictIntegratedTransform maemia podes hacer predicciones
-                //body_xwing.ProceedToTransform le podes enchufar un transform
-                //body_xwing. hay un custom debug color, no se si lo podemos renderizar o algo
-                //body_xwing.Restitution algo a setear!
-                //body_xwing.RollingFriction algo a setear!
-                //body_xwing.SetContactStiffnessAndDamping algo a setear!
-                //body_xwing.SetDamping algo a setear!
-                //body_xwing.SetIgnoreCollisionCheck podes ignorar colisiones con algo
-                //body_xwing.SetMassProps podes resetear la masa e inercia (tmb hay un ref, no se si te permitirá guardar la inercia?)
-                //body_xwing.SetSleepingThresholds ni idea pero ver setear!
-                //body_xwing.SpinningFriction algo a setear!
-                //body_xwing.TotalForce te dice cuanto es
-                //body_xwing.TotalTorque te dice cuanto es
-                //body_xwing.Translate lo puedo mover hmm (tiene ref tmb)
-                //body_xwing.WorldArrayIndex q he esto ?
-                //body_xwing.WorldTransform q será esto ?
-                body_xwing.ApplyTorque(new BulletSharp.Math.Vector3(1, 0, 0));
+                //rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Down));
+
+                body_xwing.ApplyTorque(TGCVector3.Down.ToBulletVector3());
             }
             if (input.keyDown(Key.D))
             {
-                rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Up * ElapsedTime));
+                //rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Up));
+
+                body_xwing.ApplyTorque(TGCVector3.Up.ToBulletVector3());
+
                 //body_xwing.AngularVelocity = coordenadaEsferica.GetXYZCoord().ToBulletVector3();
                 //body_xwing.ApplyCentralImpulse(new BulletSharp.Math.Vector3(-1, 0, 0));
             }
@@ -221,27 +185,73 @@ namespace TGC.Group.Model
             {
                 if (!swapPolarKeys)
                 {
-                    UpArrow(ElapsedTime);
+                    UpArrowBullet(ElapsedTime);
                 }
                 else
                 {
-                    DownArrow(ElapsedTime);
+                    DownArrowBullet(ElapsedTime);
                 }
             }
             if (input.keyDown(Key.S) && !rotationYAnimation)
             {
                 if (!swapPolarKeys)
                 {
-                    DownArrow(ElapsedTime);
+                    DownArrowBullet(ElapsedTime);
                 }
                 else
                 {
-                    UpArrow(ElapsedTime);
+                    UpArrowBullet(ElapsedTime);
                 }
             }
 
+            //Frenar
+            if (input.keyDown(Key.LeftControl))
+            {
+                body_xwing.LinearVelocity *= .99f;
+                //body_xwing.AngularVelocity
+            }
+
+            if (tiempo < 0) {
+                var algo = body_xwing.Orientation.Axis;//body_xwing.Orientation.Angle te dice la magnitud
+            }
+            else tiempo -= ElapsedTime;
+
             ActualizarCoordenadaEsferica();
-            body_xwing.ApplyTorque(coordenadaEsferica.GetXYZCoord().ToBulletVector3() * velocidadGeneral);
+            //body_xwing.ApplyTorque(coordenadaEsferica.GetXYZCoord().ToBulletVector3());
+            //body_xwing.ApplyTorque(coordenadaEsferica.GetXYZCoord().ToBulletVector3() * velocidadGeneral);
+        }
+
+        private void DownArrowBullet(float ElapsedTime)
+        {
+            if (coordenadaEsferica.polar < (FastMath.PI - limiteAnguloPolar))
+            {
+                var down_arrow = new TGCVector3(-1, 0, 0);//------------param
+                //rotation.Add(down_arrow);
+
+                body_xwing.ApplyTorque(down_arrow.ToBulletVector3());
+            }
+            else
+            {
+                rotationYAnimation = true;
+                swapPolarKeys = !swapPolarKeys;
+            }
+        }
+
+        private void UpArrowBullet(float ElapsedTime)
+        {
+            if (coordenadaEsferica.polar > limiteAnguloPolar)
+            {
+                var up_arrow = new TGCVector3(1, 0, 0);//------------param
+
+                //rotation.Add(up_arrow);
+
+                body_xwing.ApplyTorque(up_arrow.ToBulletVector3());
+            }
+            else
+            {
+                rotationYAnimation = true;
+                swapPolarKeys = !swapPolarKeys;
+            }
         }
 
         public void UpdateInputManual(TgcD3dInput input,float ElapsedTime)
@@ -393,7 +403,9 @@ namespace TGC.Group.Model
 
         private void ActualizarCoordenadaEsferica()
         {
-            coordenadaEsferica = new CoordenadaEsferica(rotation);
+            body_xwing.Orientation.Axis.Normalize();
+            if (BULLET) coordenadaEsferica = new CoordenadaEsferica(new TGCVector3(body_xwing.Orientation.Axis));
+            else coordenadaEsferica = new CoordenadaEsferica(rotation);
         }
 
         private TGCVector3 CalcularNuevaPosicion(TGCVector3 posicion, float ElapsedTime)

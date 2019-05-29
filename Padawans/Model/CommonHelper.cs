@@ -46,9 +46,9 @@ namespace TGC.Group.Model
          * */
         public static float ClampPositiveRadians(float radians, float angulo)
         {
-            if (radians < 0)
+            while (radians < 0)
             {
-                return ClampPositiveRadians(radians + (angulo));
+                radians += angulo;
             }
             return radians % (angulo);
         }
@@ -58,7 +58,7 @@ namespace TGC.Group.Model
          * */
         public static float ClampPositiveRadians(float radians)
         {
-            return ClampPositiveRadians(radians, FastMath.PI * 2);
+            return ClampPositiveRadians(radians, FastMath.TWO_PI);
         }
 
         public static void ClampRotationZ(TgcMesh rotando)
