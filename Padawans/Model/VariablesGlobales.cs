@@ -18,5 +18,7 @@ namespace TGC.Group.Model
         public static GameModel gameModel;
         public static PhysicsEngine physicsEngine;
         public static TemporaryElementManager managerElementosTemporales;
+        public static bool BULLET=true;
+        public static Xwing xwing;
     }
 }

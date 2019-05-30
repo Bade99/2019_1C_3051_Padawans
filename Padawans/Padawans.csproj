@@ -116,6 +116,7 @@
     </Compile>
     <Compile Include="Model\ActiveElementManager.cs" />
     <Compile Include="Model\BoundingBoxHelper.cs" />
+    <Compile Include="Model\Debug_Draw_Bullet.cs" />
     <Compile Include="Model\ICueLauncher.cs" />
     <Compile Include="Model\CueManager.cs" />
     <Compile Include="Model\DelayCueLauncher.cs" />

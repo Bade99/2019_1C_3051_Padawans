@@ -60,6 +60,9 @@ namespace TGC.Group.Model
             pistaReferencia = new MainRunway(loader, 5, this.Frustum);
 
             xwing = new Xwing(loader, new TGCVector3(0, 1000f, 2000));
+
+            VariablesGlobales.xwing = xwing;
+
             managerEnemigos = new EnemyManager();
             managerEnemigos.AgregarElemento(new XwingEnemigo(new TGCVector3(0f, 600f, -3000f), xwing));
             worldSphere = new WorldSphere(loader, xwing);
@@ -97,6 +100,7 @@ namespace TGC.Group.Model
         }
         public void RenderizarTodo()
         {
+            physicsEngine.Render(Input);
             xwing.Render();
             pistaReferencia.Render();
             worldSphere.Render();
@@ -136,6 +140,8 @@ namespace TGC.Group.Model
             TGCVector3 esf_coord = xwing.GetCoordenadaEsferica().GetXYZCoord();
             DrawText.drawText("xwing coord esf: " + esf_coord.X +" , "+ esf_coord.Y + " , " + esf_coord.Z, 0, 120, Color.White);
             DrawText.drawText( "xwing body orientacion: "+ xwing.body_xwing.Orientation.Axis.X + " , " + xwing.body_xwing.Orientation.Axis.Y +" , "+ xwing.body_xwing.Orientation.Axis.Z, 0, 130, Color.White);
+            DrawText.drawText("xwing body linear vel: " + xwing.body_xwing.LinearVelocity.X + " , " + xwing.body_xwing.LinearVelocity.Y + " , " + xwing.body_xwing.LinearVelocity.Z, 0, 140, Color.White);
+            DrawText.drawText("xwing body angular vel: " + xwing.body_xwing.AngularVelocity.X + " , " + xwing.body_xwing.AngularVelocity.Y + " , " + xwing.body_xwing.AngularVelocity.Z, 0, 150, Color.White);
             PostRender();
         }
         public override void Dispose()
