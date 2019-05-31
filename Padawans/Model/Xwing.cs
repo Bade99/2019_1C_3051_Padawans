@@ -19,7 +19,7 @@ namespace TGC.Group.Model
     /// </summary>
     public class Xwing : SceneElement, InteractiveElement
     {
-        private bool BULLET = true;
+        private bool BULLET = false;
 
         private TgcSceneLoader loader;
         TgcMesh xwing,alaXwing;
@@ -319,8 +319,8 @@ namespace TGC.Group.Model
             {
                 if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos) {
                     tiempoDesdeUltimoDisparo = 0f;
-                    VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(CalcularPosicionInicialMisil(), coordenadaEsferica,rotation, "Misil\\misil_xwing-TgcScene.xml",Color.FromArgb(255,0,255,0)));
-                    VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_1_disparo.wav", 1,1f,1,0));
+                    VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(CalcularPosicionInicialMisil(), coordenadaEsferica,rotation, "Misil\\misil_xwing-TgcScene.xml", Color.FromArgb(255,0,255,0)));
+                    VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.DISPARO_MISIL);
                 }
             }
 
@@ -339,7 +339,6 @@ namespace TGC.Group.Model
                     rotationYAnimacionAdvance = 0;
                     rotationYAnimation = false;
                 }
-                //ActualizarCoordenadaEsferica();
             }
             if (barrelRoll)//Sigue andando mal :D
             {
@@ -362,7 +361,6 @@ namespace TGC.Group.Model
             }
 
             //Efecto de friccion, aceleracion o velocidad constante
-            ActualizarCoordenadaEsferica();
             posicion = CalcularNuevaPosicion(posicion, ElapsedTime);
             ultimaPosicion = posicion + TGCVector3.One;
         }
@@ -404,8 +402,14 @@ namespace TGC.Group.Model
         private void ActualizarCoordenadaEsferica()
         {
             body_xwing.Orientation.Axis.Normalize();
-            if (BULLET) coordenadaEsferica = new CoordenadaEsferica(new TGCVector3(body_xwing.Orientation.Axis));
-            else coordenadaEsferica = new CoordenadaEsferica(rotation);
+            if (BULLET)
+            {
+                coordenadaEsferica = new CoordenadaEsferica(new TGCVector3(body_xwing.Orientation.Axis));
+            }
+            else
+            {
+                coordenadaEsferica = new CoordenadaEsferica(rotation);
+            }
         }
 
         private TGCVector3 CalcularNuevaPosicion(TGCVector3 posicion, float ElapsedTime)
@@ -446,18 +450,6 @@ namespace TGC.Group.Model
         {
             return coordenadaEsferica;
         }
-        /*
-        private TGCVector3 CalcularOffsetUnAla()
-        {
-            Random rnd = new Random();
-            int rndLargo = (rnd.Next(1, 3)==1) ? 1 : -1;
-            int rndAncho = (rnd.Next(1, 3)==1) ? 1 : -1;
-            var largoOffset = rndLargo * this.alaXwing.BoundingBox.calculateSize().Z * .5f;
-            var anchoOffset = rndAncho * this.alaXwing.BoundingBox.calculateSize().Y * .5f;
-            var distancia = -this.alaXwing.BoundingBox.calculateSize().X * 1.5f;
-            return new TGCVector3(largoOffset, anchoOffset, distancia);
-        }
-        */
 
         /**
  * Devuelve la posicion inicial desde donde sale el misil en funcion de la posicion y la rotacion de la nave.

@@ -20,12 +20,14 @@ namespace TGC.Group.Model
         TgcMesh misil;
         private TGCVector3 escala;
         private TGCVector3 posicion;
-        private CoordenadaEsferica coordenadaEsferica;
+        //Como el misil nunca cambia la trayectoria, guardo las coordenadas cartesianas de la coordenada
+        //esferica para no calcular tantos senos y cosenos
+        private float xCoordEsferica;
+        private float yCoordEsferica;
+        private float zCoordEsferica;
         private float tiempoDeVida = 10f;
         private readonly float velocidadGeneral = 400f;
         private bool terminado = false;
-
-        private TGCVector3 rotacionBase;
         private TGCVector3 rotacionNave;
        
         /**
@@ -34,15 +36,16 @@ namespace TGC.Group.Model
          * Rotacion nave: Constante con el que misil se rota inicialmente para estar alineado a la trayectoria
          * pathscene: Path donde esta ubicado el mesh
          * */
-        public Misil(TGCVector3 posicionNave, CoordenadaEsferica coordenadaEsfericaP, TGCVector3 rotacionNave, string pathScene, Color color)
+        public Misil(TGCVector3 posicionNave, CoordenadaEsferica coordenadaEsferica, TGCVector3 rotacionNave, string pathScene, Color color)
         {
             this.rotacionNave = rotacionNave;
-            this.coordenadaEsferica = coordenadaEsfericaP;
+            this.xCoordEsferica = coordenadaEsferica.GetXCoord();
+            this.yCoordEsferica = coordenadaEsferica.GetYCoord();
+            this.zCoordEsferica = coordenadaEsferica.GetZCoord();
             this.posicion = posicionNave;
             misil = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + pathScene).Meshes[0];
             misil.AutoTransformEnable = false;
             misil.setColor(color);//dice q es poco performate hacer esto, si necesitamos performance aca queda algo @
-            rotacionBase = new TGCVector3(FastMath.PI_HALF,0,0);
             escala = new TGCVector3(.2f, .2f, 4f);
             
         }
@@ -59,9 +62,9 @@ namespace TGC.Group.Model
             }
             else {
                 TGCVector3 delta = new TGCVector3(
-                    coordenadaEsferica.GetXCoord() * velocidadGeneral * ElapsedTime,
-                    coordenadaEsferica.GetYCoord() * velocidadGeneral * ElapsedTime,
-                    coordenadaEsferica.GetZCoord() * velocidadGeneral * ElapsedTime);
+                    xCoordEsferica * velocidadGeneral * ElapsedTime,
+                    yCoordEsferica * velocidadGeneral * ElapsedTime,
+                    zCoordEsferica * velocidadGeneral * ElapsedTime);
 
                 posicion = CommonHelper.SumarVectores(posicion, delta);
 

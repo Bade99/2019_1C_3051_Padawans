@@ -27,6 +27,28 @@ namespace TGC.Group.Model
             polar = CommonHelper.ClampPositiveRadians(-rotation.Z + (FastMath.PI_HALF));
             acimutal = CommonHelper.ClampPositiveRadians(-rotation.Y);
         }
+        /**
+         * Constructor de coordenada esferica utilizando coordenadas cartesianas.
+         * No hacer clamp del angulo, ya que lo uso para medir distancias de angulos y me conviene que queden
+         * en negativo
+         * */
+        public CoordenadaEsferica(float x, float y, float z)
+        {
+            if (x != 0)
+            {
+                acimutal = FastMath.Atan(z / x);
+            } else
+            {
+                acimutal = FastMath.PI_HALF;
+            }
+            if (y!=0)
+            {
+                polar = FastMath.Atan(FastMath.Pow((x*x+z*z), 0.5f) / y);
+            } else
+            {
+                polar = FastMath.PI_HALF;
+            }
+        }
 
         public CoordenadaEsferica(float acimutal, float polar)
         {

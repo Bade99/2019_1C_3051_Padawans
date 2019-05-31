@@ -64,7 +64,7 @@ namespace TGC.Group.Model
             VariablesGlobales.xwing = xwing;
 
             managerEnemigos = new EnemyManager();
-            managerEnemigos.AgregarElemento(new XwingEnemigo(new TGCVector3(0f, 600f, -3000f), xwing));
+            managerEnemigos.AgregarElemento(new XwingEnemigo(new TGCVector3(0f, 600f, -1000f), xwing));
             worldSphere = new WorldSphere(loader, xwing);
             followingCamera = new FollowingCamera(xwing);
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ActiveElementManager[] { managerElementosTemporales });

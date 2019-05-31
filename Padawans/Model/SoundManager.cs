@@ -42,5 +42,20 @@ namespace TGC.Group.Model
         {
             elems.ForEach(elem => elem.Resume());
         }
+
+        public void ReproducirSonido(SONIDOS sonido)
+        {
+            switch(sonido)
+            {
+                case SONIDOS.DISPARO_MISIL:
+                    AgregarElemento(new Sonido("Sonidos\\XWing_1_disparo.wav", 1, 1f, 1, 0));
+                    break;
+            }
+        }
+
+        public enum SONIDOS
+        {
+            DISPARO_MISIL
+        }
     }
 }
