@@ -91,8 +91,8 @@ namespace TGC.Group.Model
         {
             TGCVector3 vectorDistancia = CommonHelper.SumarVectores(target.GetPosition(), -posicion);
             coordenadaAXwing = new CoordenadaEsferica(vectorDistancia.X, vectorDistancia.Y, vectorDistancia.Z);
-            return Math.Abs(coordenadaEsferica.acimutal - coordenadaAXwing.acimutal) < radioAperturaVisibilidad
-                && Math.Abs(coordenadaEsferica.polar - coordenadaAXwing.polar) < radioAperturaVisibilidad;
+            CoordenadaEsferica dif = this.coordenadaEsferica.Diferencia(coordenadaAXwing);
+            return dif.acimutal < radioAperturaVisibilidad && dif.polar < radioAperturaVisibilidad;
         }
     }
 }

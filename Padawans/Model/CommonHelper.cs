@@ -21,6 +21,7 @@ namespace TGC.Group.Model
         public static TGCVector3 vectorMitad = new TGCVector3(0.5f, 0.5f, 0.5f);
         public static TGCVector3 vectorDecima = new TGCVector3(0.1f, 0.1f, 0.1f);
         public readonly static float PI = (float)FastMath.PI;
+        public static float TRES_MEDIO_PI = PI + FastMath.PI_HALF;
 
         public static TGCVector3 SumarVectores(TGCVector3 vector1, TGCVector3 vector2)
         {
@@ -125,6 +126,52 @@ namespace TGC.Group.Model
         {
             float magnitude=FastMath.Sqrt(FastMath.Pow2(v.X) + FastMath.Pow2(v.Y) + FastMath.Pow2(v.Z));
             return DividirPorEscalar(v,magnitude);
+        }
+        public static float GetArgumento(float a, float b)
+        {
+            if (a != 0)
+            {
+                int cuadrante = Cuadrante(a, b);
+                float angulo = FastMath.Atan(b / a);
+                if (cuadrante == 2 || cuadrante == 3)
+                {
+                    angulo += CommonHelper.PI;
+                }
+                if (cuadrante == 4)
+                {
+                    angulo += FastMath.TWO_PI;
+                }
+                return angulo;
+            }
+            else
+            {
+                return (b >= 0) ? FastMath.PI_HALF : TRES_MEDIO_PI;
+            }
+        }
+        public static int Cuadrante(double a, double b)
+        {
+            if (a >= 0)
+            {
+                if (b >= 0)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 4;
+                }
+            }
+            else
+            {
+                if (b >= 0)
+                {
+                    return 2;
+                }
+                else
+                {
+                    return 3;
+                }
+            }
         }
     }
 }

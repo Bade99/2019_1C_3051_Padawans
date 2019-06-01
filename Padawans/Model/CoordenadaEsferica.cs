@@ -24,23 +24,12 @@ namespace TGC.Group.Model
 
         public CoordenadaEsferica(TGCVector3 rotation)
         {
-            polar = CommonHelper.ClampPositiveRadians(-rotation.Z + (FastMath.PI_HALF));
+            polar = CommonHelper.ClampPositiveRadians(-rotation.Z + (FastMath.PI_HALF), FastMath.PI);
             acimutal = CommonHelper.ClampPositiveRadians(-rotation.Y);
         }
-        /**
-         * Constructor de coordenada esferica utilizando coordenadas cartesianas.
-         * No hacer clamp del angulo, ya que lo uso para medir distancias de angulos y me conviene que queden
-         * en negativo
-         * */
         public CoordenadaEsferica(float x, float y, float z)
         {
-            if (x != 0)
-            {
-                acimutal = FastMath.Atan(z / x);
-            } else
-            {
-                acimutal = FastMath.PI_HALF;
-            }
+            acimutal = CommonHelper.GetArgumento(x, z);
             if (y!=0)
             {
                 polar = FastMath.Atan(FastMath.Pow((x*x+z*z), 0.5f) / y);
@@ -48,6 +37,7 @@ namespace TGC.Group.Model
             {
                 polar = FastMath.PI_HALF;
             }
+            polar = CommonHelper.ClampPositiveRadians(polar, FastMath.PI);
         }
 
         public CoordenadaEsferica(float acimutal, float polar)
@@ -75,6 +65,14 @@ namespace TGC.Group.Model
         public float GetZCoord()
         {
             return FastMath.Sin(acimutal) * FastMath.Sin(polar);
+        }
+
+        public CoordenadaEsferica Diferencia(CoordenadaEsferica coordenadaEsferica)
+        {
+            float deltaAcimutal = FastMath.Abs(this.acimutal - coordenadaEsferica.acimutal);
+            float deltaPolar = FastMath.Abs(this.polar - coordenadaEsferica.polar);
+            return new CoordenadaEsferica(FastMath.Min(deltaAcimutal, FastMath.TWO_PI - deltaAcimutal),
+                FastMath.Min(deltaPolar, FastMath.TWO_PI - deltaPolar));
         }
     }
 }
