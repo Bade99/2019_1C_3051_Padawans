@@ -21,11 +21,19 @@ namespace TGC.Group.Model
     {
         public float acimutal { get; set; }
         public float polar { get; set; }
+        private readonly TGCVector3 rotationBase = new TGCVector3(0, 0, FastMath.PI_HALF);
 
         public CoordenadaEsferica(TGCVector3 rotation)
         {
-            polar = CommonHelper.ClampPositiveRadians(-rotation.Z + (FastMath.PI_HALF), FastMath.PI);
-            acimutal = CommonHelper.ClampPositiveRadians(-rotation.Y);
+            polar = CommonHelper.ClampPositiveRadians(-rotation.Z + rotationBase.Z, FastMath.PI);
+            acimutal = CommonHelper.ClampPositiveRadians(-rotation.Y + rotationBase.Y);
+        }
+
+        public TGCVector3 GetRotation()
+        {
+            float y = CommonHelper.ClampPositiveRadians(-acimutal + FastMath.TWO_PI - rotationBase.Y);
+            float z = CommonHelper.ClampPositiveRadians(-polar + FastMath.PI - rotationBase.Z);
+            return new TGCVector3(0, y, z);
         }
         public CoordenadaEsferica(float x, float y, float z)
         {

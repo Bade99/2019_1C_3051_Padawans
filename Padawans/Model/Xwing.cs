@@ -32,7 +32,7 @@ namespace TGC.Group.Model
         //
 
         //Constantes
-        private readonly float minimaVelocidad = 10f;
+        private readonly float minimaVelocidad = 7f;
         private readonly float velocidadEjes = 10f;
         private readonly float aceleracion = 80;
         //private readonly float aceleracion = 1;//Bullet
@@ -46,9 +46,9 @@ namespace TGC.Group.Model
         private TGCVector3 front = new TGCVector3(0, 0, 1);
         private TGCVector3 back = new TGCVector3(0, 0, -1);
 
-        private float DISTANCIA_ORIGEN_MISIL_DIRECCION_NAVE = 44;
-        private float DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL = 6;
-        private float EXTRA_ANGULO_POLAR_CANION_ABAJO = 0.3f;
+        private readonly float DISTANCIA_ORIGEN_MISIL_DIRECCION_NAVE = 44;
+        private readonly float DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL = 6;
+        private readonly float EXTRA_ANGULO_POLAR_CANION_ABAJO = 0.3f;
 
         private float velocidadGeneral;
         private bool barrelRoll;
@@ -109,7 +109,6 @@ namespace TGC.Group.Model
 
             ActualizarCoordenadaEsferica();
 
-            //Post processing
             bloom = new TgcMesh[2];
             bloom[0] = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "Postprocess\\Bloom\\Main_Xwing\\main_xwing.xml").Meshes[0];
             bloom[1] = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "Postprocess\\Bloom\\Main_Xwing\\main_xwing.xml").Meshes[1];
@@ -351,7 +350,7 @@ namespace TGC.Group.Model
                 if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos) {
                     tiempoDesdeUltimoDisparo = 0f;
                     VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(CalcularPosicionInicialMisil(), coordenadaEsferica,rotation, "Misil\\misil_xwing-TgcScene.xml", Color.FromArgb(255,0,255,0)));
-                    VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.DISPARO_MISIL);
+                    VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.DISPARO_MISIL_XWING);
                 }
             }
 
@@ -392,7 +391,8 @@ namespace TGC.Group.Model
             }
 
             //Efecto de friccion, aceleracion o velocidad constante
-            posicion = CalcularNuevaPosicion(posicion, ElapsedTime);
+            posicion = CommonHelper.MoverPosicionEnDireccionCoordenadaEsferica(posicion, coordenadaEsferica, 
+                velocidadGeneral, ElapsedTime);
             ultimaPosicion = posicion + TGCVector3.One;
         }
 
@@ -441,14 +441,6 @@ namespace TGC.Group.Model
             {
                 coordenadaEsferica = new CoordenadaEsferica(rotation);
             }
-        }
-
-        private TGCVector3 CalcularNuevaPosicion(TGCVector3 posicion, float ElapsedTime)
-        {
-            float x = posicion.X + velocidadGeneral * coordenadaEsferica.GetXCoord() * ElapsedTime;
-            float y = posicion.Y + velocidadGeneral * coordenadaEsferica.GetYCoord() * ElapsedTime;
-            float z = posicion.Z + velocidadGeneral * coordenadaEsferica.GetZCoord() * ElapsedTime;
-            return new TGCVector3(x, y, z);
         }
 
         public override void Dispose()

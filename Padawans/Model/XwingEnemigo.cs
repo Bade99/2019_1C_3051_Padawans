@@ -17,33 +17,41 @@ namespace TGC.Group.Model
     class XwingEnemigo : IActiveElement
     {
         private TgcScene nave;
-        private TGCVector3 velocidad;
         private Xwing target;
         private TemporaryElementManager managerDisparos;
         private TGCVector3 posicion;
         private CoordenadaEsferica coordenadaEsferica;
-        private TGCVector3 rotation;
         private CoordenadaEsferica coordenadaAXwing;
         private float timer = 0;
-
+        //Expresado en segundos
         private readonly float intervaloParaChequearXwing = 2;
+        //Escala inicial del mesh
         private readonly TGCVector3 scale = new TGCVector3(.1f, .1f, .1f);
+        //Radio de visibilidad de la nave para detectarte. Se aplica para ambas coordenadas, generando un cono de visibilidad
         private readonly float radioAperturaVisibilidad = (float)Math.PI / 4;
+        //Distancia maxima a la que el enemigo ve al xwing propio
+        private readonly float distanciaLejanaVisibilidad = 1000;
+        //Velocidad fija de la nave enemigo
+        private float velocidadGeneral = 20;
 
-        public XwingEnemigo(TGCVector3 posicionInicial, Xwing target)
+        public XwingEnemigo(TGCVector3 posicionInicial, Xwing target, float velocidadInicial)
         {
             posicion = posicionInicial;
-            velocidad = new TGCVector3(0,0,70f);
-            this.rotation = new TGCVector3(0, FastMath.PI_HALF * 3, 0);
-            this.coordenadaEsferica = new CoordenadaEsferica(rotation);
+            velocidadGeneral = velocidadInicial;
+            //Por defecto, se encuentra mirando hacia el z+
+            this.coordenadaEsferica = new CoordenadaEsferica(FastMath.PI_HALF, FastMath.PI_HALF);
             nave = new TgcSceneLoader().loadSceneFromFile(VariablesGlobales.mediaDir+"XWing\\X-Wing-TgcScene.xml");//@ésta deberia ser nuestra nave, no la enemiga!
             nave.Meshes.ForEach(mesh => {
                 mesh.AutoTransformEnable = false;
-                mesh.Transform = TGCMatrix.Scaling(scale) * TGCMatrix.RotationYawPitchRoll(rotation.Y, rotation.X, rotation.Z) * TGCMatrix.Translation(posicion);
+                mesh.Transform = TGCMatrix.Scaling(scale) * 
+                TGCMatrix.RotationYawPitchRoll(coordenadaEsferica.GetRotation().Y, coordenadaEsferica.GetRotation().X, coordenadaEsferica.GetRotation().Z) * 
+                TGCMatrix.Translation(posicion);
             });
             this.target = target;
             this.managerDisparos = managerDisparos;
-            //por defecto, mira hacia el z+ y paralelo al plano ZX
+            //Calcula inicialmente en que direccion esta el xwing principal
+            TGCVector3 vectorDistancia = CommonHelper.SumarVectores(target.GetPosition(), -posicion);
+            coordenadaAXwing = new CoordenadaEsferica(vectorDistancia.X, vectorDistancia.Y, vectorDistancia.Z);
         }
 
         public void Update(float elapsedTime)
@@ -58,15 +66,26 @@ namespace TGC.Group.Model
                 {
                     timer = 0;
                     Disparar();
+
                 }
             }
+            //Dirigirse en direccion al xwing
+            coordenadaEsferica = coordenadaAXwing;
+            //Moverse en direccion de la coordenadaEsferica y la velocidad general
+            posicion = CommonHelper.MoverPosicionEnDireccionCoordenadaEsferica(posicion, coordenadaEsferica, velocidadGeneral, elapsedTime);
+            nave.Meshes.ForEach(mesh => {
+                mesh.Transform = TGCMatrix.Scaling(scale) *
+                TGCMatrix.RotationYawPitchRoll(coordenadaEsferica.GetRotation().Y, coordenadaEsferica.GetRotation().X, coordenadaEsferica.GetRotation().Z) * 
+                TGCMatrix.Translation(posicion);
+            });
+
         }
         private void Disparar()
         {
             VariablesGlobales.managerElementosTemporales.AgregarElemento(
-                new Misil(posicion, coordenadaAXwing, rotation,
+                new Misil(posicion, coordenadaAXwing, coordenadaAXwing.GetRotation(),
                 "Misil\\misil_xwing-TgcScene.xml", Color.FromArgb(255, 0, 0, 255)));
-            VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.DISPARO_MISIL);
+            VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.DISPARO_MISIL_ENEMIGO);
         }
         public void Render()
         {
@@ -86,13 +105,17 @@ namespace TGC.Group.Model
         {
             nave.DisposeAll();
         }
-        //Chequea que la nave enemiga este viendo la nave principal chequeando si esta en su radio de apertura
+ /**
+  * Chequea dado el radio de apertura y la direccion en que mira la nave enemigo, si esta viendo al xwing 
+  * principal.
+  **/
         public bool XwingSeEncuentraEnRadioDeVisibilidad()
         {
             TGCVector3 vectorDistancia = CommonHelper.SumarVectores(target.GetPosition(), -posicion);
             coordenadaAXwing = new CoordenadaEsferica(vectorDistancia.X, vectorDistancia.Y, vectorDistancia.Z);
             CoordenadaEsferica dif = this.coordenadaEsferica.Diferencia(coordenadaAXwing);
-            return dif.acimutal < radioAperturaVisibilidad && dif.polar < radioAperturaVisibilidad;
+            return dif.acimutal < radioAperturaVisibilidad && dif.polar < radioAperturaVisibilidad
+                && vectorDistancia.Length() < distanciaLejanaVisibilidad;
         }
     }
 }

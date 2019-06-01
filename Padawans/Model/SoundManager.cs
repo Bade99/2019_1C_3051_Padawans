@@ -57,15 +57,18 @@ namespace TGC.Group.Model
         {
             switch(sonido)
             {
-                case SONIDOS.DISPARO_MISIL:
-                    AgregarElemento(new Sonido("Sonidos\\XWing_1_disparo.wav", 0, 1f, 1, 0,""));
+                case SONIDOS.DISPARO_MISIL_XWING:
+                    AgregarElemento(new Sonido("Sonidos\\XWing_1_disparo.wav", 1, 1f, 1, 0, ""));
+                    break;
+                case SONIDOS.DISPARO_MISIL_ENEMIGO:
+                    AgregarElemento(new Sonido("Sonidos\\TIE_fighter_1_disparo.wav", 1, 1f, 1, 0, ""));
                     break;
             }
         }
 
         public enum SONIDOS
         {
-            DISPARO_MISIL
+            DISPARO_MISIL_XWING, DISPARO_MISIL_ENEMIGO
         }
     }
 }

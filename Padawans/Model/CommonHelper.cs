@@ -173,5 +173,13 @@ namespace TGC.Group.Model
                 }
             }
         }
+        public static TGCVector3 MoverPosicionEnDireccionCoordenadaEsferica(TGCVector3 posicion, 
+            CoordenadaEsferica coordenadaEsferica, float speed, float timeLapse)
+        {
+            float x = posicion.X + speed * coordenadaEsferica.GetXCoord() * timeLapse;
+            float y = posicion.Y + speed * coordenadaEsferica.GetYCoord() * timeLapse;
+            float z = posicion.Z + speed * coordenadaEsferica.GetZCoord() * timeLapse;
+            return new TGCVector3(x, y, z);
+        }
     }
 }

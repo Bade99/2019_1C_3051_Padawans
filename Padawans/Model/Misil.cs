@@ -26,7 +26,7 @@ namespace TGC.Group.Model
         private float yCoordEsferica;
         private float zCoordEsferica;
         private float tiempoDeVida = 10f;
-        private readonly float velocidadGeneral = 400f;
+        private readonly float velocidadGeneral = 1000f;
         private bool terminado = false;
         private TGCVector3 rotacionNave;
        
