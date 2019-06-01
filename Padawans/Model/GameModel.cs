@@ -70,11 +70,11 @@ namespace TGC.Group.Model
             worldSphere = new WorldSphere(loader, xwing);
             followingCamera = new FollowingCamera(xwing);
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ActiveElementManager[] { managerElementosTemporales });
-            cues = new CueManager(new Cue(new DelayCueLauncher(3),"Bitmaps\\WASD.png", .3f, cues_relative_posicion,3, "Sonidos\\obi_wan_luke.wav",.5f,0),
-                                  new Cue(new DelayCueLauncher(3),"Bitmaps\\Pause.png", .3f, cues_relative_posicion,3, "Sonidos\\obi_wan_luke.wav",.5f,0),
-                                  new Cue(new DelayCueLauncher(3),"Bitmaps\\Left_Mouse.png",.3f,cues_relative_posicion,3, "Sonidos\\obi_wan_luke.wav",.5f,0)
+            cues = new CueManager(new Cue(new DelayCueLauncher(3),"Bitmaps\\WASD.png", .3f, cues_relative_posicion,3),
+                                  new Cue(new DelayCueLauncher(3),"Bitmaps\\Pause.png", .3f, cues_relative_posicion,3),
+                                  new Cue(new DelayCueLauncher(3),"Bitmaps\\Left_Mouse.png",.3f,cues_relative_posicion,3)
                                   );
-            managerSonido.AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav",-1800,0,-1,0,""));//sonido batalla de fondo
+            managerSonido.ReproducirSonido(SoundManager.SONIDOS.BACKGROUND_BATTLE);
             managerMenu = new MenuManager(new StartMenu(Key.Return),new PauseMenu(Key.Escape));
 
             postProcess = new PostProcess();

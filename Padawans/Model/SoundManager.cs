@@ -32,10 +32,23 @@ namespace TGC.Group.Model
             elems.ForEach(elem => { elem.Dispose(); });
             RemoverTodosLosElementos();
         }
-        public void RemoveID(string ID)
+        public void RemoveID(SONIDOS sonido)
         {
-            ISoundElement sonidoATerminar = elems.Find(elem =>  elem.GetID()==ID );//tira exception si no hay elementos
-            if (sonidoATerminar != null) sonidoATerminar.Terminar();
+            string ID = "";
+            switch (sonido)
+            {
+                case SONIDOS.PAUSE:
+                    ID = "pause_menu";
+                    break;
+                case SONIDOS.MAIN_MENU:
+                    ID = "main_menu";
+                    break;
+            }
+            ISoundElement sonidoATerminar = elems.Find(elem => elem.GetID().Equals(ID));
+            if (sonidoATerminar != null)
+            {
+                sonidoATerminar.Terminar();
+            }
         }
         public void PauseAll()
         {
@@ -63,12 +76,31 @@ namespace TGC.Group.Model
                 case SONIDOS.DISPARO_MISIL_ENEMIGO:
                     AgregarElemento(new Sonido("Sonidos\\TIE_fighter_1_disparo.wav", 1, 1f, 1, 0, ""));
                     break;
+                case SONIDOS.BACKGROUND_BATTLE:
+                    AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav", -1800, 0, -1, 0, ""));
+                    break;
+                case SONIDOS.LUKE_OBI_WAN:
+                    AgregarElemento(new Sonido("Sonidos\\obi_wan_luke.wav", 0, 0.5f, 1, 0, ""));
+                    break;
+                case SONIDOS.PAUSE:
+                    AgregarElemento(new Sonido("Sonidos\\main_menu.wav", 0, 0, -1, 0, "pause_menu"));
+                    break;
+                case SONIDOS.MAIN_MENU:
+                    AgregarElemento(new Sonido("Sonidos\\main_menu.wav", 0, 0, -1, 0, "main_menu"));
+                    break;
+                case SONIDOS.FLYBY_2:
+                    AgregarElemento(new Sonido("Sonidos\\XWing_flyby_2.wav", -600, 8, 1, 0, ""));
+                    break;
+                case SONIDOS.XWING_ENGINE:
+                    AgregarElemento(new Sonido("Sonidos\\XWing_engine.wav", -600, 1, -1, 0, ""));
+                    break;
             }
-        }
+         }
+
 
         public enum SONIDOS
         {
-            DISPARO_MISIL_XWING, DISPARO_MISIL_ENEMIGO
+            DISPARO_MISIL_XWING, DISPARO_MISIL_ENEMIGO, BACKGROUND_BATTLE, LUKE_OBI_WAN, MAIN_MENU, PAUSE, FLYBY_2, XWING_ENGINE
         }
     }
 }

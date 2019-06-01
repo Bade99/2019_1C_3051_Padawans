@@ -35,8 +35,6 @@ namespace TGC.Group.Model
         private Drawer2D drawer2D;
         private bool isCurrent = false;
         private Key mappedKey;
-        private string path = "Sonidos\\main_menu.wav";
-        private string soundID = "pause_menu";
         public PauseMenu(Microsoft.DirectX.DirectInput.Key mappedKey)
         {//recibe un key.algo para la key que abre y cierra el menu
             this.mappedKey = mappedKey;
@@ -57,8 +55,7 @@ namespace TGC.Group.Model
             if (input.keyPressed(mappedKey)) {
                 isCurrent = true;
                 VariablesGlobales.managerSonido.PauseAll();
-                
-                VariablesGlobales.managerSonido.AgregarElemento(new Sonido(path, 0, 0, -1, 0,soundID));
+                VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.PAUSE);
                 return true;
             } 
             return false;
@@ -68,7 +65,7 @@ namespace TGC.Group.Model
             if (input.keyPressed(mappedKey))
             {
                 isCurrent = false;
-                VariablesGlobales.managerSonido.RemoveID(soundID);
+                VariablesGlobales.managerSonido.RemoveID(SoundManager.SONIDOS.PAUSE);
                 VariablesGlobales.managerSonido.ResumeAll();
             }
             if (input.keyPressed(Key.M))

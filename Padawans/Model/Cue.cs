@@ -21,11 +21,8 @@ namespace TGC.Group.Model
         private float duracion;
         private bool terminado = false;
         private bool play_sound = true;
-        private string sonido_path;
-        private float sonido_duracion;
-        private int sonido_volumen;
 
-        public Cue(ICueLauncher cueLauncher,string bitmap_path,float relative_scale,TGCVector2 relative_pos,float duracion,string sonido_path,float sonido_duracion,int sonido_volumen)
+        public Cue(ICueLauncher cueLauncher, string bitmap_path, float relative_scale, TGCVector2 relative_pos, float duracion)
         {//despues agrego mas condiciones para que una cue inicie, ademas de delay
             this.cueLauncher = cueLauncher;
             drawer2D = new Drawer2D();
@@ -40,9 +37,6 @@ namespace TGC.Group.Model
             cue.Position = new TGCVector2(D3DDevice.Instance.Width* relative_pos.X, D3DDevice.Instance.Height* relative_pos.Y);
             this.delay = delay;
             this.duracion = duracion;
-            this.sonido_path = sonido_path;
-            this.sonido_duracion = sonido_duracion;
-            this.sonido_volumen = sonido_volumen;
         }
         public TGCVector2 CalculeRelativeScaling(CustomBitmap bitmap,float scale)
         {//hace el calculo sobre width
@@ -68,7 +62,10 @@ namespace TGC.Group.Model
         {
             if (duracion > 0)
             {
-                if (play_sound) { VariablesGlobales.managerSonido.AgregarElemento(new Sonido(sonido_path, sonido_volumen, sonido_duracion, 1, 0,"")); play_sound = false; }
+                if (play_sound) {
+                    VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.LUKE_OBI_WAN);
+                    play_sound = false;
+                }
                 drawer2D.BeginDrawSprite();
                 drawer2D.DrawSprite(cue);
                 drawer2D.EndDrawSprite();

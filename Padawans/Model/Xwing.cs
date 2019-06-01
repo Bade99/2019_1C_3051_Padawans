@@ -115,8 +115,8 @@ namespace TGC.Group.Model
             bloom[0].AutoTransformEnable = false; bloom[1].AutoTransformEnable = false;
             //
 
-            VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_flyby_2.wav", -600, 8, 1,0,""));
-            VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_engine.wav",-600,1,-1,0,""));
+            VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.FLYBY_2);
+            VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.XWING_ENGINE);
         }
 
         public override void Render()
