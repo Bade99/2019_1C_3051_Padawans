@@ -29,7 +29,7 @@ namespace TGC.Group.Model
         }
         public void Render()
         {
-            if (currentMenu != null && currentMenu.IsCurrent()) currentMenu.Render();
+            if (IsCurrent()) currentMenu.Render();
         }
         public void Dispose() {
             elems.ForEach(elem => { elem.Dispose(); });

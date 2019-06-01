@@ -8,7 +8,7 @@ using TGC.Core.Input;
 using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
-
+using System.Collections.Generic;
 
 namespace TGC.Group.Model
 {
@@ -25,8 +25,10 @@ namespace TGC.Group.Model
         private MenuManager managerMenu;
         private CueManager cues;
         private PhysicsEngine physicsEngine;
-
+        private PostProcess postProcess;
         private TGCVector2 cues_relative_posicion;
+
+        private float time = 5;
 
         public GameModel(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
         {
@@ -74,6 +76,10 @@ namespace TGC.Group.Model
                                   );
             managerSonido.AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav",-1800,0,-1,0));//sonido batalla de fondo
             managerMenu = new MenuManager(new StartMenu(Key.Return),new PauseMenu(Key.Escape));
+
+            postProcess = new PostProcess();
+            VariablesGlobales.postProcess = postProcess;
+            postProcess.AgregarElemento(xwing);
         }
         public override void Update()
         {
@@ -98,7 +104,11 @@ namespace TGC.Group.Model
 
             PostUpdate();
         }
-        public void RenderizarTodo()
+        public void RenderizarMenus()
+        {
+            managerMenu.Render();//ahora mismo estamos haciendo doble render en el menu, dsps lo arreglo
+        }
+        public void RenderizarMeshes()
         {
             physicsEngine.Render(Input);
             xwing.Render();
@@ -113,16 +123,19 @@ namespace TGC.Group.Model
         public override void Render()
         {
             PreRender();
-
-            if (managerMenu.IsCurrent()) managerMenu.Render();
-            else
+            RenderizarMeshes();
+            RenderizarMenus();
+            if (VariablesGlobales.POSTPROCESS)//mi idea era q el postprocess pueda obtener todo ya renderizado, pero de momento tengo q re-renderizar todo again antes de poder usarlo
             {
-                RenderizarTodo();
+                if (time < 0f)
+                {
+                postProcess.RenderPostProcess("bloom");
+
+                }
+                else time -= VariablesGlobales.elapsedTime;
             }
-
-            //this.Frustum.render();
-
             CustomPostRender();
+
         }
         public void CustomPostRender()
         {
@@ -158,41 +171,23 @@ namespace TGC.Group.Model
         }
 
 
+
         /*solo para saber qué hacen
         protected virtual void PreRender()
         {
-            BeginRenderScene();
-            ClearTextures(); //TODO no se si falta algo mas previo.
+            D3DDevice.Instance.Device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, BackgroundColor, 1.0f, 0);
+            D3DDevice.Instance.Device.BeginScene();
+            ClearTextures();
         }
 
         protected virtual void PostRender()
         {
             RenderAxis();
             RenderFPS();
-            EndRenderScene();
-        }
-
-        protected void BeginRenderScene()
-        {
-            D3DDevice.Instance.Device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, BackgroundColor, 1.0f, 0);
-            BeginScene();
-        }
-
-        public void BeginScene()
-        {
-            D3DDevice.Instance.Device.BeginScene();
-        }
-
-        protected void EndRenderScene()
-        {
-            EndScene();
+            D3DDevice.Instance.Device.EndScene();
             D3DDevice.Instance.Device.Present();
         }
 
-        private static void EndScene()
-        {
-            D3DDevice.Instance.Device.EndScene();
-        }
         */
     }
 }

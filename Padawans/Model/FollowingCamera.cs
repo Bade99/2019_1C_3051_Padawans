@@ -1,9 +1,11 @@
 ﻿using System;
 using TGC.Core.Mathematica;
 using TGC.Group.Model;
+using TGC.Core.Mathematica;
 using TGC.Core.Input;
 using Microsoft.DirectX.DirectInput;
 using System.Collections.Generic;
+using BulletSharp;
 
 public class FollowingCamera
 {
@@ -17,13 +19,17 @@ public class FollowingCamera
     private float alcanzarMaximaVelocidadAngularEn = FastMath.PI / 6;
     private readonly static float DESVIO_ANGULO_POLAR = 0.2f;
     private float restar = 0, sumar = 0;
+
+    private RigidBody cam_body;
+
     /// <summary>
     ///     Es el encargado de modificar la camara siguiendo a la nave
     /// </summary>
-    public FollowingCamera(Xwing xwing)
+    public FollowingCamera(Xwing xwing)//@debe ser creada dsps del xwing
     {
         this.xwing = xwing;
         this.coordenadaEsferica = xwing.GetCoordenadaEsferica();
+        cam_body = VariablesGlobales.physicsEngine.AgregarCamara(new TGCVector3(xwing.body_xwing.CenterOfMassPosition)+new TGCVector3(0,10,30));
     }
     public void Update(TGC.Core.Camara.TgcCamera Camara, TgcD3dInput Input, float ElapsedTime)
     {
@@ -32,8 +38,7 @@ public class FollowingCamera
         CoordenadaEsferica anguloNave = new CoordenadaEsferica(xwing.GetCoordenadaEsferica().acimutal, xwing.GetCoordenadaEsferica().polar + DESVIO_ANGULO_POLAR);
         CalcularDeltaAcimutal(ElapsedTime, anguloNave);
         CalcularDeltaPolar(ElapsedTime, anguloNave);
-
-
+        
         //Ruedita para alejar/acercar camara
         if (Input.WheelPos == -1)//rueda para atras
         {
@@ -56,7 +61,11 @@ public class FollowingCamera
             if (sumar>0) sumar -= .01f;
         }
 
+        var a = new TGCMatrix();
+
         cameraPosition = CommonHelper.SumarVectores(xwing.GetPosition(), GetDistancePoint());
+        //cameraPosition = new TGCVector3(cam_body.CenterOfMassPosition);
+
         lookAtCamera = xwing.GetPosition();
         Camara.SetCamera(cameraPosition, lookAtCamera);
 

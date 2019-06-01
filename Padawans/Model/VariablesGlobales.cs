@@ -20,5 +20,7 @@ namespace TGC.Group.Model
         public static TemporaryElementManager managerElementosTemporales;
         public static bool BULLET=true;
         public static Xwing xwing;
+        public static bool POSTPROCESS = true;
+        public static PostProcess postProcess;
     }
 }

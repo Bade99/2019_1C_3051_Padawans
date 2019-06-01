@@ -10,6 +10,7 @@ namespace TGC.Group.Model
         //@@cueManager va a ser basicamente una cola de fifo, capaz conviene que no sea asi ahora que tenemos cue launchers
     {
         private ICue currentCue;
+        private bool isCurrent;
         public CueManager(params ICue[] parameters)
         {
             this.elems = new List<ICue>();
@@ -27,13 +28,14 @@ namespace TGC.Group.Model
             {
                 if (currentCue.IsCurrent()) {
                     currentCue.Update();
-
+                    isCurrent = true;
                 } 
                 if (currentCue.Terminado())
                 {
                     currentCue.Dispose();
                     //elems.RemoveAt(0);
                     elems.Remove(currentCue);
+                    isCurrent = false;
                     try
                     {
                     currentCue = elems.ElementAt(0);
@@ -46,7 +48,7 @@ namespace TGC.Group.Model
         {
             if (currentCue != null)
             {
-                if (currentCue.IsCurrent()) currentCue.Render();
+                if (isCurrent) currentCue.Render();
             }
         }
         public void Dispose()

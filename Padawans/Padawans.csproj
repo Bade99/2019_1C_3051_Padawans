@@ -120,6 +120,7 @@
     <Compile Include="Model\ICueLauncher.cs" />
     <Compile Include="Model\CueManager.cs" />
     <Compile Include="Model\DelayCueLauncher.cs" />
+    <Compile Include="Model\IPostProcess.cs" />
     <Compile Include="Model\PauseMenu.cs" />
     <Compile Include="Model\Cue.cs" />
     <Compile Include="Model\CustomBitmap.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="Model\IActiveElement.cs" />
     <Compile Include="Model\PhysicsEngine.cs" />
     <Compile Include="Model\PositionAABBCueLauncher.cs" />
+    <Compile Include="Model\PostProcess.cs" />
     <Compile Include="Model\Sonido.cs" />
     <Compile Include="Model\SonidoMP3.cs" />
     <Compile Include="Model\SoundManager.cs" />
