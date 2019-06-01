@@ -19,7 +19,7 @@ namespace TGC.Group.Model
         private bool isCurrent= true;
         private Microsoft.DirectX.DirectInput.Key mappedKey;
         private string path = "Sonidos\\main_menu.wav";
-
+        private string soundID = "main_menu";
         public StartMenu(Microsoft.DirectX.DirectInput.Key mappedKey) {//recibe un key.algo para la key que abre y cierra el menu
             this.mappedKey = mappedKey;
             drawer2D = new Drawer2D();
@@ -28,7 +28,7 @@ namespace TGC.Group.Model
             fondo.Bitmap = bitmap;
             CalcularFullScreenScalingAndPosition(fondo);
             VariablesGlobales.managerSonido.PauseAll();
-            VariablesGlobales.managerSonido.AgregarElemento(new Sonido(path,0,0,-1,0,""));
+            VariablesGlobales.managerSonido.AgregarElemento(new Sonido(path,0,0,-1,0,soundID));
         }
         public bool CheckStartKey(TgcD3dInput input)
         {
@@ -39,7 +39,7 @@ namespace TGC.Group.Model
         {
             if (input.keyPressed(mappedKey)) {
                 isCurrent = false;
-                VariablesGlobales.managerSonido.Remove(path);
+                VariablesGlobales.managerSonido.RemoveID(soundID);
                 VariablesGlobales.managerSonido.ResumeAll();
             }
         }

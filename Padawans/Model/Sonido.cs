@@ -34,7 +34,7 @@ namespace TGC.Group.Model
             this.volumen = volumen;
             this.sonido = new TgcStaticSound();
             if (this.volumen > 0) this.volumen = 0; 
-            sonido.loadSound(VariablesGlobales.mediaDir + path,this.volumen, VariablesGlobales.soundDevice);
+            sonido.loadSound(VariablesGlobales.mediaDir + this.path,this.volumen, VariablesGlobales.soundDevice);
             this.ID = ID;
             this.duracion = duracion*repeticiones;
             if (repeticiones < 0) infinito = true;
@@ -96,8 +96,6 @@ namespace TGC.Group.Model
             sonido.play(true);
             paused = false;
         }
-
-        public string GetPath() { return path; }
 
         public void Terminar() { terminado = true; }
 

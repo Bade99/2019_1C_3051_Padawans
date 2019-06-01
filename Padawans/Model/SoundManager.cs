@@ -32,9 +32,9 @@ namespace TGC.Group.Model
             elems.ForEach(elem => { elem.Dispose(); });
             RemoverTodosLosElementos();
         }
-        public void Remove(string path)
+        public void RemoveID(string ID)
         {
-            var sonidoATerminar = elems.Find(elem =>  elem.GetPath()==path );
+            ISoundElement sonidoATerminar = elems.Find(elem =>  elem.GetID()==ID );//tira exception si no hay elementos
             if (sonidoATerminar != null) sonidoATerminar.Terminar();
         }
         public void PauseAll()

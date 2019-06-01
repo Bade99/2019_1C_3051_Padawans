@@ -50,7 +50,7 @@ namespace TGC.Group.Model
             if (input.keyPressed(mappedKey))
             {
                 isCurrent = false;
-                VariablesGlobales.managerSonido.Remove(path);
+                VariablesGlobales.managerSonido.RemoveID(soundID);
                 VariablesGlobales.managerSonido.ResumeAll();
             }
             if (input.keyPressed(Key.M))
