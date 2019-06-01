@@ -17,14 +17,25 @@ namespace TGC.Group.Model
         float delay;
         bool infinito = false;
         bool paused = false;
-
-        public Sonido(string path,int volumen,float duracion,int repeticiones/*-1 = infinito*/,float delay)//volumen es atenuacion en hundredths of a decibel -> entre 0 y -10000 https://docs.microsoft.com/en-us/previous-versions/ms817348(v=msdn.10)
+        int volumen;
+        string ID;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path">La direccion sin mediaDir</param>
+        /// <param name="volumen">Va entre 0(max) y -10000(min) en centenas de decibel</param>
+        /// <param name="duracion"></param>
+        /// <param name="repeticiones"></param>
+        /// <param name="delay">Tiempo hasta que empiece el sonido</param>
+        /// <param name="ID">Un nombre por si necesitas encontrar ese sonido, usar "" para no-name</param>
+        public Sonido(string path,int volumen,float duracion,int repeticiones/*-1 = infinito*/,float delay,string ID/*usar "" pa indicar no ID*/)//volumen es atenuacion en hundredths of a decibel -> entre 0 y -10000 https://docs.microsoft.com/en-us/previous-versions/ms817348(v=msdn.10)
         {
             this.path = path;
+            this.volumen = volumen;
             this.sonido = new TgcStaticSound();
-            if (volumen > 0) volumen = 0; 
-            sonido.loadSound(VariablesGlobales.mediaDir + path,volumen, VariablesGlobales.soundDevice);
-
+            if (this.volumen > 0) this.volumen = 0; 
+            sonido.loadSound(VariablesGlobales.mediaDir + path,this.volumen, VariablesGlobales.soundDevice);
+            this.ID = ID;
             this.duracion = duracion*repeticiones;
             if (repeticiones < 0) infinito = true;
             //this.repeticiones = repeticiones;
@@ -32,6 +43,7 @@ namespace TGC.Group.Model
         public void Update()
         {
             if (paused) return;
+            CheckMute();
             if (delay > 0f)
             {
                 delay -= VariablesGlobales.elapsedTime;
@@ -59,6 +71,15 @@ namespace TGC.Group.Model
                     sonido.stop();
                 }
             }
+        }
+        private void CheckMute()
+        {
+            if (VariablesGlobales.SOUND) sonido.SoundBuffer.Volume = volumen;
+            else sonido.SoundBuffer.Volume = -10000;
+        }
+        public string GetID()
+        {
+            return ID;
         }
         public void Dispose()
         {

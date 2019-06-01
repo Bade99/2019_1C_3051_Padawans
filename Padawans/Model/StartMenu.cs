@@ -28,7 +28,7 @@ namespace TGC.Group.Model
             fondo.Bitmap = bitmap;
             CalcularFullScreenScalingAndPosition(fondo);
             VariablesGlobales.managerSonido.PauseAll();
-            VariablesGlobales.managerSonido.AgregarElemento(new Sonido(path,0,0,-1,0));
+            VariablesGlobales.managerSonido.AgregarElemento(new Sonido(path,0,0,-1,0,""));
         }
         public bool CheckStartKey(TgcD3dInput input)
         {

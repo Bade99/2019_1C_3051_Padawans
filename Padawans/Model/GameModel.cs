@@ -74,7 +74,7 @@ namespace TGC.Group.Model
                                   new Cue(new DelayCueLauncher(3),"Bitmaps\\Pause.png", .3f, cues_relative_posicion,3, "Sonidos\\obi_wan_luke.wav",.5f,0),
                                   new Cue(new DelayCueLauncher(3),"Bitmaps\\Left_Mouse.png",.3f,cues_relative_posicion,3, "Sonidos\\obi_wan_luke.wav",.5f,0)
                                   );
-            managerSonido.AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav",-1800,0,-1,0));//sonido batalla de fondo
+            managerSonido.AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav",-1800,0,-1,0,""));//sonido batalla de fondo
             managerMenu = new MenuManager(new StartMenu(Key.Return),new PauseMenu(Key.Escape));
 
             postProcess = new PostProcess();

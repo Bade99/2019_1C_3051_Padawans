@@ -199,6 +199,8 @@ namespace TGC.Group.Model
             oscurecer.End();
 
             d3dDevice.EndScene();
+
+            //@@@@@@@En algun lado la estoy cagando, xq se quedan lockeados los shaders
         }
 
         private void ProcesarBloom(Effect bloom)//NO me sirve blur, @probar downsampling 

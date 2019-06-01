@@ -140,7 +140,6 @@
     <Compile Include="Model\PositionAABBCueLauncher.cs" />
     <Compile Include="Model\PostProcess.cs" />
     <Compile Include="Model\Sonido.cs" />
-    <Compile Include="Model\SonidoMP3.cs" />
     <Compile Include="Model\SoundManager.cs" />
     <Compile Include="Model\StartMenu.cs" />
     <Compile Include="Model\TemporaryElementManager.cs" />

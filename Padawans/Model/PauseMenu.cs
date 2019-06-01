@@ -23,7 +23,7 @@ namespace TGC.Group.Model
         private bool isCurrent = false;
         private Key mappedKey;
         private string path = "Sonidos\\main_menu.wav";
-        private bool sonido = true;
+        private string soundID = "pause_menu";
         public PauseMenu(Microsoft.DirectX.DirectInput.Key mappedKey)
         {//recibe un key.algo para la key que abre y cierra el menu
             this.mappedKey = mappedKey;
@@ -40,7 +40,7 @@ namespace TGC.Group.Model
                 isCurrent = true;
                 VariablesGlobales.managerSonido.PauseAll();
                 
-                VariablesGlobales.managerSonido.AgregarElemento(new Sonido(path, 0, 0, -1, 0));
+                VariablesGlobales.managerSonido.AgregarElemento(new Sonido(path, 0, 0, -1, 0,soundID));
                 return true;
             } 
             return false;
@@ -55,9 +55,7 @@ namespace TGC.Group.Model
             }
             if (input.keyPressed(Key.M))
             {
-                sonido = !sonido;
-                if(sonido) VariablesGlobales.managerSonido.ResumeAll();
-                else VariablesGlobales.managerSonido.PauseAll();
+                VariablesGlobales.managerSonido.MuteOrUnMute();
             }
         }
         public void Render()

@@ -23,7 +23,10 @@ namespace TGC.Group.Model
                 elems.ForEach(elem => { elem.Update(); });
             }
         }
-
+        public void MuteOrUnMute()
+        {
+            VariablesGlobales.SOUND = !VariablesGlobales.SOUND;
+        }
         public void Dispose()
         {
             elems.ForEach(elem => { elem.Dispose(); });
@@ -42,13 +45,20 @@ namespace TGC.Group.Model
         {
             elems.ForEach(elem => elem.Resume());
         }
-
+        public void PauseID(string ID)
+        {
+            elems.ForEach(elem => { if (elem.GetID() == ID) elem.Pause(); });
+        }
+        public void ResumeID(string ID)
+        {
+            elems.ForEach(elem=> { if (elem.GetID() == ID) elem.Resume(); });
+        }
         public void ReproducirSonido(SONIDOS sonido)
         {
             switch(sonido)
             {
                 case SONIDOS.DISPARO_MISIL:
-                    AgregarElemento(new Sonido("Sonidos\\XWing_1_disparo.wav", 1, 1f, 1, 0));
+                    AgregarElemento(new Sonido("Sonidos\\XWing_1_disparo.wav", 0, 1f, 1, 0,""));
                     break;
             }
         }

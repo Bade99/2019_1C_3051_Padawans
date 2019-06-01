@@ -68,7 +68,7 @@ namespace TGC.Group.Model
         {
             if (duracion > 0)
             {
-                if (play_sound) { VariablesGlobales.managerSonido.AgregarElemento(new Sonido(sonido_path, sonido_volumen, sonido_duracion, 1, 0)); play_sound = false; }
+                if (play_sound) { VariablesGlobales.managerSonido.AgregarElemento(new Sonido(sonido_path, sonido_volumen, sonido_duracion, 1, 0,"")); play_sound = false; }
                 drawer2D.BeginDrawSprite();
                 drawer2D.DrawSprite(cue);
                 drawer2D.EndDrawSprite();

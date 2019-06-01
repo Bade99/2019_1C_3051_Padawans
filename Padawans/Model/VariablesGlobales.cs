@@ -22,5 +22,6 @@ namespace TGC.Group.Model
         public static Xwing xwing;
         public static bool POSTPROCESS = true;
         public static PostProcess postProcess;
+        public static bool SOUND=true;
     }
 }
