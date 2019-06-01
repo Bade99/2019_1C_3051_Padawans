@@ -129,7 +129,7 @@ namespace TGC.Group.Model
             {
                 if (time < 0f)
                 {
-                postProcess.RenderPostProcess("bloom");
+                //postProcess.RenderPostProcess("bloom");
 
                 }
                 else time -= VariablesGlobales.elapsedTime;

@@ -12,7 +12,7 @@ using Microsoft.DirectX.Direct3D;
 using TGC.Core.Shaders;
 using TGC.Core.Textures;
 using TGC.Core.Example;
-
+using Microsoft.DirectX.DirectInput;
 namespace TGC.Group.Model
 {
     class PauseMenu : IMenu //la idea es que el menu de pausa sea semi opaco, con color negro, y se vea atras el juego, no se como hacerlo por ahora
@@ -21,9 +21,9 @@ namespace TGC.Group.Model
         private CustomBitmap bitmap;
         private Drawer2D drawer2D;
         private bool isCurrent = false;
-        private Microsoft.DirectX.DirectInput.Key mappedKey;
+        private Key mappedKey;
         private string path = "Sonidos\\main_menu.wav";
-
+        private bool sonido = true;
         public PauseMenu(Microsoft.DirectX.DirectInput.Key mappedKey)
         {//recibe un key.algo para la key que abre y cierra el menu
             this.mappedKey = mappedKey;
@@ -52,6 +52,12 @@ namespace TGC.Group.Model
                 isCurrent = false;
                 VariablesGlobales.managerSonido.Remove(path);
                 VariablesGlobales.managerSonido.ResumeAll();
+            }
+            if (input.keyPressed(Key.M))
+            {
+                sonido = !sonido;
+                if(sonido) VariablesGlobales.managerSonido.ResumeAll();
+                else VariablesGlobales.managerSonido.PauseAll();
             }
         }
         public void Render()

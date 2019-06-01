@@ -220,7 +220,7 @@ namespace TGC.Group.Model
 
             //Si quisieramos ver que se dibujo, podemos guardar el resultado a una textura en un archivo para debugear su resultado (ojo, es lento)
             
-            TextureLoader.Save(VariablesGlobales.shadersDir + "glow_map.bmp", ImageFileFormat.Bmp, glow_mask);
+            //TextureLoader.Save(VariablesGlobales.shadersDir + "glow_map.bmp", ImageFileFormat.Bmp, glow_mask);
 
             pSurf.Dispose();
             /*Poner
@@ -253,7 +253,7 @@ namespace TGC.Group.Model
 
             d3dDevice.EndScene();
             //Test
-            TextureLoader.Save(VariablesGlobales.shadersDir + "glow_applied.bmp", ImageFileFormat.Bmp, glow_applied);
+            //TextureLoader.Save(VariablesGlobales.shadersDir + "glow_applied.bmp", ImageFileFormat.Bmp, glow_applied);
             cSurf.Dispose();
             //
 
