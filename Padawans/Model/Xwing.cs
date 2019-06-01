@@ -17,7 +17,7 @@ namespace TGC.Group.Model
     /// <summary>
     ///     La nave principal que utiliza el jugador
     /// </summary>
-    public class Xwing : SceneElement, InteractiveElement
+    public class Xwing : SceneElement, InteractiveElement, IPostProcess
     {
         private bool BULLET = false;
 
@@ -25,6 +25,11 @@ namespace TGC.Group.Model
         TgcMesh xwing,alaXwing;
         private TemporaryElementManager managerDisparos;
         public RigidBody body_xwing;
+
+
+        //Post processing
+        TgcMesh[] bloom;
+        //
 
         //Constantes
         private readonly float minimaVelocidad = 10f;
@@ -104,6 +109,13 @@ namespace TGC.Group.Model
 
             ActualizarCoordenadaEsferica();
 
+            //Post processing
+            bloom = new TgcMesh[2];
+            bloom[0] = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "Postprocess\\Bloom\\Main_Xwing\\main_xwing.xml").Meshes[0];
+            bloom[1] = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "Postprocess\\Bloom\\Main_Xwing\\main_xwing.xml").Meshes[1];
+            bloom[0].AutoTransformEnable = false; bloom[1].AutoTransformEnable = false;
+            //
+
             VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_flyby_2.wav", -600, 8, 1,0));
             VariablesGlobales.managerSonido.AgregarElemento(new Sonido("Sonidos\\XWing_engine.wav",-600,1,-1,0));
         }
@@ -120,14 +132,39 @@ namespace TGC.Group.Model
             alaXwing.BoundingBox.Render();
         }
 
+        public void RenderPostProcess(string effect)//renderiza el xwing q solo tiene las partes que se necesitan para ese efecto
+        {
+            if (effect == "bloom")
+            {
+                if (BULLET)
+                {
+                    //Bullet
+                    TGCMatrix bullet_transform = new TGCMatrix(body_xwing.InterpolationWorldTransform);
+                    bloom[0].Transform = matrizXwingInicial * bullet_transform;
+                    bloom[1].Transform = matrizXwingInicial * bullet_transform;
+                    //
+                }
+                else
+                {
+                    //
+                    //Forma normal
+                    bloom[0].Transform = matrizXwingInicial * GetRotationMatrix() * TGCMatrix.Translation(posicion);
+                    bloom[1].Transform = matrizXwingInicial * GetRotationMatrix() * TGCMatrix.Translation(posicion);
+                    //
+                }
+                bloom[0].Render();
+                bloom[1].Render();
+            }
+        }
+
         public override void Update()
         {
             if (BULLET)
             {
             //Bullet
             TGCMatrix bullet_transform = new TGCMatrix(body_xwing.InterpolationWorldTransform);
-            xwing.Transform = matrizXwingInicial * bullet_transform;//* TGCMatrix.Translation(posicion);
-            alaXwing.Transform = matrizXwingInicial * bullet_transform;// * TGCMatrix.Translation(posicion);
+            xwing.Transform = matrizXwingInicial * bullet_transform;
+            alaXwing.Transform = matrizXwingInicial * bullet_transform;
             //
             } else
             {
@@ -211,12 +248,7 @@ namespace TGC.Group.Model
                 //body_xwing.AngularVelocity
             }
 
-            if (tiempo < 0) {
-                var algo = body_xwing.Orientation.Axis;//body_xwing.Orientation.Angle te dice la magnitud
-            }
-            else tiempo -= ElapsedTime;
-
-            ActualizarCoordenadaEsferica();
+            //ActualizarCoordenadaEsferica();
             //body_xwing.ApplyTorque(coordenadaEsferica.GetXYZCoord().ToBulletVector3());
             //body_xwing.ApplyTorque(coordenadaEsferica.GetXYZCoord().ToBulletVector3() * velocidadGeneral);
         }
@@ -244,7 +276,6 @@ namespace TGC.Group.Model
                 var up_arrow = new TGCVector3(1, 0, 0);//------------param
 
                 //rotation.Add(up_arrow);
-
                 body_xwing.ApplyTorque(up_arrow.ToBulletVector3());
             }
             else
