@@ -132,6 +132,7 @@ namespace TGC.Group.Model
                 //}
                 //else time -= VariablesGlobales.elapsedTime;
             }
+            else RenderizarMeshes();
             RenderizarMenus();
             CustomPostRender();
 

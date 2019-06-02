@@ -325,34 +325,10 @@ namespace TGC.Group.Model
             bloom.End();
 
             d3dDevice.EndScene();
-
-            /*Blur viejo
-            d3dDevice.BeginScene();
-
             
-            d3dDevice.VertexFormat = CustomVertex.PositionTextured.Format;
-            d3dDevice.SetStreamSource(0, screenQuadVB, 0);
-            
-            bloom.SetValue("render_target2D", glow_mask);
-            bloom.SetValue("blur_intensity", 100f);
-
-            d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
-            bloom.Begin(FX.None);
-            bloom.BeginPass(0);
-            d3dDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
-            bloom.EndPass();
-            bloom.End();
-
-            d3dDevice.EndScene();
-            */
-
-            //Test
-            //TextureLoader.Save(VariablesGlobales.shadersDir + "glow_applied.bmp", ImageFileFormat.Bmp, glow_applied);
-            //cSurf.Dispose();
-            //
-
-            //ahora falta combinar esto con el base(de momento el base no es modificado, capaz dsps conviene pa concatenar effects)
-
+            //@Problemas:
+            //-el z no se está tomando en cuenta y ta dibujando arriba de otras cosas
+            //-no anda en menus
         }
 
         public void Dispose()
