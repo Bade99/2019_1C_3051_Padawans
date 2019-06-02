@@ -24,7 +24,7 @@ sampler2D diffuseMap = sampler_state
     MIPFILTER = LINEAR;
 };
 
-float screen_dx; // tamaño de la pantalla en pixels
+float screen_dx; // tamaï¿½o de la pantalla en pixels
 float screen_dy;
 float KLum = 1; // factor de luminancia
 
@@ -282,11 +282,11 @@ technique GrayScale
 //
 float4 PSBasePlusGlow(in float2 Tex : TEXCOORD0, in float2 vpos : VPOS) : COLOR0
 {
-	
+
     float4 ColorBase = tex2D(RenderTarget, Tex);
     float4 ColorBrillante = tex2D(GlowMap, Tex + float2((float) 16 / screen_dx, (float) 16 / screen_dy));
 
-    return (ColorBase*.25 + ColorBrillante*.75);// /(float)2;
+    return (ColorBase*.25 + ColorBrillante*.75);
 }
 
 technique BasePlusGlow
@@ -322,7 +322,7 @@ float4 PSToneMapping(in float2 Tex : TEXCOORD0, in float2 vpos : VPOS) : COLOR0
 		// Pantalla derecha
         if (pantalla_completa)
         {
-			// Pantalla completa, 
+			// Pantalla completa,
             tone_mapping = tone_mapping_izq;
         }
         else
@@ -332,7 +332,7 @@ float4 PSToneMapping(in float2 Tex : TEXCOORD0, in float2 vpos : VPOS) : COLOR0
             Tex.x -= 0.5;
         }
     }
-	
+
     float vLum = dot(tex2D(Luminance, float2(0, 0)), LUM_VECTOR);
     float vLumAnt = dot(tex2D(Luminance_ant, float2(0, 0)), LUM_VECTOR);
     float Yk = lerp(vLumAnt, vLum, pupila_time);
@@ -343,7 +343,7 @@ float4 PSToneMapping(in float2 Tex : TEXCOORD0, in float2 vpos : VPOS) : COLOR0
 	// Tone mapping
     if (tone_mapping == 1)
     {
-		// Reinhard 
+		// Reinhard
         ColorBase.rgb = ColorBase.rgb / (1 + ColorBase.rgb);
         ColorBase.rgb *= MIDDLE_GRAY / (Yk + 0.001f);
     }
@@ -367,7 +367,7 @@ float4 PSToneMapping(in float2 Tex : TEXCOORD0, in float2 vpos : VPOS) : COLOR0
         ColorBase.rgb /= (1.0f + ColorBase);
     }
 
-	// combino con glow 
+	// combino con glow
     float4 rta = float4(ColorBase.rgb + 2.6 * ColorBrillante.rgb, 1);
     return rta;
 }
@@ -386,7 +386,7 @@ technique ToneMapping
 // --------------------------------------------------------------------------------
 struct VS_OUTPUT2
 {
-    float4 Position : POSITION; // vertex position 
+    float4 Position : POSITION; // vertex position
     float4 Pos : TEXCOORD0; // distancia a la camara
 };
 
@@ -408,7 +408,7 @@ float4 BlurFactorPS(float4 Pos : TEXCOORD0) : COLOR0
     return color;
 }
 
-// 
+//
 technique RenderBlurFactor
 {
     pass P0
@@ -418,7 +418,7 @@ technique RenderBlurFactor
     }
 }
 
-// Gaussian blur 
+// Gaussian blur
 float4 PSBlur(float2 TextureUV : TEXCOORD0) : COLOR0
 {
     int blur_factor = tex2Dlod(BlurFactor, float4(TextureUV.xy, 0, 0)).r * 255;
@@ -432,7 +432,7 @@ float4 PSBlur(float2 TextureUV : TEXCOORD0) : COLOR0
             float4 CT = float4((TextureUV + float2(i / screen_dx, j / screen_dy)).xy, 0, 0);
             int blur_factor_muestra = tex2Dlod(BlurFactor, CT).r * 255;
             int rm = clamp(blur_factor_muestra, 0, 5);
-		
+
 		// Para poder utilizar este punto como muestra valida, su radio de influencia
 		// tiene que ser mayor o igual a la distancia con respecto al centro
             if (rm * rm >= i * i + j * j)

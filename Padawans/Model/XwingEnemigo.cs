@@ -84,7 +84,7 @@ namespace TGC.Group.Model
         {
             VariablesGlobales.managerElementosTemporales.AgregarElemento(
                 new Misil(posicion, coordenadaAXwing, coordenadaAXwing.GetRotation(),
-                "Misil\\misil_xwing_enemigo-TgcScene.xml", Color.FromArgb(255, 255, 0, 0)));
+                "Misil\\misil_xwing_enemigo-TgcScene.xml"));
             VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.DISPARO_MISIL_ENEMIGO);
         }
         public void Render()

@@ -44,7 +44,7 @@ namespace TGC.Group.Model
             if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos)
             {
                 tiempoDesdeUltimoDisparo = 0f;
-                VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(posicion, new CoordenadaEsferica(rotation), rotation, "Misil\\misil_xwing-TgcScene.xml", Color.OrangeRed));
+                VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(posicion, new CoordenadaEsferica(rotation), rotation, "Misil\\misil_torreta.xml"));
             }
 
         }

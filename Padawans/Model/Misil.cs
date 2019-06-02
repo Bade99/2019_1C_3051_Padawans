@@ -36,7 +36,7 @@ namespace TGC.Group.Model
          * Rotacion nave: Constante con el que misil se rota inicialmente para estar alineado a la trayectoria
          * pathscene: Path donde esta ubicado el mesh
          * */
-        public Misil(TGCVector3 posicionNave, CoordenadaEsferica coordenadaEsferica, TGCVector3 rotacionNave, string pathScene, Color color)
+        public Misil(TGCVector3 posicionNave, CoordenadaEsferica coordenadaEsferica, TGCVector3 rotacionNave, string pathScene)
         {
             this.rotacionNave = rotacionNave;
             this.xCoordEsferica = coordenadaEsferica.GetXCoord();
@@ -45,7 +45,6 @@ namespace TGC.Group.Model
             this.posicion = posicionNave;
             misil = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + pathScene).Meshes[0];
             misil.AutoTransformEnable = false;
-            misil.setColor(color);//dice q es poco performate hacer esto, si necesitamos performance aca queda algo @
             escala = new TGCVector3(.2f, .2f, 4f);
             
         }
