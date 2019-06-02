@@ -6,47 +6,48 @@ using System.Threading.Tasks;
 using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using System.Drawing;
+using TGC.Core.Input;
 
 namespace TGC.Group.Model
 {
-    class Torreta : SceneElement
+    class Torreta : SceneElement, InteractiveElement
     {
         private TgcSceneLoader loader;
         TgcMesh torreta;
         private TGCVector3 posicion;
-        public TGCVector3 rotation;
+        private TGCVector3 rotation;
         private TGCMatrix matrizInicial;
-        private float tiempoEntreDisparos = 1.5f;
+        private readonly float tiempoEntreDisparos = 1.5f;
         private float tiempoDesdeUltimoDisparo = 1.5f;
+        private readonly float distanciaMinimaATarget = 1000;
+        private readonly TGCVector3 origenDeDisparos = new TGCVector3(0, 70, -20);
+        private TGCVector3 tamanioBoundingBox;
+        private readonly float factorEscala = 0.5f;
+        private TGCVector3 rotacionBase;
+        private Xwing target;
 
-        public Torreta(TgcSceneLoader loader)
+        public Torreta(TgcSceneLoader loader, Xwing target, TGCVector3 posicion, TGCVector3 rotacionBase)
         {
             this.loader = loader;
-            torreta = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "XWing\\torreta-TgcScene.xml").Meshes[0];
-
-            matrizInicial = TGCMatrix.Scaling(0.2f, 0.2f, 0.2f);
-            torreta.AutoTransformEnable = false;
-
-            
-            //torreta.setColor(Color.Red);
-        }
-
-        public void Posicionar(TGCVector3 posicion, float anguloRotacion)
-        {
+            this.target = target;
             this.posicion = posicion;
-            torreta.Transform = matrizInicial * TGCMatrix.RotationY(anguloRotacion) * TGCMatrix.Translation(posicion);
+            this.rotacionBase = rotacionBase;
+            this.rotation = rotacionBase;
+            torreta = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "XWing\\torreta-TgcScene.xml").Meshes[0];
+            tamanioBoundingBox = torreta.BoundingBox.calculateSize();
+            matrizInicial = TGCMatrix.Scaling(factorEscala, factorEscala, factorEscala);
+            torreta.AutoTransformEnable = false;
+            Posicionar();
+
         }
 
-        public void UpdateDisparar(float ElapsedTime)
+        public void Posicionar()
         {
-            //Falta agregar la condición de que dispare solo cuando la nave se encuentre a X distancia.
-            tiempoDesdeUltimoDisparo += ElapsedTime;
-            if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos)
-            {
-                tiempoDesdeUltimoDisparo = 0f;
-                VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(posicion, new CoordenadaEsferica(rotation), rotation, "Misil\\misil_torreta.xml"));
-            }
-
+            torreta.Transform = matrizInicial * TGCMatrix.RotationYawPitchRoll(rotation.Y, 0, 0) * TGCMatrix.Translation(posicion);     
+                /* Esto permite que rote en su eje, pero lo dejo desactivado porque los misiles quedan mal
+                * TGCMatrix.Translation(-FastMath.Cos(rotation.Y) * (tamanioBoundingBox.X * factorEscala), 0,
+                -FastMath.Sin(rotation.Y) * (tamanioBoundingBox.Z * factorEscala));
+                */
         }
 
         public override void Render()
@@ -67,6 +68,26 @@ namespace TGC.Group.Model
         public override void Dispose()
         {
             torreta.Dispose();
+        }
+
+        public void UpdateInput(TgcD3dInput input, float ElapsedTime)
+        {
+            tiempoDesdeUltimoDisparo += ElapsedTime;
+            if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos)
+            {
+                tiempoDesdeUltimoDisparo = 0f;
+                TGCVector3 vectorDistanciaAXwing = 
+                    CommonHelper.SumarVectores(target.GetPosition(), -(CommonHelper.SumarVectores(posicion, origenDeDisparos)));
+                if (vectorDistanciaAXwing.Length() < distanciaMinimaATarget)
+                {
+                    CoordenadaEsferica direccionXwing = new CoordenadaEsferica(vectorDistanciaAXwing.X, 
+                        vectorDistanciaAXwing.Y, vectorDistanciaAXwing.Z);
+                    Posicionar();
+                    VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(
+                        CommonHelper.SumarVectores(posicion, origenDeDisparos), 
+                        direccionXwing, direccionXwing.GetRotation(), "Misil\\misil_torreta.xml"));
+                }
+            }
         }
     }
 }

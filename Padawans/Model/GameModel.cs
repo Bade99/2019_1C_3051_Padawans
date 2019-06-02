@@ -59,9 +59,9 @@ namespace TGC.Group.Model
             VariablesGlobales.managerSonido = managerSonido;
             managerElementosTemporales = new TemporaryElementManager();
             VariablesGlobales.managerElementosTemporales = managerElementosTemporales;
-            pistaReferencia = new MainRunway(loader, 5, this.Frustum);
 
             xwing = new Xwing(loader, new TGCVector3(0, 1000f, 2000));
+            pistaReferencia = new MainRunway(loader, 5, this.Frustum, xwing);
 
             VariablesGlobales.xwing = xwing;
 
@@ -98,7 +98,7 @@ namespace TGC.Group.Model
                 followingCamera.Update(Camara,Input,ElapsedTime);
                 managerElementosTemporales.Update(ElapsedTime);
                 managerEnemigos.Update(ElapsedTime);
-                pistaReferencia.UpdateTime(ElapsedTime);
+                pistaReferencia.UpdateInput(Input, ElapsedTime);
                 boundingBoxHelper.UpdateInput(Input, ElapsedTime);
             }
             Thread.Sleep(1);//@mientras mas chico el numero mas ganas en performance, tmb podemos sacar esto y listo

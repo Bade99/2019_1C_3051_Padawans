@@ -17,7 +17,7 @@ namespace TGC.Group.Model
     /// <summary>
     ///     Una clase de ejemplo que grafica pistas para poder tener una referencia de la velocidad de la nave
     /// </summary>
-    public class MainRunway : SceneElement
+    public class MainRunway : SceneElement, InteractiveElement
     {
         private TgcSceneLoader loader;
         TgcScene escena_bomba, escena_alrededores, escena_alrededores2,hierro, tubo_rojo_gira, tubo_rojo_derecho;
@@ -31,7 +31,7 @@ namespace TGC.Group.Model
         /// <summary>
         ///     n representa la cantidad de pistas que va a graficar
         /// </summary>
-        public MainRunway(TgcSceneLoader loader, int n, TgcFrustum frustum)
+        public MainRunway(TgcSceneLoader loader, int n, TgcFrustum frustum, Xwing targetTorretas)
         {
             this.loader = loader;
             this.frustum = frustum;
@@ -43,7 +43,7 @@ namespace TGC.Group.Model
             tubo_rojo_gira = loader.loadSceneFromFile("Padawans_media\\XWing\\pipeline-TgcScene.xml");
             tubo_rojo_derecho = loader.loadSceneFromFile("Padawans_media\\XWing\\tuberia-TgcScene.xml");
 
-            unaTorreta = new Torreta(loader);
+            unaTorreta = new Torreta(loader, targetTorretas, new TGCVector3(50f, 10f, 0f), new TGCVector3(0, FastMath.PI_HALF, 0));
 
             //bloques de construccion
             //piso = loader.loadSceneFromFile("Padawans_media\\XWing\\m1-TgcScene.xml");
@@ -108,7 +108,6 @@ namespace TGC.Group.Model
 
             //escenario principal
             //-----
-            unaTorreta.Posicionar(new TGCVector3(50f, 10f, 0f), FastMath.PI_HALF);
 
             posicion = PlaceSceneLine(escena_bomba, posicion, escalador, n/2, mesh_pivot, 0,rotacion);
 
@@ -191,14 +190,9 @@ namespace TGC.Group.Model
             unaTorreta.Render();
         }
 
-        public void UpdateTime(float ElapsedTime)
-        {
-            unaTorreta.UpdateDisparar(ElapsedTime);
-        }
-
         public override void Update()
         {
-         
+
         }
 
         public override void Dispose()
@@ -211,6 +205,11 @@ namespace TGC.Group.Model
         {
             main_escena_instancia.ForEach(escena => { escena.ForEach(mesh => { mesh.BoundingBox.Render(); }); });
             unaTorreta.RenderBoundingBox();
+        }
+
+        public void UpdateInput(TgcD3dInput input, float ElapsedTime)
+        {
+            unaTorreta.UpdateInput(input, ElapsedTime);
         }
     }
 }
