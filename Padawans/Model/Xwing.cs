@@ -240,7 +240,7 @@ namespace TGC.Group.Model
             }
 
             AcelerarYFrenar(input, ElapsedTime);
-
+            Disparar(input, ElapsedTime);
             ActualizarCoordenadaEsferica();
         }
 
@@ -316,17 +316,7 @@ namespace TGC.Group.Model
                 }
             }
             AcelerarYFrenar(input, ElapsedTime);
-
-            //Disparar
-            tiempoDesdeUltimoDisparo += ElapsedTime;
-            if (input.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT))
-            {
-                if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos) {
-                    tiempoDesdeUltimoDisparo = 0f;
-                    VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(CalcularPosicionInicialMisil(), coordenadaEsferica,rotation, "Misil\\misil_xwing-TgcScene.xml"));
-                    VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.DISPARO_MISIL_XWING);
-                }
-            }
+            Disparar(input, ElapsedTime);
 
             //BarrelRoll con barra espaciadora
             if (input.keyPressed(Key.Space))
@@ -368,6 +358,20 @@ namespace TGC.Group.Model
             posicion = CommonHelper.MoverPosicionEnDireccionCoordenadaEsferica(posicion, coordenadaEsferica, 
                 velocidadGeneral, ElapsedTime);
             ultimaPosicion = posicion + TGCVector3.One;
+        }
+
+        private void Disparar(TgcD3dInput input, float ElapsedTime)
+        {
+            tiempoDesdeUltimoDisparo += ElapsedTime;
+            if (input.buttonDown(TgcD3dInput.MouseButtons.BUTTON_LEFT))
+            {
+                if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos)
+                {
+                    tiempoDesdeUltimoDisparo = 0f;
+                    VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(CalcularPosicionInicialMisil(), coordenadaEsferica, rotation, "Misil\\misil_xwing-TgcScene.xml"));
+                    VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.DISPARO_MISIL_XWING);
+                }
+            }
         }
 
         private void AcelerarYFrenar(TgcD3dInput input, float ElapsedTime)
@@ -429,13 +433,9 @@ namespace TGC.Group.Model
 
         private void ActualizarCoordenadaEsferica()
         {
-            body_xwing.Orientation.Axis.Normalize();
             if (BULLET)
             {
-                Vector3 scale;
-                Quaternion rotation;
-                Vector3 translation;
-                body_xwing.InterpolationWorldTransform.Decompose(out scale, out rotation, out translation);
+                body_xwing.InterpolationWorldTransform.Decompose(out _, out Quaternion rotation, out _);
                 TGCVector3 rotationEuler = CommonHelper.QuaternionToEuler(rotation);
                 coordenadaEsferica = new CoordenadaEsferica(rotationEuler);
             }
@@ -467,8 +467,14 @@ namespace TGC.Group.Model
 
         public TGCVector3 GetPosition()
         {
-            if(BULLET) return new TGCVector3(body_xwing.CenterOfMassPosition);//Bullet
-            else return posicion;//forma normal
+            if (BULLET)
+            {
+                return new TGCVector3(body_xwing.CenterOfMassPosition);
+            }
+            else
+            {
+                return posicion;
+            }
         }
 
         public CoordenadaEsferica GetCoordenadaEsferica()
