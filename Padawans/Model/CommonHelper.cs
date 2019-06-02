@@ -1,4 +1,6 @@
+using BulletSharp.Math;
 using Microsoft.DirectX.DirectInput;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
@@ -181,5 +183,20 @@ namespace TGC.Group.Model
             float z = posicion.Z + speed * coordenadaEsferica.GetZCoord() * timeLapse;
             return new TGCVector3(x, y, z);
         }
+        public static TGCVector3 QuaternionToEuler(Quaternion q)
+        {
+            float q0 = q.W;
+            float q1 = q.Y;
+            float q2 = q.X;
+            float q3 = q.Z;
+
+            TGCVector3 radAngles = new TGCVector3();
+            radAngles.Y = FastMath.Atan2(2f * (q0 * q1 + q2 * q3), 1f - 2f * (FastMath.Pow2(q1) + FastMath.Pow2(q2)));
+            radAngles.X = FastMath.Asin(2f * (q0 * q2 - q3 * q1));
+            radAngles.Z = FastMath.Atan2(2f * (q0 * q3 + q1 * q2), 1f - 2f * (FastMath.Pow2(q2) + FastMath.Pow2(q3)));
+
+            return radAngles;
+        }
+
     }
 }

@@ -11,6 +11,7 @@ using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
 using BulletSharp;
+using BulletSharp.Math;
 
 namespace TGC.Group.Model
 {
@@ -19,7 +20,7 @@ namespace TGC.Group.Model
     /// </summary>
     public class Xwing : SceneElement, InteractiveElement, IPostProcess
     {
-        private bool BULLET = false;
+        private bool BULLET = true;
 
         private TgcSceneLoader loader;
         TgcMesh xwing,alaXwing;
@@ -196,10 +197,8 @@ namespace TGC.Group.Model
 
         public void UpdateInputBullet(TgcD3dInput input, float ElapsedTime)//no uso elapsedtime x ahora, creo q ni hace falta
         {
-            //movimiento constante
-            //personaje_body.AngularVelocity = rotation.ToBulletVector3();
-            body_xwing.ApplyCentralForce(coordenadaEsferica.GetXYZCoord().ToBulletVector3()*5);
-            //
+            ElapsedTime = 0.01f;
+            body_xwing.ApplyCentralForce(coordenadaEsferica.GetXYZCoord().ToBulletVector3()* velocidadGeneral *ElapsedTime);
 
             //Movimientos flechas
             if (input.keyDown(Key.A))
@@ -240,23 +239,16 @@ namespace TGC.Group.Model
                 }
             }
 
-            //Frenar
-            if (input.keyDown(Key.LeftControl))
-            {
-                body_xwing.LinearVelocity *= .99f;
-                //body_xwing.AngularVelocity
-            }
+            AcelerarYFrenar(input, ElapsedTime);
 
-            //ActualizarCoordenadaEsferica();
-            //body_xwing.ApplyTorque(coordenadaEsferica.GetXYZCoord().ToBulletVector3());
-            //body_xwing.ApplyTorque(coordenadaEsferica.GetXYZCoord().ToBulletVector3() * velocidadGeneral);
+            ActualizarCoordenadaEsferica();
         }
 
         private void DownArrowBullet(float ElapsedTime)
         {
             if (coordenadaEsferica.polar < (FastMath.PI - limiteAnguloPolar))
             {
-                var down_arrow = new TGCVector3(-1, 0, 0);//------------param
+                var down_arrow = new TGCVector3(-1, 0, 0);
                 //rotation.Add(down_arrow);
 
                 body_xwing.ApplyTorque(down_arrow.ToBulletVector3());
@@ -323,25 +315,7 @@ namespace TGC.Group.Model
                     UpArrow(ElapsedTime);
                 }
             }
-            //Acelerar
-            if (input.keyDown(Key.LeftShift) && velocidadGeneral < maximaVelocidad)
-            {
-                velocidadGeneral += (aceleracion * ElapsedTime);
-            }
-            //Frenar
-            if (input.keyDown(Key.LeftControl))
-            {
-                velocidadGeneral -= (aceleracion *ElapsedTime / 2);
-            }
-            //Permite que la nave se detenga paulatinamente con la friccion
-            if (velocidadGeneral > minimaVelocidad)
-            {
-                velocidadGeneral -= (friccion*ElapsedTime);
-            }
-            else
-            {
-                velocidadGeneral = minimaVelocidad;
-            }
+            AcelerarYFrenar(input, ElapsedTime);
 
             //Disparar
             tiempoDesdeUltimoDisparo += ElapsedTime;
@@ -396,6 +370,29 @@ namespace TGC.Group.Model
             ultimaPosicion = posicion + TGCVector3.One;
         }
 
+        private void AcelerarYFrenar(TgcD3dInput input, float ElapsedTime)
+        {
+            //Acelerar
+            if (input.keyDown(Key.LeftShift) && velocidadGeneral < maximaVelocidad)
+            {
+                velocidadGeneral += (aceleracion * ElapsedTime);
+            }
+            //Frenar
+            if (input.keyDown(Key.LeftControl))
+            {
+                velocidadGeneral -= (aceleracion * ElapsedTime / 2);
+            }
+            //Permite que la nave se detenga paulatinamente con la friccion
+            if (velocidadGeneral > minimaVelocidad)
+            {
+                velocidadGeneral -= (friccion * ElapsedTime);
+            }
+            else
+            {
+                velocidadGeneral = minimaVelocidad;
+            }
+        }
+
         private void DownArrow(float ElapsedTime)
         {
             if (coordenadaEsferica.polar < (FastMath.PI - limiteAnguloPolar))
@@ -435,7 +432,12 @@ namespace TGC.Group.Model
             body_xwing.Orientation.Axis.Normalize();
             if (BULLET)
             {
-                coordenadaEsferica = new CoordenadaEsferica(new TGCVector3(body_xwing.Orientation.Axis));
+                Vector3 scale;
+                Quaternion rotation;
+                Vector3 translation;
+                body_xwing.InterpolationWorldTransform.Decompose(out scale, out rotation, out translation);
+                TGCVector3 rotationEuler = CommonHelper.QuaternionToEuler(rotation);
+                coordenadaEsferica = new CoordenadaEsferica(rotationEuler);
             }
             else
             {

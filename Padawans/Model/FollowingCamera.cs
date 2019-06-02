@@ -19,6 +19,7 @@ public class FollowingCamera
     private float alcanzarMaximaVelocidadAngularEn = FastMath.PI / 6;
     private readonly static float DESVIO_ANGULO_POLAR = 0.2f;
     private float restar = 0, sumar = 0;
+    private float tiempo = 0;
 
     private RigidBody cam_body;
 
@@ -29,16 +30,24 @@ public class FollowingCamera
     {
         this.xwing = xwing;
         this.coordenadaEsferica = xwing.GetCoordenadaEsferica();
-        cam_body = VariablesGlobales.physicsEngine.AgregarCamara(new TGCVector3(xwing.body_xwing.CenterOfMassPosition)+new TGCVector3(0,10,30));
     }
     public void Update(TGC.Core.Camara.TgcCamera Camara, TgcD3dInput Input, float ElapsedTime)
     {
+        tiempo += ElapsedTime;
+        if (tiempo < 5 )
+        {
+            UpdateInterno(Camara, Input, ElapsedTime);
+        }
 
-        ElapsedTime = 0.01f;//Hardcodeo hasta que sepamos como usarlo
+    }
+
+    private void UpdateInterno(TGC.Core.Camara.TgcCamera Camara, TgcD3dInput Input, float ElapsedTime)
+    {
+        ElapsedTime = 0.01f;
         CoordenadaEsferica anguloNave = new CoordenadaEsferica(xwing.GetCoordenadaEsferica().acimutal, xwing.GetCoordenadaEsferica().polar + DESVIO_ANGULO_POLAR);
         CalcularDeltaAcimutal(ElapsedTime, anguloNave);
         CalcularDeltaPolar(ElapsedTime, anguloNave);
-        
+
         //Ruedita para alejar/acercar camara
         if (Input.WheelPos == -1)//rueda para atras
         {
@@ -56,9 +65,10 @@ public class FollowingCamera
                 fixedDistanceCamera += sumar;
             }
         }
-        else {
-            if (restar>0) restar -= .01f;
-            if (sumar>0) sumar -= .01f;
+        else
+        {
+            if (restar > 0) restar -= .01f;
+            if (sumar > 0) sumar -= .01f;
         }
 
         var a = new TGCMatrix();
@@ -68,7 +78,6 @@ public class FollowingCamera
 
         lookAtCamera = xwing.GetPosition();
         Camara.SetCamera(cameraPosition, lookAtCamera);
-
     }
 
     private TGCVector3 GetDistancePoint()
