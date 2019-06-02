@@ -197,7 +197,6 @@ namespace TGC.Group.Model
 
         public void UpdateInputBullet(TgcD3dInput input, float ElapsedTime)//no uso elapsedtime x ahora, creo q ni hace falta
         {
-            ElapsedTime = 0.01f;
             body_xwing.ApplyCentralForce(coordenadaEsferica.GetXYZCoord().ToBulletVector3()* velocidadGeneral *ElapsedTime);
 
             //Movimientos flechas

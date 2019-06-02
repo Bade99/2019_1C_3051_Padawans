@@ -19,7 +19,6 @@ public class FollowingCamera
     private float alcanzarMaximaVelocidadAngularEn = FastMath.PI / 6;
     private readonly static float DESVIO_ANGULO_POLAR = 0.2f;
     private float restar = 0, sumar = 0;
-    private float tiempo = 0;
 
     private RigidBody cam_body;
 
@@ -33,11 +32,7 @@ public class FollowingCamera
     }
     public void Update(TGC.Core.Camara.TgcCamera Camara, TgcD3dInput Input, float ElapsedTime)
     {
-        tiempo += ElapsedTime;
-        if (tiempo < 5 )
-        {
-            UpdateInterno(Camara, Input, ElapsedTime);
-        }
+        UpdateInterno(Camara, Input, ElapsedTime);
 
     }
 
