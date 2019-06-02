@@ -12,8 +12,9 @@ using System.Collections.Generic;
 
 namespace TGC.Group.Model
 {
-    public class GameModel : TgcExample
+    public class GameModel : TgcExample , IRenderizer
     {
+        private Renderer renderer;
         private Xwing xwing;
         private MainRunway pistaReferencia;
         private WorldSphere worldSphere;
@@ -81,6 +82,8 @@ namespace TGC.Group.Model
             VariablesGlobales.postProcess = postProcess;
             postProcess.AgregarElemento(xwing);
             postProcess.AgregarElemento(managerElementosTemporales);
+
+            renderer = new Renderer(this,postProcess);
         }
         public override void Update()
         {
@@ -123,20 +126,12 @@ namespace TGC.Group.Model
 
         public override void Render()
         {
-            PreRender();
-            RenderizarMeshes();
-            if (VariablesGlobales.POSTPROCESS)//mi idea era q el postprocess pueda obtener todo ya renderizado, pero de momento tengo q re-renderizar todo again antes de poder usarlo
-            {
-                //if (time < 0f)
-                //{
-                postProcess.RenderPostProcess("bloom");
-                //}
-                //else time -= VariablesGlobales.elapsedTime;
-            }
-            else RenderizarMeshes();
-            RenderizarMenus();
-            CustomPostRender();
 
+            renderer.Render();
+        }
+        public void CustomPreRender()
+        {
+            PreRender();
         }
         public void CustomPostRender()
         {

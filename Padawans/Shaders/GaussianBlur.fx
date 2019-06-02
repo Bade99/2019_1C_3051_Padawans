@@ -154,6 +154,7 @@ technique DefaultTechnique
     }
 }
 
+
 // dibuja negro (tiene que ocultar lo que esta oscuro)
 float4 PSOscuros(float3 Texcoord : TEXCOORD0) : COLOR0
 {
@@ -175,6 +176,19 @@ void VSCopy(float4 vPos : POSITION, float2 vTex : TEXCOORD0, out float4 oPos : P
     oPos = vPos;
     oScreenPos = vTex;
     oPos.w = 1;
+}
+
+float4 PSCopy(in float2 Tex : TEXCOORD0) : COLOR0
+{
+	float4 ColorBase = tex2D(RenderTarget, Tex);
+    return ColorBase;
+}
+
+technique Copy{//@Mi dudosa technique
+	pass Pass_0{
+		VertexShader = compile vs_3_0 VSCopy();
+		PixelShader = compile ps_3_0 PSCopy();
+	}
 }
 
 // Gaussian Blur

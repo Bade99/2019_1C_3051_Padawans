@@ -16,14 +16,20 @@ namespace TGC.Group.Model
     //@supongo q para cada efecto lo q haces es cortar el render del anterior, guardarlo en un temp, hacer el tuyo, combinarlos
     {
         private List<IPostProcess> PostProcessElements;
-        Device d3dDevice;
+        private Device d3dDevice;
+
+        private bool hasBaseRender=false;
+        private bool hasFinishedRender = false;
+
+        private Surface screen_render;
+        private Surface screen_depth_stencil;
 
         //General
-        private Surface old_render_target;
-        private Surface old_depth_stencil;
         private VertexBuffer screenQuadVB;
         private Texture base_render;
-        private Surface base_depth_stencil;
+        private Surface base_depth;
+        private Texture finished_render;
+        private Surface finished_depth;
         //
 
         //Oscurecer
@@ -44,6 +50,9 @@ namespace TGC.Group.Model
             PostProcessElements = new List<IPostProcess>();
 
             d3dDevice = D3DDevice.Instance.Device;
+
+            screen_render = d3dDevice.GetRenderTarget(0);
+            screen_depth_stencil = d3dDevice.DepthStencilSurface;
 
             IniciarGenerales();
 
@@ -75,7 +84,13 @@ namespace TGC.Group.Model
                 d3dDevice.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget, Format.X8R8G8B8, Pool.Default);
 
             //Creamos un base_depth_stencil que debe ser compatible con nuestra definicion de base_render.
-            base_depth_stencil = d3dDevice.CreateDepthStencilSurface(d3dDevice.PresentationParameters.BackBufferWidth,
+            base_depth = d3dDevice.CreateDepthStencilSurface(d3dDevice.PresentationParameters.BackBufferWidth,
+                    d3dDevice.PresentationParameters.BackBufferHeight, DepthFormat.D24S8, MultiSampleType.None, 0, true);
+
+            finished_render = new Texture(d3dDevice, d3dDevice.PresentationParameters.BackBufferWidth,
+                d3dDevice.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget, Format.X8R8G8B8, Pool.Default);
+
+            finished_depth = d3dDevice.CreateDepthStencilSurface(d3dDevice.PresentationParameters.BackBufferWidth,
                     d3dDevice.PresentationParameters.BackBufferHeight, DepthFormat.D24S8, MultiSampleType.None, 0, true);
         }
 
@@ -120,33 +135,72 @@ namespace TGC.Group.Model
         /// </summary>
         public void RenderPostProcess(params string[] efectos)
         {
-            CloseRender();
-            RenderBase();
+            if (!hasBaseRender)
+               throw new Exception("No existe target para el postprocesado");
+
             foreach(string efecto in efectos)
             {
+
                 switch (efecto)
                 {
                     case "bloom":
-                        ProcesarBloom(bloom);
+                        ProcesarBloom(bloom);//@@@@cada uno toma un base y lo usa para crear un finished
+                        hasFinishedRender = true; //@cada metodo procesar deberia devolver un valor indicando si se pudo ejecutar, en tal caso hay un nuevo render
                         break;
                     case "oscurecer":
                         ProcesarOscurecer(oscurecer);
+                        hasFinishedRender = true;
                         break;
                 }
+                if (hasFinishedRender) PasarFinishedABase();
             }
+            //Terminas teniendo el render terminado en base
             d3dDevice.BeginScene();//para dejar el render abierto para mas edicion
         }
 
-        private void CloseRender()
+        private void PasarFinishedABase()
         {
-            try
-            {
-                d3dDevice.EndScene();
-            }
-            catch
-            {
-                return;
-            }
+            base_render = finished_render;
+            base_depth = finished_depth;
+            hasFinishedRender = false;
+        }
+
+        public void RenderToScreen()
+        {
+            d3dDevice.SetRenderTarget(0, screen_render);
+            d3dDevice.DepthStencilSurface = screen_depth_stencil;
+            d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.FromArgb(0, 0, 0), 1.0f, 0);
+
+            d3dDevice.BeginScene();
+            //@@poner un efecto especifico para hacer esto
+            bloom.Technique = "Copy";
+            d3dDevice.VertexFormat = CustomVertex.PositionTextured.Format;
+            d3dDevice.SetStreamSource(0, screenQuadVB, 0);
+            bloom.SetValue("g_RenderTarget", base_render);
+            d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+            bloom.Begin(FX.None);
+            bloom.BeginPass(0);
+            d3dDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+            bloom.EndPass();
+            bloom.End();
+
+            d3dDevice.EndScene();
+        }
+
+        public void DoBaseRender()
+        {
+            RenderBase();
+            hasBaseRender = true;
+        }
+
+        public void ClearBaseRender()
+        {
+            hasBaseRender = false;
+        }
+
+        public void ClearFinishedRender()
+        {
+            hasFinishedRender = false;
         }
 
         private void RenderBase()
@@ -155,12 +209,10 @@ namespace TGC.Group.Model
 
             //Cargamos el Render Targer al cual se va a dibujar la escena 3D. Antes nos guardamos el surface original
             //En vez de dibujar a la pantalla, dibujamos a un buffer auxiliar, nuestro Render Target.
-            old_render_target = d3dDevice.GetRenderTarget(0);
-            old_depth_stencil = d3dDevice.DepthStencilSurface;
+
             var pSurf = base_render.GetSurfaceLevel(0);
-            //pSurf = old_render_target;
             d3dDevice.SetRenderTarget(0, pSurf);
-            d3dDevice.DepthStencilSurface = base_depth_stencil;
+            d3dDevice.DepthStencilSurface = base_depth;
             d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.FromArgb(0,0,0), 1.0f, 0);
 
             //Dibujamos la escena comun, pero en vez de a la pantalla al Render Target
@@ -177,13 +229,21 @@ namespace TGC.Group.Model
             //Liberar memoria de surface de Render Target
             pSurf.Dispose();
             //
-            //Ahora volvemos a restaurar el Render Target original (osea dibujar a la pantalla)
-            d3dDevice.SetRenderTarget(0, old_render_target);
-            d3dDevice.DepthStencilSurface = old_depth_stencil;
+        }
+        /// <summary>
+        /// Todo efecto debe renderizar a  este target la nueva img procesada
+        /// </summary>
+        private void SetearTargetAFinished()//@no se q onda con el depth, de momento lo seteo tmb
+        {
+            d3dDevice.SetRenderTarget(0, finished_render.GetSurfaceLevel(0));
+            d3dDevice.DepthStencilSurface = finished_depth;//@@ver xq uso este
+            d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.FromArgb(0, 0, 0), 1.0f, 0);
         }
 
         private void ProcesarOscurecer(Effect oscurecer)
         {
+            SetearTargetAFinished();
+
             //Luego tomamos lo dibujado antes y lo combinamos con una textura
             //Arrancamos la escena
             d3dDevice.BeginScene();
@@ -208,15 +268,11 @@ namespace TGC.Group.Model
             //@@@@@@@En algun lado la estoy cagando, xq se quedan lockeados los shaders 
         }
 
-        private void ProcesarBloom(Effect bloom)//NO me sirve blur, @probar downsampling 
+        private void ProcesarBloom(Effect bloom)
         {
-
-            Surface old_render_target = d3dDevice.GetRenderTarget(0);
-            Surface old_depth_stencil = d3dDevice.DepthStencilSurface;
-
             var pSurf = glow_mask.GetSurfaceLevel(0);
             d3dDevice.SetRenderTarget(0, pSurf);
-            d3dDevice.DepthStencilSurface = base_depth_stencil;//@@ver xq uso este
+            d3dDevice.DepthStencilSurface = base_depth;//@@ver xq uso este
             d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.FromArgb(0,0,0), 1.0f, 0);
 
 
@@ -256,10 +312,10 @@ namespace TGC.Group.Model
 
             d3dDevice.EndScene();
 
-            d3dDevice.DepthStencilSurface = old_depth_stencil;//hacen esto aca pa q cosas no se tapen?
+            //d3dDevice.DepthStencilSurface = old_depth_stencil;//@@@@@@@@@@@@@@@@@@@@@@@@@hacen esto aca pa q cosas no se tapen?
 
             // Pasadas de blur
-            for (int i = 0; i < 5/*cant_pasadas*/; i++)//@por ahora hardcodeo la cant de pasadas
+            for (int i = 0; i < 4/*cant_pasadas*/; i++)//@por ahora hardcodeo la cant de pasadas
             {
                 // Gaussian blur Horizontal
                 // -----------------------------------------------------
@@ -311,7 +367,8 @@ namespace TGC.Group.Model
 
 
             //al final re-seteamos-el render target, dibujo a la pantalla
-            d3dDevice.SetRenderTarget(0, old_render_target);
+
+            SetearTargetAFinished();
 
             d3dDevice.BeginScene();
 
@@ -340,7 +397,9 @@ namespace TGC.Group.Model
             bloom.Dispose();
             screenQuadVB.Dispose();
             base_render.Dispose();
-            base_depth_stencil.Dispose();
+            base_depth.Dispose();
+            finished_render.Dispose();
+            finished_depth.Dispose();
         }
     }
 }
