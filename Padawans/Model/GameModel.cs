@@ -123,17 +123,16 @@ namespace TGC.Group.Model
         public override void Render()
         {
             PreRender();
-            RenderizarMeshes();
-            RenderizarMenus();
+            //RenderizarMeshes();
             if (VariablesGlobales.POSTPROCESS)//mi idea era q el postprocess pueda obtener todo ya renderizado, pero de momento tengo q re-renderizar todo again antes de poder usarlo
             {
-                if (time < 0f)
-                {
-                //postProcess.RenderPostProcess("bloom");
-
-                }
-                else time -= VariablesGlobales.elapsedTime;
+                //if (time < 0f)
+                //{
+                postProcess.RenderPostProcess("bloom");
+                //}
+                //else time -= VariablesGlobales.elapsedTime;
             }
+            RenderizarMenus();
             CustomPostRender();
 
         }

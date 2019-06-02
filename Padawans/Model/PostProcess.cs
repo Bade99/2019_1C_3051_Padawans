@@ -31,10 +31,11 @@ namespace TGC.Group.Model
         //
 
         //Bloom
+        private Effect bloom;
         private Texture glow_mask;
         private Surface glow_depth_stencil;
-        private Effect bloom;
-        /*Test*/private Texture glow_applied;private Surface glow_applied_depth_stencil;
+        private Texture downscaling;
+        private Texture gaussian_aux;
         //
 
 
@@ -90,8 +91,8 @@ namespace TGC.Group.Model
 
         private void IniciarBloom(ref Effect bloom)
         {
-            bloom = TGCShaders.Instance.LoadEffect(VariablesGlobales.shadersDir + "PostProcess.fx");//de momento voy a usar el blur comun ese
-            bloom.Technique = "BlurTechnique";
+            bloom = TGCShaders.Instance.LoadEffect(VariablesGlobales.shadersDir + "GaussianBlur.fx");//de momento voy a usar el blur comun ese
+            //bloom.Technique = "BlurTechnique";
 
             glow_mask = new Texture(d3dDevice, d3dDevice.PresentationParameters.BackBufferWidth,
                     d3dDevice.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget, Format.X8R8G8B8, Pool.Default);
@@ -99,10 +100,14 @@ namespace TGC.Group.Model
             glow_depth_stencil = d3dDevice.CreateDepthStencilSurface(d3dDevice.PresentationParameters.BackBufferWidth,
                         d3dDevice.PresentationParameters.BackBufferHeight, DepthFormat.D24S8, MultiSampleType.None, 0, true);
 
-            /*Test*/glow_applied = new Texture(d3dDevice, d3dDevice.PresentationParameters.BackBufferWidth,
-                        d3dDevice.PresentationParameters.BackBufferHeight, 1, Usage.RenderTarget, Format.X8R8G8B8, Pool.Default);
-            /*Test*/glow_applied_depth_stencil = d3dDevice.CreateDepthStencilSurface(d3dDevice.PresentationParameters.BackBufferWidth,
-                        d3dDevice.PresentationParameters.BackBufferHeight, DepthFormat.D24S8, MultiSampleType.None, 0, true);
+            downscaling = new Texture(d3dDevice, d3dDevice.PresentationParameters.BackBufferWidth / 4,
+                d3dDevice.PresentationParameters.BackBufferHeight / 4, 1, Usage.RenderTarget,
+                Format.X8R8G8B8, Pool.Default);
+
+            gaussian_aux = new Texture(d3dDevice, d3dDevice.PresentationParameters.BackBufferWidth / 4,
+                d3dDevice.PresentationParameters.BackBufferHeight / 4, 1, Usage.RenderTarget,
+                Format.X8R8G8B8, Pool.Default);
+
         }
 
         public void AgregarElemento(IPostProcess elem)
@@ -200,7 +205,7 @@ namespace TGC.Group.Model
 
             d3dDevice.EndScene();
 
-            //@@@@@@@En algun lado la estoy cagando, xq se quedan lockeados los shaders
+            //@@@@@@@En algun lado la estoy cagando, xq se quedan lockeados los shaders 
         }
 
         private void ProcesarBloom(Effect bloom)//NO me sirve blur, @probar downsampling 
@@ -208,6 +213,7 @@ namespace TGC.Group.Model
 
             Surface old_render_target = d3dDevice.GetRenderTarget(0);
             Surface old_depth_stencil = d3dDevice.DepthStencilSurface;
+
             var pSurf = glow_mask.GetSurfaceLevel(0);
             d3dDevice.SetRenderTarget(0, pSurf);
             d3dDevice.DepthStencilSurface = base_depth_stencil;
@@ -225,18 +231,102 @@ namespace TGC.Group.Model
             //TextureLoader.Save(VariablesGlobales.shadersDir + "glow_map.bmp", ImageFileFormat.Bmp, glow_mask);
 
             pSurf.Dispose();
-            /*Poner
+
+            //Hago downscale x4 de la img
+            pSurf = downscaling.GetSurfaceLevel(0);
+            d3dDevice.SetRenderTarget(0, pSurf);
+
+            bloom.SetValue("screen_dx", d3dDevice.PresentationParameters.BackBufferWidth);
+            bloom.SetValue("screen_dy", d3dDevice.PresentationParameters.BackBufferHeight);
+
+            d3dDevice.BeginScene();
+            bloom.Technique = "DownFilter4";
+            d3dDevice.VertexFormat = CustomVertex.PositionTextured.Format;
+            d3dDevice.SetStreamSource(0, screenQuadVB, 0);
+            bloom.SetValue("g_RenderTarget", glow_mask);
+
+            d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+            bloom.Begin(FX.None);
+            bloom.BeginPass(0);
+            d3dDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+            bloom.EndPass();
+            bloom.End();
+
+            pSurf.Dispose();
+
+            d3dDevice.EndScene();
+
+            d3dDevice.DepthStencilSurface = old_depth_stencil;//hacen esto aca pa q cosas no se tapen?
+
+            // Pasadas de blur
+            for (int i = 0; i < 5/*cant_pasadas*/; i++)//@por ahora hardcodeo la cant de pasadas
+            {
+                // Gaussian blur Horizontal
+                // -----------------------------------------------------
+                pSurf = gaussian_aux.GetSurfaceLevel(0);//arranca con el auxiliar
+                d3dDevice.SetRenderTarget(0, pSurf);
+                // dibujo el quad pp dicho :
+
+                d3dDevice.BeginScene();
+                bloom.Technique = "GaussianBlurSeparable";
+                d3dDevice.VertexFormat = CustomVertex.PositionTextured.Format;
+                d3dDevice.SetStreamSource(0, screenQuadVB, 0);
+                bloom.SetValue("g_RenderTarget", downscaling);//le mando el original
+
+                d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+                bloom.Begin(FX.None);
+                bloom.BeginPass(0);
+                d3dDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+                bloom.EndPass();
+                bloom.End();
+                pSurf.Dispose();
+
+                d3dDevice.EndScene();
+
+                pSurf = downscaling.GetSurfaceLevel(0);//uso el original
+                d3dDevice.SetRenderTarget(0, pSurf);
+                pSurf.Dispose();//xq hacen el dispose aca????????
+
+                //  Gaussian blur Vertical
+                // -----------------------------------------------------
+
+                d3dDevice.BeginScene();
+                bloom.Technique = "GaussianBlurSeparable";
+                d3dDevice.VertexFormat = CustomVertex.PositionTextured.Format;
+                d3dDevice.SetStreamSource(0, screenQuadVB, 0);
+                bloom.SetValue("g_RenderTarget", gaussian_aux);//le mando el auxiliar
+
+                d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+                bloom.Begin(FX.None);
+                bloom.BeginPass(1);
+                d3dDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+                bloom.EndPass();
+                bloom.End();
+
+                d3dDevice.EndScene();
+                //@no hacen psurf dispose????
+            }
+
+            //al final re-seteamos-el render target, dibujo a la pantalla
             d3dDevice.SetRenderTarget(0, old_render_target);
-            d3dDevice.DepthStencilSurface = old_depth_stencil;
-            */
 
-            //Test
-            var cSurf = glow_applied.GetSurfaceLevel(0);
-            d3dDevice.SetRenderTarget(0, cSurf);
-            d3dDevice.DepthStencilSurface = glow_applied_depth_stencil;
-            d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.FromArgb(0, 0, 0), 1.0f, 0);
-            //
+            d3dDevice.BeginScene();
 
+            bloom.Technique = "BasePlusGlow";
+            d3dDevice.VertexFormat = CustomVertex.PositionTextured.Format;
+            d3dDevice.SetStreamSource(0, screenQuadVB, 0);
+            bloom.SetValue("g_RenderTarget", base_render);
+            bloom.SetValue("g_GlowMap", gaussian_aux);//@no entiendo xq usa el auxiliar en vez del downscaling
+            d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+            bloom.Begin(FX.None);
+            bloom.BeginPass(0);
+            d3dDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+            bloom.EndPass();
+            bloom.End();
+
+            d3dDevice.EndScene();
+
+            /*Blur viejo
             d3dDevice.BeginScene();
 
             
@@ -254,12 +344,15 @@ namespace TGC.Group.Model
             bloom.End();
 
             d3dDevice.EndScene();
+            */
+
             //Test
             //TextureLoader.Save(VariablesGlobales.shadersDir + "glow_applied.bmp", ImageFileFormat.Bmp, glow_applied);
-            cSurf.Dispose();
+            //cSurf.Dispose();
             //
 
             //ahora falta combinar esto con el base(de momento el base no es modificado, capaz dsps conviene pa concatenar effects)
+
         }
 
         public void Dispose()
