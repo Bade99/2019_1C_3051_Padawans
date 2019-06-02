@@ -80,6 +80,7 @@ namespace TGC.Group.Model
             postProcess = new PostProcess();
             VariablesGlobales.postProcess = postProcess;
             postProcess.AgregarElemento(xwing);
+            postProcess.AgregarElemento(managerElementosTemporales);
         }
         public override void Update()
         {
@@ -123,7 +124,7 @@ namespace TGC.Group.Model
         public override void Render()
         {
             PreRender();
-            //RenderizarMeshes();
+            RenderizarMeshes();
             if (VariablesGlobales.POSTPROCESS)//mi idea era q el postprocess pueda obtener todo ya renderizado, pero de momento tengo q re-renderizar todo again antes de poder usarlo
             {
                 //if (time < 0f)

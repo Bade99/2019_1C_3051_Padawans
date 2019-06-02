@@ -216,7 +216,7 @@ namespace TGC.Group.Model
 
             var pSurf = glow_mask.GetSurfaceLevel(0);
             d3dDevice.SetRenderTarget(0, pSurf);
-            d3dDevice.DepthStencilSurface = base_depth_stencil;
+            d3dDevice.DepthStencilSurface = base_depth_stencil;//@@ver xq uso este
             d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.FromArgb(0,0,0), 1.0f, 0);
 
 
@@ -306,6 +306,9 @@ namespace TGC.Group.Model
                 d3dDevice.EndScene();
                 //@no hacen psurf dispose????
             }
+            //TextureLoader.Save(VariablesGlobales.shadersDir + "base.bmp", ImageFileFormat.Bmp, base_render);
+            //TextureLoader.Save(VariablesGlobales.shadersDir + "blur.bmp", ImageFileFormat.Bmp, gaussian_aux);
+
 
             //al final re-seteamos-el render target, dibujo a la pantalla
             d3dDevice.SetRenderTarget(0, old_render_target);
