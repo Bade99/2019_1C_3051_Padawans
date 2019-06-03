@@ -39,7 +39,7 @@ public class FollowingCamera
 
     private void UpdateInterno(TGC.Core.Camara.TgcCamera Camara, TgcD3dInput Input, float ElapsedTime)
     {
-        ElapsedTime = 0.01f;
+        //ElapsedTime = 0.01f;
         CoordenadaEsferica anguloNave = new CoordenadaEsferica(xwing.GetCoordenadaEsferica().acimutal, xwing.GetCoordenadaEsferica().polar + DESVIO_ANGULO_POLAR);
         if (VariablesGlobales.BULLET)
         {

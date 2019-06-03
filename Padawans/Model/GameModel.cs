@@ -29,8 +29,6 @@ namespace TGC.Group.Model
         private PostProcess postProcess;
         private TGCVector2 cues_relative_posicion;
 
-        private float time = 5;
-
         public GameModel(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
         {
             Category = Game.Default.Category;

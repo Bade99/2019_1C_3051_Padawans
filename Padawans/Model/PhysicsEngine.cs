@@ -41,33 +41,6 @@ namespace TGC.Group.Model
             dynamicsWorld.DebugDrawer.DebugMode = DebugDrawModes.DrawWireframe;
         }
 
-        public RigidBody AgregarCamara(TGCVector3 position)//@ o con constraint o con child shape
-        {
-            var camara_body = BulletRigidBodyFactory.Instance.CreateBall(1, 0, position);
-            //camara_body.CollisionFlags |= CollisionFlags.KinematicObject;
-            //camara_body.CollisionFlags |= CollisionFlags.NoContactResponse;// quiero q la cam no tenga colision
-            dynamicsWorld.AddRigidBody(camara_body);
-            //camara_body.ActivationState = ActivationState.DisableDeactivation;
-
-            //var cam_main_character_constraint = new Point2PointConstraint(camara_body, main_character, camara_body.CenterOfMassPosition, main_character.CenterOfMassPosition);
-            //@quiza el pivot de la camara deberia ser tmb el character?
-            //dynamicsWorld.AddConstraint(cam_main_character_constraint, true);//deshabilité colision entre cam y personaje
-            /*
-            var slider = new SliderConstraint(main_character, camara_body, Matrix.Identity, Matrix.Identity, true)
-            {
-                LowerLinearLimit = -15.0f,
-                UpperLinearLimit = -5.0f,
-                //LowerLinearLimit = -10.0f,
-                //UpperLinearLimit = -10.0f,
-                LowerAngularLimit = -(float)Math.PI / 3.0f,
-                UpperAngularLimit = (float)Math.PI / 3.0f,
-                DebugDrawSize = 5.0f
-            };
-            dynamicsWorld.AddConstraint(slider, true);
-            */
-            return camara_body;
-        }
-
         public List<RigidBody> AgregarEscenario(List<TgcMesh> meshesEscenario)
         {
             List<RigidBody> bodies = new List<RigidBody>();
@@ -82,6 +55,7 @@ namespace TGC.Group.Model
             });
             return bodies;
         }
+
         public RigidBody AgregarPersonaje(TGCVector3 size,float mass,TGCVector3 position,TGCVector3 rotation,float friction,bool inertia)
             //solo pido los atributos basicos para el constructor, el resto lo debe definir el dueño del personaje
         {

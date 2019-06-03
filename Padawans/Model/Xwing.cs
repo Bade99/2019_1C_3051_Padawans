@@ -101,10 +101,11 @@ namespace TGC.Group.Model
             //agrego al physics engine
             body_xwing = VariablesGlobales.physicsEngine.AgregarPersonaje( CommonHelper.MultiplicarVectores(xwing.BoundingBox.calculateSize(),escala),
                                                                            1, posicion,rotation,.5f,true);
-            //body_xwing.SetDamping(0.1f, 0f);
-            //body_xwing.Restitution = 0.1f;
+            //@Params para modificar
             //body_xwing.Friction = 1;
-
+            //body_xwing.Restitution=.1f;
+            //body_xwing.SetDamping(.5f,.5f);
+            //body_xwing.SpinningFriction=1;
 
             ActualizarCoordenadaEsferica();
 
@@ -200,13 +201,10 @@ namespace TGC.Group.Model
             //Movimientos flechas
             if (input.keyDown(Key.A))
             {
-                //rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Down));
-
                 body_xwing.ApplyTorque(TGCVector3.Down.ToBulletVector3());
             }
             if (input.keyDown(Key.D))
             {
-                //rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Up));
 
                 body_xwing.ApplyTorque(TGCVector3.Up.ToBulletVector3());
 
@@ -246,7 +244,6 @@ namespace TGC.Group.Model
             if (coordenadaEsferica.polar < (FastMath.PI - limiteAnguloPolar))
             {
                 var down_arrow = new TGCVector3(-1, 0, 0);
-                //rotation.Add(down_arrow);
 
                 body_xwing.ApplyTorque(down_arrow.ToBulletVector3());
             }
@@ -261,9 +258,8 @@ namespace TGC.Group.Model
         {
             if (coordenadaEsferica.polar > limiteAnguloPolar)
             {
-                var up_arrow = new TGCVector3(1, 0, 0);//------------param
+                var up_arrow = new TGCVector3(1, 0, 0);
 
-                //rotation.Add(up_arrow);
                 body_xwing.ApplyTorque(up_arrow.ToBulletVector3());
             }
             else
