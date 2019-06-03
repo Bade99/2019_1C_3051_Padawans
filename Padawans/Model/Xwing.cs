@@ -20,8 +20,6 @@ namespace TGC.Group.Model
     /// </summary>
     public class Xwing : SceneElement, InteractiveElement, IPostProcess
     {
-        private bool BULLET = true;
-
         private TgcSceneLoader loader;
         TgcMesh xwing,alaXwing;
         private TemporaryElementManager managerDisparos;
@@ -91,7 +89,7 @@ namespace TGC.Group.Model
             xwing.AutoTransformEnable = false;
             alaXwing.AutoTransformEnable = false;
 
-            if(BULLET) velocidadGeneral = 5f;//Bullet
+            if(VariablesGlobales.BULLET) velocidadGeneral = 5f;//Bullet
             else velocidadGeneral = 300f;// minimaVelocidad;
 
             barrelRoll = false;
@@ -136,7 +134,7 @@ namespace TGC.Group.Model
         {
             if (effect == "bloom")
             {
-                if (BULLET)
+                if (VariablesGlobales.BULLET)
                 {
                     //Bullet
                     TGCMatrix bullet_transform = new TGCMatrix(body_xwing.InterpolationWorldTransform);
@@ -159,7 +157,7 @@ namespace TGC.Group.Model
 
         public override void Update()
         {
-            if (BULLET)
+            if (VariablesGlobales.BULLET)
             {
             //Bullet
             TGCMatrix bullet_transform = new TGCMatrix(body_xwing.InterpolationWorldTransform);
@@ -191,7 +189,7 @@ namespace TGC.Group.Model
 
         public void UpdateInput(TgcD3dInput input, float ElapsedTime)
         {
-            if (BULLET) UpdateInputBullet(input, ElapsedTime);
+            if (VariablesGlobales.BULLET) UpdateInputBullet(input, ElapsedTime);
             else UpdateInputManual(input, ElapsedTime);
         }
 
@@ -432,7 +430,7 @@ namespace TGC.Group.Model
 
         private void ActualizarCoordenadaEsferica()
         {
-            if (BULLET)
+            if (VariablesGlobales.BULLET)
             {
                 body_xwing.InterpolationWorldTransform.Decompose(out _, out Quaternion rotation, out _);
                 TGCVector3 rotationEuler = CommonHelper.QuaternionToEuler(rotation);
@@ -466,7 +464,7 @@ namespace TGC.Group.Model
 
         public TGCVector3 GetPosition()
         {
-            if (BULLET)
+            if (VariablesGlobales.BULLET)
             {
                 return new TGCVector3(body_xwing.CenterOfMassPosition);
             }

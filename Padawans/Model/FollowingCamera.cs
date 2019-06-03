@@ -19,8 +19,9 @@ public class FollowingCamera
     private float alcanzarMaximaVelocidadAngularEn = FastMath.PI / 6;
     private readonly static float DESVIO_ANGULO_POLAR = 0.2f;
     private float restar = 0, sumar = 0;
-
-    private RigidBody cam_body;
+    private float promedioActualizacionCamara = 0;
+    private float framesCount = 0;
+    private float actualizacionesCount = 0;
 
     /// <summary>
     ///     Es el encargado de modificar la camara siguiendo a la nave
@@ -40,10 +41,29 @@ public class FollowingCamera
     {
         ElapsedTime = 0.01f;
         CoordenadaEsferica anguloNave = new CoordenadaEsferica(xwing.GetCoordenadaEsferica().acimutal, xwing.GetCoordenadaEsferica().polar + DESVIO_ANGULO_POLAR);
-        CalcularDeltaAcimutal(ElapsedTime, anguloNave);
-        CalcularDeltaPolar(ElapsedTime, anguloNave);
+        if (VariablesGlobales.BULLET)
+        {
+            this.coordenadaEsferica = anguloNave;
+        } else
+        {
+            CalcularDeltaAcimutal(ElapsedTime, anguloNave);
+            CalcularDeltaPolar(ElapsedTime, anguloNave);
+        }
 
-        //Ruedita para alejar/acercar camara
+        RueditaMouse(Input);
+        cameraPosition = CommonHelper.SumarVectores(xwing.GetPosition(), GetDistancePoint());
+        lookAtCamera = xwing.GetPosition();
+        Camara.SetCamera(cameraPosition, lookAtCamera);
+    }
+
+    private TGCVector3 GetDistancePoint()
+    {
+        TGCVector3 distance_point =  this.coordenadaEsferica.GetXYZCoord() * fixedDistanceCamera;
+        return distance_point;
+    }
+
+    private void RueditaMouse(TgcD3dInput Input)
+    {
         if (Input.WheelPos == -1)//rueda para atras
         {
             if (fixedDistanceCamera > maxDistance)
@@ -65,20 +85,6 @@ public class FollowingCamera
             if (restar > 0) restar -= .01f;
             if (sumar > 0) sumar -= .01f;
         }
-
-        var a = new TGCMatrix();
-
-        cameraPosition = CommonHelper.SumarVectores(xwing.GetPosition(), GetDistancePoint());
-        //cameraPosition = new TGCVector3(cam_body.CenterOfMassPosition);
-
-        lookAtCamera = xwing.GetPosition();
-        Camara.SetCamera(cameraPosition, lookAtCamera);
-    }
-
-    private TGCVector3 GetDistancePoint()
-    {
-        TGCVector3 distance_point =  this.coordenadaEsferica.GetXYZCoord() * fixedDistanceCamera;
-        return distance_point;
     }
 
     private void CalcularDeltaAcimutal(float ElapsedTime, CoordenadaEsferica anguloNave)
@@ -88,28 +94,13 @@ public class FollowingCamera
         {
             if (deltaAcimutal < 0 && deltaAcimutal > -FastMath.PI || deltaAcimutal > FastMath.PI)
             {
-                if (deltaAcimutal > -alcanzarMaximaVelocidadAngularEn)
-                {
-                    this.coordenadaEsferica = new CoordenadaEsferica(
-                        this.coordenadaEsferica.acimutal - velocidadAngular * ElapsedTime, this.coordenadaEsferica.polar);
-                } else
-                {
-                    this.coordenadaEsferica = new CoordenadaEsferica(
-                        this.coordenadaEsferica.acimutal - ElapsedTime, this.coordenadaEsferica.polar);
-                }
+                this.coordenadaEsferica = new CoordenadaEsferica(
+                    this.coordenadaEsferica.acimutal - velocidadAngular * ElapsedTime, this.coordenadaEsferica.polar);
             }
             else
             {
-                if (deltaAcimutal < alcanzarMaximaVelocidadAngularEn)
-                {
-                    this.coordenadaEsferica = new CoordenadaEsferica(
-                       this.coordenadaEsferica.acimutal + velocidadAngular * ElapsedTime, this.coordenadaEsferica.polar);
-                } else
-                {
-                    this.coordenadaEsferica = new CoordenadaEsferica(
-                       this.coordenadaEsferica.acimutal + ElapsedTime, this.coordenadaEsferica.polar);
-
-                }
+                this.coordenadaEsferica = new CoordenadaEsferica(
+                    this.coordenadaEsferica.acimutal + velocidadAngular * ElapsedTime, this.coordenadaEsferica.polar);
             }
         }
     }
@@ -120,30 +111,13 @@ public class FollowingCamera
         {
             if (deltaPolar < 0 && deltaPolar > -FastMath.PI/2 || deltaPolar > FastMath.PI)
             {
-                if (deltaPolar > -alcanzarMaximaVelocidadAngularEn)
-                {
-                    this.coordenadaEsferica = new CoordenadaEsferica(
-                        this.coordenadaEsferica.acimutal, this.coordenadaEsferica.polar - velocidadAngular * ElapsedTime);
-                }
-                else
-                {
-                    this.coordenadaEsferica = new CoordenadaEsferica(
-                        this.coordenadaEsferica.acimutal, this.coordenadaEsferica.polar - ElapsedTime);
-                }
+                this.coordenadaEsferica = new CoordenadaEsferica(
+                    this.coordenadaEsferica.acimutal, this.coordenadaEsferica.polar - velocidadAngular * ElapsedTime);
             }
             else
             {
-                if (deltaPolar < alcanzarMaximaVelocidadAngularEn)
-                {
-                    this.coordenadaEsferica = new CoordenadaEsferica(
-                       this.coordenadaEsferica.acimutal, this.coordenadaEsferica.polar + velocidadAngular * ElapsedTime);
-                }
-                else
-                {
-                    this.coordenadaEsferica = new CoordenadaEsferica(
-                       this.coordenadaEsferica.acimutal, this.coordenadaEsferica.polar + ElapsedTime);
-
-                }
+                this.coordenadaEsferica = new CoordenadaEsferica(
+                    this.coordenadaEsferica.acimutal, this.coordenadaEsferica.polar + velocidadAngular * ElapsedTime);
             }
         }
     }
