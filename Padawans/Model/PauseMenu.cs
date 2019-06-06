@@ -76,7 +76,7 @@ namespace TGC.Group.Model
         public void Render()
         {
 
-            VariablesGlobales.postProcess.RenderPostProcess("oscurecer");
+            VariablesGlobales.postProcess.RenderMenuPostProcess("oscurecer");
 
             //Terminamos el renderizado de la escena
             drawer2D.BeginDrawSprite();

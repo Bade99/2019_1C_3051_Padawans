@@ -670,6 +670,7 @@
     <Content Include="Padawans_media\XWing\xwing-TgcScene.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Shaders\GaussianBlur.fx" />
     <Content Include="Shaders\PostProcess.fx" />
   </ItemGroup>
   <ItemGroup />

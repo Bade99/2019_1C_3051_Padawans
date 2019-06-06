@@ -20,8 +20,9 @@ namespace TGC.Group.Model
         public static TemporaryElementManager managerElementosTemporales;
         public static bool BULLET=true;
         public static Xwing xwing;
-        public static bool POSTPROCESS = false;
+        public static bool POSTPROCESS = true;
         public static PostProcess postProcess;
         public static bool SOUND=true;
+        public static float time = 5;//para testeos con temporizador
     }
 }

@@ -43,7 +43,7 @@ namespace TGC.Group.Model
         private Texture downscaling;
         private Texture gaussian_aux;
         //
-
+        string compilationErrors;
 
         public PostProcess()
         {
@@ -96,9 +96,13 @@ namespace TGC.Group.Model
 
         private void IniciarOscurecer(ref Effect oscurecer)
         {
-
+            oscurecer = Effect.FromFile(d3dDevice, VariablesGlobales.shadersDir + "PostProcess.fx", null, null, ShaderFlags.PreferFlowControl, null, out compilationErrors);
+            if (oscurecer == null)
+            {
+                throw new Exception("Error al cargar shader. Errores: " + compilationErrors);
+            }
             //Cargar shader con efectos de Post-Procesado
-            oscurecer = TGCShaders.Instance.LoadEffect(VariablesGlobales.shadersDir + "PostProcess.fx");
+            //oscurecer = TGCShaders.Instance.LoadEffect(VariablesGlobales.shadersDir + "PostProcess.fx");
 
             //Configurar Technique dentro del shader
             oscurecer.Technique = "OscurecerTechnique";
@@ -106,7 +110,12 @@ namespace TGC.Group.Model
 
         private void IniciarBloom(ref Effect bloom)
         {
-            bloom = TGCShaders.Instance.LoadEffect(VariablesGlobales.shadersDir + "GaussianBlur.fx");//de momento voy a usar el blur comun ese
+            bloom = Effect.FromFile(d3dDevice, VariablesGlobales.shadersDir + "GaussianBlur.fx", null, null, ShaderFlags.PreferFlowControl, null, out compilationErrors);
+            if (bloom == null)
+            {
+                throw new Exception("Error al cargar shader. Errores: " + compilationErrors);
+            }
+            //bloom = TGCShaders.Instance.LoadEffect(VariablesGlobales.shadersDir + "GaussianBlur.fx");//de momento voy a usar el blur comun ese
             //bloom.Technique = "BlurTechnique";
 
             glow_mask = new Texture(d3dDevice, d3dDevice.PresentationParameters.BackBufferWidth,
@@ -130,47 +139,106 @@ namespace TGC.Group.Model
             PostProcessElements.Add(elem);
         }
 
+        public void PPCheckInicial(string[] efectos)
+        {
+            if (VariablesGlobales.POSTPROCESS == false)
+                throw new Exception("La funcion post procesado no puede ser llamada con POSTPROCESS off");
+            if (!hasBaseRender)
+                throw new Exception("No existe target para el post procesado");
+            if (efectos.Length == 0)
+                throw new Exception("No hay efectos en el pedido de post procesado");
+        }
+
         /// <summary>
         /// Usado para renderizar efectos de post procesado, se puede usar en cualquier momento por ahora
         /// </summary>
         public void RenderPostProcess(params string[] efectos)
         {
-            if (!hasBaseRender)
-               throw new Exception("No existe target para el postprocesado");
+            PPCheckInicial(efectos);
 
             foreach(string efecto in efectos)
             {
 
-                switch (efecto)
+                switch (efecto)//@HACERLO ENUM
                 {
                     case "bloom":
                         ProcesarBloom(bloom);//@@@@cada uno toma un base y lo usa para crear un finished
                         hasFinishedRender = true; //@cada metodo procesar deberia devolver un valor indicando si se pudo ejecutar, en tal caso hay un nuevo render
                         break;
+                }
+                if (hasFinishedRender) PasarFinishedABase();
+            }
+            //Terminas teniendo el render terminado en base
+            //d3dDevice.BeginScene();//para dejar el render abierto para mas edicion
+        }
+
+        /// <summary>
+        /// La diferencia es q como todavia tas renderizando otras cosas te dejo abierto el render
+        /// </summary>
+        /// <param name="efectos"></param>
+        public void RenderMenuPostProcess(params string[] efectos)
+        {
+            PPCheckInicial(efectos);
+
+            d3dDevice.EndScene();
+
+            foreach (string efecto in efectos)
+            {
+
+                switch (efecto)//@HACERLO ENUM
+                {
                     case "oscurecer":
-                        ProcesarOscurecer(oscurecer);
+                        ProcesarMenuOscurecer(oscurecer);
                         hasFinishedRender = true;
                         break;
                 }
                 if (hasFinishedRender) PasarFinishedABase();
             }
-            //Terminas teniendo el render terminado en base
-            d3dDevice.BeginScene();//para dejar el render abierto para mas edicion
+
+            d3dDevice.BeginScene();
         }
 
         private void PasarFinishedABase()
         {
-            base_render = finished_render;
-            base_depth = finished_depth;
+            var pSurf = base_render.GetSurfaceLevel(0);
+            d3dDevice.SetRenderTarget(0, pSurf);//@@@no puedo usar el finished_render????
+            d3dDevice.DepthStencilSurface = base_depth;//@@sigo sin saber q hacer con el depth
+            d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.FromArgb(0, 0, 0), 1.0f, 0);
+            /*
+            if(VariablesGlobales.time<0)
+            TextureLoader.Save(VariablesGlobales.shadersDir + "test.bmp", ImageFileFormat.Bmp, base_render);
+            else VariablesGlobales.time-=VariablesGlobales.elapsedTime; 
+            */
+            d3dDevice.BeginScene();
+            //@@poner un efecto especifico para hacer esto
+            bloom.Technique = "Copy";
+            d3dDevice.VertexFormat = CustomVertex.PositionTextured.Format;
+            d3dDevice.SetStreamSource(0, screenQuadVB, 0);
+            bloom.SetValue("g_RenderTarget", finished_render);
+            d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+            bloom.Begin(FX.None);
+            bloom.BeginPass(0);
+            d3dDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+            bloom.EndPass();
+            bloom.End();
+
+            d3dDevice.EndScene();
+            //
+            //base_render = finished_render;//@@@@@esto debe estar mal escrito
+            //base_depth = finished_depth;
             hasFinishedRender = false;
         }
 
         public void RenderToScreen()
         {
-            d3dDevice.SetRenderTarget(0, screen_render);
+            d3dDevice.SetRenderTarget(0, screen_render);//@@@no puedo usar el finished_render????
             d3dDevice.DepthStencilSurface = screen_depth_stencil;
             d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.FromArgb(0, 0, 0), 1.0f, 0);
-
+            /*
+            if(VariablesGlobales.time<0)
+            TextureLoader.Save(VariablesGlobales.shadersDir + "test.bmp", ImageFileFormat.Bmp, base_render);
+            else VariablesGlobales.time-=VariablesGlobales.elapsedTime; 
+            */
             d3dDevice.BeginScene();
             //@@poner un efecto especifico para hacer esto
             bloom.Technique = "Copy";
@@ -184,6 +252,13 @@ namespace TGC.Group.Model
             bloom.EndPass();
             bloom.End();
 
+            d3dDevice.EndScene();
+        }
+
+        public void DoMenuRender()
+        {
+            d3dDevice.BeginScene();
+            VariablesGlobales.gameModel.RenderizarMenus();
             d3dDevice.EndScene();
         }
 
@@ -237,10 +312,10 @@ namespace TGC.Group.Model
         {
             d3dDevice.SetRenderTarget(0, finished_render.GetSurfaceLevel(0));
             d3dDevice.DepthStencilSurface = finished_depth;//@@ver xq uso este
-            d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.FromArgb(0, 0, 0), 1.0f, 0);
+            d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.FromArgb(0, 0, 0), 1.0f, 0);//@@creo q esto no va 
         }
 
-        private void ProcesarOscurecer(Effect oscurecer)
+        private void ProcesarMenuOscurecer(Effect oscurecer)
         {
             SetearTargetAFinished();
 
@@ -272,7 +347,7 @@ namespace TGC.Group.Model
         {
             var pSurf = glow_mask.GetSurfaceLevel(0);
             d3dDevice.SetRenderTarget(0, pSurf);
-            d3dDevice.DepthStencilSurface = base_depth;//@@ver xq uso este
+            d3dDevice.DepthStencilSurface = base_depth;//@@me parece q aca está cagando el depth base!!
             d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.FromArgb(0,0,0), 1.0f, 0);
 
 
@@ -365,10 +440,9 @@ namespace TGC.Group.Model
             //TextureLoader.Save(VariablesGlobales.shadersDir + "base.bmp", ImageFileFormat.Bmp, base_render);
             //TextureLoader.Save(VariablesGlobales.shadersDir + "blur.bmp", ImageFileFormat.Bmp, gaussian_aux);
 
+            //al final re-seteamos-el render target a nuestro finished
 
-            //al final re-seteamos-el render target, dibujo a la pantalla
-
-            SetearTargetAFinished();
+            SetearTargetAFinished();//@@@@ACA ESTÁ EL PROBLEMA como hago base=finished se estan pisando
 
             d3dDevice.BeginScene();
 
@@ -385,7 +459,17 @@ namespace TGC.Group.Model
             bloom.End();
 
             d3dDevice.EndScene();
-            
+
+            /*
+            if (VariablesGlobales.time < 0)
+            {
+                TextureLoader.Save(VariablesGlobales.shadersDir + "base_after_combo.bmp", ImageFileFormat.Bmp, base_render);
+                TextureLoader.Save(VariablesGlobales.shadersDir + "gauss1.bmp", ImageFileFormat.Bmp, gaussian_aux);
+                TextureLoader.Save(VariablesGlobales.shadersDir + "finished.bmp", ImageFileFormat.Bmp, finished_render);
+            }
+            else VariablesGlobales.time -= VariablesGlobales.elapsedTime;
+            */
+
             //@Problemas:
             //-el z no se está tomando en cuenta y ta dibujando arriba de otras cosas
             //-no anda en menus

@@ -19,34 +19,40 @@ namespace TGC.Group.Model
         {
             this.gameModel = gamemodel;
             this.postProcess = postprocess;
+        }
 
-
+        private void CustomPostRender()
+        {
+            D3DDevice.Instance.Device.BeginScene();
+            gameModel.CustomPostRender();
+            D3DDevice.Instance.Device.EndScene();
+            D3DDevice.Instance.Device.Present();
         }
 
         public void Render()
         {
             if (VariablesGlobales.POSTPROCESS)//mi idea era q el postprocess pueda obtener todo ya renderizado, pero de momento tengo q re-renderizar todo again antes de poder usarlo
             {
-                //if (time < 0f)
-                //{
+                //gameModel.CustomPreRender();//por si quiere hacer algo antes q empiece a renderizar
+
                 postProcess.DoBaseRender();
+
                 postProcess.RenderPostProcess("bloom");
-                //postProcess.DoMenuRender();
+                postProcess.DoMenuRender();
+
                 postProcess.RenderToScreen();
+
                 postProcess.ClearBaseRender();
                 postProcess.ClearFinishedRender();
-                //parche de momento
-                D3DDevice.Instance.Device.BeginScene();
-                gameModel.CustomPostRender();
-                //}
-                //else time -= VariablesGlobales.elapsedTime;
+
+                CustomPostRender();
             }
             else
             {
-                gameModel.CustomPreRender();
+                gameModel.NormalPreRender();
                 gameModel.RenderizarMeshes();
                 gameModel.RenderizarMenus();
-                gameModel.CustomPostRender();
+                gameModel.NormalPostRender();
 
             }
         }

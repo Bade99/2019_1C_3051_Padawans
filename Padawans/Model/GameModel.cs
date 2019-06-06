@@ -124,14 +124,17 @@ namespace TGC.Group.Model
 
         public override void Render()
         {
-
             renderer.Render();
         }
         public void CustomPreRender()
         {
-            PreRender();
+            //Por ahora no le encontré un uso
         }
-        public void CustomPostRender()
+        public void NormalPreRender()
+        {
+            PreRender();
+        }        
+        public void VariablesEnPantalla()
         {
             DrawText.drawText($"Con la tecla F se dibuja el bounding box.", 0, 20, Color.OrangeRed);
             DrawText.drawText("Con la ruedita aleja/acerca la camara [Actual]: " + TGCVector3.PrintVector3(Camara.Position), 0, 30, Color.OrangeRed);
@@ -141,15 +144,24 @@ namespace TGC.Group.Model
             DrawText.drawText("Elementos temporales: " + managerElementosTemporales.CantidadElementos(), 0, 70, Color.White);
             DrawText.drawText("Sonidos: " + managerSonido.CantidadElementos(), 0, 80, Color.White);
             DrawText.drawText("En un menu: " + managerMenu.IsCurrent(), 0, 90, Color.White);
-            TGCVector3 pos_body = new TGCVector3( xwing.body_xwing.CenterOfMassPosition );
-            DrawText.drawText("Pos body:"+"x="+pos_body.X + "y=" + pos_body.Y + "z=" + pos_body.Z, 0, 100, Color.White);
-            DrawText.drawText("Cam distance: "+followingCamera.fixedDistanceCamera , 0, 110, Color.White);
+            TGCVector3 pos_body = new TGCVector3(xwing.body_xwing.CenterOfMassPosition);
+            DrawText.drawText("Pos body:" + "x=" + pos_body.X + "y=" + pos_body.Y + "z=" + pos_body.Z, 0, 100, Color.White);
+            DrawText.drawText("Cam distance: " + followingCamera.fixedDistanceCamera, 0, 110, Color.White);
             TGCVector3 esf_coord = xwing.GetCoordenadaEsferica().GetXYZCoord();
-            DrawText.drawText("xwing coord esf: " + esf_coord.X +" , "+ esf_coord.Y + " , " + esf_coord.Z, 0, 120, Color.White);
-            DrawText.drawText( "xwing body orientacion: "+ xwing.body_xwing.Orientation.Axis.X + " , " + xwing.body_xwing.Orientation.Axis.Y +" , "+ xwing.body_xwing.Orientation.Axis.Z, 0, 130, Color.White);
+            DrawText.drawText("xwing coord esf: " + esf_coord.X + " , " + esf_coord.Y + " , " + esf_coord.Z, 0, 120, Color.White);
+            DrawText.drawText("xwing body orientacion: " + xwing.body_xwing.Orientation.Axis.X + " , " + xwing.body_xwing.Orientation.Axis.Y + " , " + xwing.body_xwing.Orientation.Axis.Z, 0, 130, Color.White);
             DrawText.drawText("xwing body linear vel: " + xwing.body_xwing.LinearVelocity.X + " , " + xwing.body_xwing.LinearVelocity.Y + " , " + xwing.body_xwing.LinearVelocity.Z, 0, 140, Color.White);
             DrawText.drawText("xwing body angular vel: " + xwing.body_xwing.AngularVelocity.X + " , " + xwing.body_xwing.AngularVelocity.Y + " , " + xwing.body_xwing.AngularVelocity.Z, 0, 150, Color.White);
+        }
+        public void NormalPostRender()
+        {
             PostRender();
+        }
+        public void CustomPostRender()
+        {
+            VariablesEnPantalla();
+            RenderAxis();
+            RenderFPS();
         }
         public override void Dispose()
         {
