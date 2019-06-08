@@ -87,10 +87,13 @@ namespace TGC.Group.Model
                 "Misil\\misil_xwing_enemigo-TgcScene.xml"));
             VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.DISPARO_MISIL_ENEMIGO);
         }
-        public void Render()
+        public void Render(string technique)
         {
+            nave.Meshes.ForEach(mesh => mesh.Technique = technique);
             nave.RenderAll();
         }
+
+        public void Render(){nave.RenderAll();}
 
         public bool Terminado()
         {

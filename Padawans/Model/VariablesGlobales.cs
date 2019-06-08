@@ -15,7 +15,6 @@ namespace TGC.Group.Model
         public static Microsoft.DirectX.DirectSound.Device soundDevice;
         public static float elapsedTime;
         public static SoundManager managerSonido;
-        public static GameModel gameModel;
         public static PhysicsEngine physicsEngine;
         public static TemporaryElementManager managerElementosTemporales;
         public static bool BULLET=true;
@@ -24,5 +23,6 @@ namespace TGC.Group.Model
         public static PostProcess postProcess;
         public static bool SOUND=true;
         public static float time = 5;//para testeos con temporizador
+        public static bool SHADERS = false;
     }
 }

@@ -8,14 +8,18 @@ using TGC.Core.Shaders;
 using TGC.Core.Direct3D;
 using TGC.Core.Textures;
 using System.Drawing;
+using TGC.Core.Mathematica;
+using Microsoft.DirectX;
 
 namespace TGC.Group.Model
 {
     public class PostProcess
+    //@@no calculamos z-buffer x lo q hay ciertas cosas q se renderizan cuando no deberian
     //cuando comienza todo lo anterior a postProcess ya debe estar en pantalla, cuando termina deja el render abierto para otras cosas, osea NO llama a postRender()
     //@supongo q para cada efecto lo q haces es cortar el render del anterior, guardarlo en un temp, hacer el tuyo, combinarlos
     {
         private List<IPostProcess> PostProcessElements;
+        private GameModel gameModel;
         private Device d3dDevice;
 
         private bool hasBaseRender=false;
@@ -45,10 +49,26 @@ namespace TGC.Group.Model
         //
         string compilationErrors;
 
-        public PostProcess()
+        //Shader
+        private readonly float far_plane = 1500f;
+        private readonly float near_plane = 2f;
+        private readonly int SHADOWMAP_SIZE = 1024;
+        private Effect shader;
+
+        private TGCVector3 lightDir; // direccion de la luz actual
+        private TGCVector3 lightPos; // posicion de la luz actual (la que estoy analizando)
+        private TGCMatrix lightView; // matriz de view del light
+        private TGCMatrix shadowProj; // Projection matrix for shadow map
+
+        private Texture shadow_map; // Texture to which the shadow map is rendered
+        private Surface shadow_depth; // Depth-stencil buffer for rendering to shadow map
+
+        //
+
+        public PostProcess(GameModel gamemodel)
         {
             PostProcessElements = new List<IPostProcess>();
-
+            this.gameModel = gamemodel;
             d3dDevice = D3DDevice.Instance.Device;
 
             screen_render = d3dDevice.GetRenderTarget(0);
@@ -63,6 +83,45 @@ namespace TGC.Group.Model
             //Bloom
             IniciarBloom(ref bloom);
             //
+
+            //Shaders
+            if(VariablesGlobales.SHADERS)
+                IniciarShaders(ref shader);
+            //
+        }
+
+        private void IniciarShaders(ref Effect shader)
+        {
+            shader = Effect.FromFile(d3dDevice, VariablesGlobales.shadersDir + "ShadowMap.fx", null, null, ShaderFlags.PreferFlowControl, null, out compilationErrors);
+            if (shader == null)
+            {
+                throw new Exception("Error al cargar shader. Errores: " + compilationErrors);
+            }
+            //@@@mesh.Effect = shader; PARA TODOS LOS MESHES, Y LOS Q SE CREEN TMB hacer
+
+            //--------------------------------------------------------------------------------------
+            // Creo el shadowmap.
+            // Format.R32F
+            // Format.X8R8G8B8
+            shadow_map = new Texture(d3dDevice, SHADOWMAP_SIZE, SHADOWMAP_SIZE, 1, Usage.RenderTarget, Format.R32F, Pool.Default);
+
+            // tengo que crear un stencilbuffer para el shadowmap manualmente
+            // para asegurarme que tenga la el mismo tamano que el shadowmap, y que no tenga
+            // multisample, etc etc.
+            shadow_depth = d3dDevice.CreateDepthStencilSurface(SHADOWMAP_SIZE, SHADOWMAP_SIZE, DepthFormat.D24S8, MultiSampleType.None, 0, true);
+            // por ultimo necesito una matriz de proyeccion para el shadowmap, ya
+            // que voy a dibujar desde el pto de vista de la luz.
+            // El angulo tiene que ser mayor a 45 para que la sombra no falle en los extremos del cono de luz
+            // de hecho, un valor mayor a 90 todavia es mejor, porque hasta con 90 grados es muy dificil
+            // lograr que los objetos del borde generen sombras
+            shadowProj = TGCMatrix.PerspectiveFovLH(Geometry.DegreeToRadian(80), D3DDevice.Instance.AspectRatio,
+                                                    50, 5000);
+            d3dDevice.Transform.Projection = TGCMatrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f), 
+                                             D3DDevice.Instance.AspectRatio, near_plane, far_plane).ToMatrix();
+            //@@@@@CUIDADO TOY CAMBIANDO TODO EL VIEW ACA
+            lightPos = new TGCVector3(0, 0, 0);
+            lightDir = new TGCVector3(0,-1,-1) - lightPos;
+            lightDir.Normalize();
         }
 
         private void IniciarGenerales()
@@ -194,7 +253,6 @@ namespace TGC.Group.Model
                 }
                 if (hasFinishedRender) PasarFinishedABase();
             }
-
             d3dDevice.BeginScene();
         }
 
@@ -258,7 +316,7 @@ namespace TGC.Group.Model
         public void DoMenuRender()
         {
             d3dDevice.BeginScene();
-            VariablesGlobales.gameModel.RenderizarMenus();
+            gameModel.RenderizarMenus();
             d3dDevice.EndScene();
         }
 
@@ -282,29 +340,85 @@ namespace TGC.Group.Model
         {
             TexturesManager.Instance.clearAll();
 
-            //Cargamos el Render Targer al cual se va a dibujar la escena 3D. Antes nos guardamos el surface original
-            //En vez de dibujar a la pantalla, dibujamos a un buffer auxiliar, nuestro Render Target.
 
-            var pSurf = base_render.GetSurfaceLevel(0);
-            d3dDevice.SetRenderTarget(0, pSurf);
-            d3dDevice.DepthStencilSurface = base_depth;
-            d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.FromArgb(0,0,0), 1.0f, 0);
+            if (VariablesGlobales.SHADERS)
+            {
+                RenderShaders();
 
-            //Dibujamos la escena comun, pero en vez de a la pantalla al Render Target
-            //Arrancamos el renderizado. Esto lo tenemos que hacer nosotros a mano porque estamos en modo CustomRenderEnabled = true
+                var pSurf = base_render.GetSurfaceLevel(0);
+                d3dDevice.SetRenderTarget(0, pSurf);
+                d3dDevice.DepthStencilSurface = base_depth;
+                d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.FromArgb(0, 0, 0), 1.0f, 0);
 
-            d3dDevice.BeginScene();
+                d3dDevice.BeginScene();
+                // dibujo la escena pp dicha
+                D3DDevice.Instance.Device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
 
-            //Dibujamos todos los meshes del escenario
-            VariablesGlobales.gameModel.RenderizarMeshes();
+                gameModel.RenderizarMeshes("RenderScene");
 
-            //Terminamos manualmente el renderizado de esta escena. Esto manda todo a dibujar al GPU al Render Target que cargamos antes
-            d3dDevice.EndScene();
+                d3dDevice.EndScene();
 
-            //Liberar memoria de surface de Render Target
-            pSurf.Dispose();
-            //
+                pSurf.Dispose();
+            }
+            else
+            {
+                //Cargamos el Render Targer al cual se va a dibujar la escena 3D. Antes nos guardamos el surface original
+                //En vez de dibujar a la pantalla, dibujamos a un buffer auxiliar, nuestro Render Target.
+
+                var pSurf = base_render.GetSurfaceLevel(0);
+                d3dDevice.SetRenderTarget(0, pSurf);
+                d3dDevice.DepthStencilSurface = base_depth;
+                d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.FromArgb(0,0,0), 1.0f, 0);
+
+                //Dibujamos la escena comun, pero en vez de a la pantalla al Render Target
+                //Arrancamos el renderizado. Esto lo tenemos que hacer nosotros a mano porque estamos en modo CustomRenderEnabled = true
+                d3dDevice.BeginScene();
+                //Dibujamos todos los meshes del escenario
+                gameModel.RenderizarMeshes(null);
+                //Terminamos manualmente el renderizado de esta escena. Esto manda todo a dibujar al GPU al Render Target que cargamos antes
+                d3dDevice.EndScene();
+
+                //Liberar memoria de surface de Render Target
+                pSurf.Dispose();
+                //
+                }
+
         }
+
+        private void RenderShaders()// x ahora solo shadowmap
+        {
+            // Calculo la matriz de view de la luz
+            shader.SetValue("g_vLightPos", new Vector4(lightPos.X, lightPos.Y, lightPos.Z, 1));
+            shader.SetValue("g_vLightDir", new Vector4(lightDir.X, lightDir.Y, lightDir.Z, 1));
+            lightView = TGCMatrix.LookAtLH(lightPos, lightPos + lightDir, new TGCVector3(0, 0, 1));
+            //@@@@xq está el up vector en la z??
+
+            // inicializacion standard:
+            shader.SetValue("g_mProjLight", shadowProj.ToMatrix());
+            shader.SetValue("g_mViewLightProj", (lightView * shadowProj).ToMatrix());
+
+            // Primero genero el shadow map, para ello dibujo desde el pto de vista de luz
+            // a una textura, con el VS y PS que generan un mapa de profundidades.
+            var pShadowSurf = shadow_map.GetSurfaceLevel(0);
+            D3DDevice.Instance.Device.SetRenderTarget(0, pShadowSurf);
+            D3DDevice.Instance.Device.DepthStencilSurface = shadow_depth;
+            D3DDevice.Instance.Device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+
+            // Hago el render de la escena pp dicha
+            shader.SetValue("g_txShadow", shadow_map);//@xq le mando la textura del render target?
+
+            D3DDevice.Instance.Device.BeginScene();
+
+            //necesito un metodo q todos puedan pasar su mesh y q el postprocess les ponga la technique
+            gameModel.RenderizarMeshes("RenderShadow");
+
+            // Termino
+            D3DDevice.Instance.Device.EndScene();
+
+            //TextureLoader.Save(variablesGlobales.shadersDir+"shadowmap.bmp", ImageFileFormat.Bmp, shadow_map);
+
+        }
+
         /// <summary>
         /// Todo efecto debe renderizar a  este target la nueva img procesada
         /// </summary>
@@ -484,6 +598,8 @@ namespace TGC.Group.Model
             base_depth.Dispose();
             finished_render.Dispose();
             finished_depth.Dispose();
+            shadow_map.Dispose();
+            shadow_depth.Dispose();
         }
     }
 }

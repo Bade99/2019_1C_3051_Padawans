@@ -50,8 +50,9 @@ namespace TGC.Group.Model
                 */
         }
 
-        public override void Render()
+        public void Render(string technique)
         {
+            torreta.Technique = technique;
             torreta.Render();
         }
 
@@ -89,5 +90,7 @@ namespace TGC.Group.Model
                 }
             }
         }
+
+        public override void Render(){torreta.Render();}
     }
 }

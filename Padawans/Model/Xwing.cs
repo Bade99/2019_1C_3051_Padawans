@@ -119,6 +119,14 @@ namespace TGC.Group.Model
             VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.XWING_ENGINE);
         }
 
+        public void Render(string technique)
+        {
+            xwing.Technique = technique;
+            xwing.Render();
+            alaXwing.Technique = technique;
+            alaXwing.Render();
+        }
+
         public override void Render()
         {
             xwing.Render();

@@ -13,8 +13,6 @@ namespace TGC.Group.Model
         private IRenderizer gameModel;
         private PostProcess postProcess;
 
-        private float time = 5;
-
         public Renderer(IRenderizer gamemodel,PostProcess postprocess)
         {
             this.gameModel = gamemodel;
@@ -50,7 +48,7 @@ namespace TGC.Group.Model
             else
             {
                 gameModel.NormalPreRender();
-                gameModel.RenderizarMeshes();
+                gameModel.RenderizarMeshes(null);
                 gameModel.RenderizarMenus();
                 gameModel.NormalPostRender();
 

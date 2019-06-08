@@ -77,6 +77,15 @@ namespace TGC.Group.Model
             return terminado;
         }
 
+        public void Render(string technique)
+        {
+            if (!terminado)
+            {
+                misil.Technique = technique;
+                misil.Render();
+            }
+        }
+
         public void Render()
         {
             if (!terminado)

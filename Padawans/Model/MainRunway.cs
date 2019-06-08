@@ -163,6 +163,31 @@ namespace TGC.Group.Model
             //
         }
 
+        public void Render(string technique)
+        {
+            if (frustum_culling)
+            {
+                foreach (var listMesh in main_escena_instancia)
+                {
+                    foreach (var mesh in listMesh)
+                    {
+                        //Solo mostrar la malla si colisiona contra el Frustum
+                        var huboColision = TgcCollisionUtils.classifyFrustumAABB(this.frustum, mesh.BoundingBox);
+                        if (huboColision != TgcCollisionUtils.FrustumResult.OUTSIDE)
+                        {
+                            mesh.Technique = technique;
+                            mesh.Render();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                main_escena_instancia.ForEach(escena => { RenderMeshList(escena); });//@@esta bien que renderize cada vez si no hay cambios??
+            }
+            unaTorreta.Render();
+        }
+
         public override void Render()
         {
             if (frustum_culling)
@@ -171,14 +196,11 @@ namespace TGC.Group.Model
                 {
                     foreach (var mesh in listMesh)
                     {
-                        if (mesh.Enabled)
+                        //Solo mostrar la malla si colisiona contra el Frustum
+                        var huboColision = TgcCollisionUtils.classifyFrustumAABB(this.frustum, mesh.BoundingBox);
+                        if (huboColision != TgcCollisionUtils.FrustumResult.OUTSIDE)
                         {
-                            //Solo mostrar la malla si colisiona contra el Frustum
-                            var huboColision = TgcCollisionUtils.classifyFrustumAABB(this.frustum, mesh.BoundingBox);
-                            if (huboColision != TgcCollisionUtils.FrustumResult.OUTSIDE)
-                            {
-                                mesh.Render();
-                            }
+                            mesh.Render();
                         }
                     }
                 }

@@ -299,7 +299,6 @@ float4 PSBasePlusGlow(in float2 Tex : TEXCOORD0, in float2 vpos : VPOS) : COLOR0
 
     float4 ColorBase = tex2D(RenderTarget, Tex);
     float4 ColorBrillante = tex2D(GlowMap, Tex + float2((float) 16 / screen_dx, (float) 16 / screen_dy));
-
     return (ColorBase*.25 + ColorBrillante*.75);
 }
 

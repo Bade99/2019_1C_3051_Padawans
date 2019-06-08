@@ -49,7 +49,6 @@ namespace TGC.Group.Model
             VariablesGlobales.physicsEngine = physicsEngine;
 
             managerSonido = new SoundManager();
-            VariablesGlobales.gameModel = this;
             VariablesGlobales.mediaDir = this.MediaDir;
             VariablesGlobales.shadersDir = this.ShadersDir;
             VariablesGlobales.loader = new TgcSceneLoader();
@@ -76,7 +75,7 @@ namespace TGC.Group.Model
             managerSonido.ReproducirSonido(SoundManager.SONIDOS.BACKGROUND_BATTLE);
             managerMenu = new MenuManager(new StartMenu(Key.Return),new PauseMenu(Key.Escape));
 
-            postProcess = new PostProcess();
+            postProcess = new PostProcess(this);
             VariablesGlobales.postProcess = postProcess;
             postProcess.AgregarElemento(xwing);
             postProcess.AgregarElemento(managerElementosTemporales);
@@ -110,16 +109,28 @@ namespace TGC.Group.Model
         {
             managerMenu.Render();//ahora mismo estamos haciendo doble render en el menu, dsps lo arreglo
         }
-        public void RenderizarMeshes()
+        public void RenderizarMeshes(string technique)
         {
             physicsEngine.Render(Input);
-            xwing.Render();
-            pistaReferencia.Render();
+
+            if (technique != null)
+            {
+                xwing.Render(technique);
+                pistaReferencia.Render(technique);
+                managerElementosTemporales.Render(technique);
+                managerEnemigos.Render(technique);
+
+            }
+            else
+            {
+                xwing.Render();
+                pistaReferencia.Render();
+                managerElementosTemporales.Render();
+                managerEnemigos.Render();
+            }
             worldSphere.Render();
-            managerElementosTemporales.Render();
-            boundingBoxHelper.RenderBoundingBoxes();
-            managerEnemigos.Render();
             cues.Render();
+            boundingBoxHelper.RenderBoundingBoxes();
         }
 
         public override void Render()
