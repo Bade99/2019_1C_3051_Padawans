@@ -15,6 +15,7 @@ namespace TGC.Group.Model
     public class GameModel : TgcExample , IRenderizer
     {
         private Renderer renderer;
+        private ShaderManager shaderManager;
         private Xwing xwing;
         private MainRunway pistaReferencia;
         private WorldSphere worldSphere;
@@ -48,10 +49,11 @@ namespace TGC.Group.Model
             cues_relative_posicion = new TGCVector2(.05f, .5f);
 
             //Shaders & Post-processing @@ ver como hacer pa q estos se carguen primero!!!!
-            postProcess = new PostProcess(this);
+            shaderManager = new ShaderManager();
+            VariablesGlobales.shaderManager = shaderManager;//@@@@@TERMINAR: PONERSELO A TODOS LOS MESHES
+            postProcess = new PostProcess(this,shaderManager);
             VariablesGlobales.postProcess = postProcess;
             renderer = new Renderer(this,postProcess);
-            
             /*
             D3DDevice.Instance.Device.Transform.Projection = TGCMatrix.PerspectiveFovLH(D3DDevice.Instance.FieldOfView, D3DDevice.Instance.AspectRatio,
                     D3DDevice.Instance.ZNearPlaneDistance, D3DDevice.Instance.ZFarPlaneDistance).ToMatrix();
@@ -74,10 +76,10 @@ namespace TGC.Group.Model
 
             managerEnemigos = new EnemyManager();
             VariablesGlobales.managerEnemigos = managerEnemigos;
+            managerEnemigos.AgregarElemento(new XwingEnemigo(new TGCVector3(200f, 600f, 500f), xwing, 20));
 
             pistaReferencia = new MainRunway(VariablesGlobales.loader, 5, this.Frustum, xwing);
 
-            managerEnemigos.AgregarElemento(new XwingEnemigo(new TGCVector3(200f, 600f, 500f), xwing, 20));
             worldSphere = new WorldSphere(VariablesGlobales.loader, xwing);
             followingCamera = new FollowingCamera(xwing);
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ActiveElementManager[] { managerElementosTemporales });
@@ -118,26 +120,19 @@ namespace TGC.Group.Model
         {
             managerMenu.Render();//ahora mismo estamos haciendo doble render en el menu, dsps lo arreglo
         }
-        public void RenderizarMeshes(string technique)
+        public void RenderizarMeshes()
         {
             physicsEngine.Render(Input);
 
-            if (technique != null)
-            {
-                xwing.Render(technique);
-                pistaReferencia.Render(technique);
-                managerElementosTemporales.Render(technique);
-                managerEnemigos.Render(technique);
-
-            }
-            else
-            {
-                xwing.Render();
-                pistaReferencia.Render();
-                managerElementosTemporales.Render();
-                managerEnemigos.Render();
-            }
             worldSphere.Render();
+            xwing.Render();
+            pistaReferencia.Render();
+            managerElementosTemporales.Render();
+            managerEnemigos.Render();
+        }
+
+        public void RenderizarExtras()//renderizar estas cosas luego de los shaders@@@@
+        {
             cues.Render();
             boundingBoxHelper.RenderBoundingBoxes();
         }

@@ -16,14 +16,12 @@ namespace TGC.Group.Model
             this.pivot = pivot;
             worldsphere = loader.loadSceneFromFile("Padawans_media\\XWing\\GeodesicSphere02-TgcScene.xml");//tiene un solo mesh
             worldsphere.Meshes[0].Rotation = new TGCVector3(2,5,1);
+            worldsphere.Meshes[0].Scale = new TGCVector3(100f, 100f, 100f);
+            VariablesGlobales.shaderManager.AgregarMesh(worldsphere.Meshes[0], ShaderManager.MESH_TYPE.DEFAULT);
         }
 
         public override void Render()
         {
-
-            var scaler = new TGCVector3(100f, 100f, 100f);
-
-            worldsphere.Meshes[0].Scale = scaler;
             worldsphere.Meshes[0].Render();
         }
 

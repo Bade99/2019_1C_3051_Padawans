@@ -48,7 +48,7 @@ namespace TGC.Group.Model
             escala = new TGCVector3(.2f, .2f, 4f);
 
             //Shader
-            if (VariablesGlobales.SHADERS) misil.Effect = VariablesGlobales.shader;
+            if (VariablesGlobales.SHADERS) VariablesGlobales.shaderManager.AgregarMesh(misil, ShaderManager.MESH_TYPE.SHADOW);
         }
 
 
@@ -77,15 +77,6 @@ namespace TGC.Group.Model
         public bool Terminado()
         {
             return terminado;
-        }
-
-        public void Render(string technique)
-        {
-            if (!terminado)
-            {
-                misil.Technique = technique;
-                misil.Render();
-            }
         }
 
         public void Render()

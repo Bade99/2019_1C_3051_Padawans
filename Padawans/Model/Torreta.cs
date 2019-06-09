@@ -50,12 +50,6 @@ namespace TGC.Group.Model
                 */
         }
 
-        public void Render(string technique)
-        {
-            torreta.Technique = technique;
-            torreta.Render();
-        }
-
         public void RenderBoundingBox()
         {
             torreta.BoundingBox.Render();

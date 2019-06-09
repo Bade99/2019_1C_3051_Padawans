@@ -141,6 +141,7 @@
     <Compile Include="Model\PositionAABBCueLauncher.cs" />
     <Compile Include="Model\PostProcess.cs" />
     <Compile Include="Model\Renderer.cs" />
+    <Compile Include="Model\ShaderManager.cs" />
     <Compile Include="Model\Sonido.cs" />
     <Compile Include="Model\SoundManager.cs" />
     <Compile Include="Model\StartMenu.cs" />

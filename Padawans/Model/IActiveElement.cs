@@ -13,6 +13,5 @@ namespace TGC.Group.Model
         void Render();
         void RenderBoundingBox();
         void Dispose();
-        void Render(string technique);
     }
 }

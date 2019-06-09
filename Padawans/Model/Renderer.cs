@@ -36,6 +36,7 @@ namespace TGC.Group.Model
                 postProcess.DoBaseRender();
 
                 postProcess.RenderPostProcess("bloom");
+                postProcess.DoExtrasRender();
                 postProcess.DoMenuRender();
 
                 postProcess.RenderToScreen();
@@ -48,7 +49,7 @@ namespace TGC.Group.Model
             else
             {
                 gameModel.NormalPreRender();
-                gameModel.RenderizarMeshes(null);
+                gameModel.RenderizarMeshes();
                 gameModel.RenderizarMenus();
                 gameModel.NormalPostRender();
 

@@ -20,13 +20,6 @@ namespace TGC.Group.Model
                 elems.ForEach(elem => { elem.Update(ElapsedTime); });
             }
         }
-        public void Render(string technique)
-        {
-            if (this.Terminado() == false)
-            {
-                elems.ForEach(elem => { elem.Render(technique); });
-            }
-        }
         public void Render()
         {
             if (this.Terminado() == false)

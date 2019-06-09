@@ -19,7 +19,8 @@ namespace TGC.Group.Model
         public static PhysicsEngine physicsEngine;
         public static TemporaryElementManager managerElementosTemporales;
         public static EnemyManager managerEnemigos;
-        public static bool BULLET=true;
+        public static ShaderManager shaderManager;
+        public static bool BULLET=false;
         public static Xwing xwing;
         public static bool POSTPROCESS = true;
         public static PostProcess postProcess;

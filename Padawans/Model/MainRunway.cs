@@ -67,7 +67,8 @@ namespace TGC.Group.Model
             todas_escenas.ForEach(escena => { main_escena_instancia.Add(escena); });
         }
 
-        private TGCVector3 PlaceSceneLine(TgcScene escena, TGCVector3 posicion, TGCVector3 escalador, int repeticiones, int mesh_pivot,float distancia_extra, TGCVector3 rotacion)//agrega la scene al render
+        private TGCVector3 PlaceSceneLine(TgcScene escena, TGCVector3 posicion, TGCVector3 escalador, 
+            int repeticiones, int mesh_pivot,float distancia_extra, TGCVector3 rotacion, bool shader)//agrega la scene al render
         //la rotacion es muy limitada solo queda bien en pi/2 o pi y aun asi solo en ciertos casos, estoy trabajando en un nuevo metodo
         //el mesh pivot es para elegir cual de las meshes es el que va a usar de separador
         {
@@ -90,6 +91,12 @@ namespace TGC.Group.Model
                                             todas_escenas[i][mesh_pivot].Position.Z -
                                                 todas_escenas[i][mesh_pivot].BoundingBox.calculateSize().Z - distancia_extra);//sip de momento solo en z
             }
+            //Shader
+            if(shader)
+                todas_escenas.ForEach(scena => scena.ForEach(mesh => VariablesGlobales.shaderManager.AgregarMesh(mesh, ShaderManager.MESH_TYPE.SHADOW)));
+            else 
+                todas_escenas.ForEach(scena => scena.ForEach(mesh => VariablesGlobales.shaderManager.AgregarMesh(mesh, ShaderManager.MESH_TYPE.DEFAULT)));
+
             AddListListMeshToMain(todas_escenas);//@lo agrego acá asi puedo retornar la ultima posicion por si es necesaria, conviene hacer asi??
             return posicion;
         }
@@ -108,27 +115,27 @@ namespace TGC.Group.Model
             //escenario principal
             //-----
 
-            posicion = PlaceSceneLine(escena_bomba, posicion, escalador, n/2, mesh_pivot, 0,rotacion);
+            posicion = PlaceSceneLine(escena_bomba, posicion, escalador, n/2, mesh_pivot, 0,rotacion,true);
 
             posicion.X += 325f;//necesitamos rotacion sin que modifique posicion
             rotacion = new TGCVector3(0f, FastMath.PI, 0f);
-            posicion = PlaceSceneLine(escena_bomba, posicion, escalador, 1, mesh_pivot, 0, rotacion);
+            posicion = PlaceSceneLine(escena_bomba, posicion, escalador, 1, mesh_pivot, 0, rotacion,true);
 
             posicion.X -= 325f;
             rotacion = new TGCVector3(0f, 0f, 0f);
-            posicion = PlaceSceneLine(escena_bomba, posicion, escalador, n / 2, mesh_pivot, 0, rotacion);
+            posicion = PlaceSceneLine(escena_bomba, posicion, escalador, n / 2, mesh_pivot, 0, rotacion,true);
 
 
             posicion = new TGCVector3(-350f, 50f, -500f);
             escalador = new TGCVector3(50f, 50f, 30f);
             mesh_pivot = 1;
             rotacion = new TGCVector3(0,FastMath.TWO_PI, 0f);
-            PlaceSceneLine(escena_alrededores, posicion, escalador, n, mesh_pivot, 0,rotacion);
+            PlaceSceneLine(escena_alrededores, posicion, escalador, n, mesh_pivot, 0,rotacion,false);
 
             posicion = new TGCVector3(0f, 800f, -500f);
             mesh_pivot = 2;
             rotacion = new TGCVector3(0f, 0f, FastMath.PI);
-            posicion_final = PlaceSceneLine(escena_alrededores2, posicion, escalador, n, mesh_pivot, 0,rotacion);
+            posicion_final = PlaceSceneLine(escena_alrededores2, posicion, escalador, n, mesh_pivot, 0,rotacion,false);
             //-----
 
             //extras
@@ -141,14 +148,14 @@ namespace TGC.Group.Model
             escalador = new TGCVector3(.65f, .3f, 1f);
             mesh_pivot = 0;
             rotacion = new TGCVector3(0f, 0f, 0f);
-            PlaceSceneLine(tubo_rojo_gira, posicion, escalador, n, mesh_pivot, 400f, rotacion);
+            PlaceSceneLine(tubo_rojo_gira, posicion, escalador, n, mesh_pivot, 400f, rotacion,true);
 
             posicion = distancia * .4f + new TGCVector3(30f,0,0);
             escalador = new TGCVector3(.3f, .3f, 5f);
-            PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0,rotacion);
+            PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0,rotacion,true);
 
             posicion = distancia * .6f + new TGCVector3(-30f, 0, 0);
-            PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0, rotacion);
+            PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0, rotacion,true);
 
             escalador = new TGCVector3(30f, 50f, 50f);
             mesh_pivot = 0;
@@ -161,36 +168,6 @@ namespace TGC.Group.Model
             main_escena_instancia.ForEach(mesh_list => VariablesGlobales.physicsEngine.AgregarEscenario(mesh_list));
             //
 
-            //Shader
-            if (VariablesGlobales.SHADERS)
-            {
-                main_escena_instancia.ForEach(mesh_list => mesh_list.ForEach(mesh=>mesh.Effect=VariablesGlobales.shader));
-            }
-
-        }
-
-        public void Render(string technique)
-        {
-            if (frustum_culling)
-            {
-                foreach (var listMesh in main_escena_instancia)
-                {
-                    foreach (var mesh in listMesh)
-                    {
-                        //Solo mostrar la malla si colisiona contra el Frustum
-                        var huboColision = TgcCollisionUtils.classifyFrustumAABB(this.frustum, mesh.BoundingBox);
-                        if (huboColision != TgcCollisionUtils.FrustumResult.OUTSIDE)
-                        {
-                            mesh.Technique = technique;
-                            mesh.Render();
-                        }
-                    }
-                }
-            }
-            else
-            {
-                main_escena_instancia.ForEach(escena => { RenderMeshList(escena); });//@@esta bien que renderize cada vez si no hay cambios??
-            }
         }
 
         public override void Render()

@@ -47,7 +47,7 @@ namespace TGC.Group.Model
                 TGCMatrix.RotationYawPitchRoll(coordenadaEsferica.GetRotation().Y, coordenadaEsferica.GetRotation().X, coordenadaEsferica.GetRotation().Z) * 
                 TGCMatrix.Translation(posicion);
                 //Shader
-                if(VariablesGlobales.SHADERS) mesh.Effect = VariablesGlobales.shader;
+                if(VariablesGlobales.SHADERS) VariablesGlobales.shaderManager.AgregarMesh(mesh, ShaderManager.MESH_TYPE.SHADOW);
             });
             this.target = target;
             this.managerDisparos = managerDisparos;
@@ -88,11 +88,6 @@ namespace TGC.Group.Model
                 new Misil(posicion, coordenadaAXwing, coordenadaAXwing.GetRotation(),
                 "Misil\\misil_xwing_enemigo-TgcScene.xml"));
             VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.DISPARO_MISIL_ENEMIGO);
-        }
-        public void Render(string technique)
-        {
-            nave.Meshes.ForEach(mesh => mesh.Technique = technique);
-            nave.RenderAll();
         }
 
         public void Render(){nave.RenderAll();}

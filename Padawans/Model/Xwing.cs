@@ -22,7 +22,6 @@ namespace TGC.Group.Model
     {
         private TgcSceneLoader loader;
         TgcMesh xwing,alaXwing;
-        private TemporaryElementManager managerDisparos;
         public RigidBody body_xwing;
 
 
@@ -84,8 +83,8 @@ namespace TGC.Group.Model
             //Shader
             if (VariablesGlobales.SHADERS)
             {
-                xwing.Effect = VariablesGlobales.shader;
-                alaXwing.Effect = VariablesGlobales.shader;
+                VariablesGlobales.shaderManager.AgregarMesh(xwing, ShaderManager.MESH_TYPE.SHADOW);
+                VariablesGlobales.shaderManager.AgregarMesh(alaXwing, ShaderManager.MESH_TYPE.SHADOW);
             }
 
             //Posicion, rotacion y escala inicial
@@ -125,14 +124,6 @@ namespace TGC.Group.Model
 
             VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.FLYBY_2);
             VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.XWING_ENGINE);
-        }
-
-        public void Render(string technique)
-        {
-            xwing.Technique = technique;
-            xwing.Render();
-            alaXwing.Technique = technique;
-            alaXwing.Render();
         }
 
         public override void Render()
@@ -287,7 +278,7 @@ namespace TGC.Group.Model
 
         public void UpdateInputManual(TgcD3dInput input,float ElapsedTime)
         {
-            ElapsedTime = 0.01f; //Lo hardcodeo hasta que sepamos bien como hacer esto
+            //ElapsedTime = 0.01f; //Lo hardcodeo hasta que sepamos bien como hacer esto
 
             //Teclas especiales para moverse rapido y mas facil por el mapa
             TestingInput(input);
