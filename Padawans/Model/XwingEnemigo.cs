@@ -46,6 +46,8 @@ namespace TGC.Group.Model
                 mesh.Transform = TGCMatrix.Scaling(scale) * 
                 TGCMatrix.RotationYawPitchRoll(coordenadaEsferica.GetRotation().Y, coordenadaEsferica.GetRotation().X, coordenadaEsferica.GetRotation().Z) * 
                 TGCMatrix.Translation(posicion);
+                //Shader
+                if(VariablesGlobales.SHADERS) mesh.Effect = VariablesGlobales.shader;
             });
             this.target = target;
             this.managerDisparos = managerDisparos;

@@ -99,6 +99,8 @@ namespace TGC.Group.Model
             }
             //@@@mesh.Effect = shader; PARA TODOS LOS MESHES, Y LOS Q SE CREEN TMB hacer
 
+            VariablesGlobales.shader = shader;
+
             //--------------------------------------------------------------------------------------
             // Creo el shadowmap.
             // Format.R32F
@@ -116,8 +118,9 @@ namespace TGC.Group.Model
             // lograr que los objetos del borde generen sombras
             shadowProj = TGCMatrix.PerspectiveFovLH(Geometry.DegreeToRadian(80), D3DDevice.Instance.AspectRatio,
                                                     50, 5000);
-            d3dDevice.Transform.Projection = TGCMatrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f), 
-                                             D3DDevice.Instance.AspectRatio, near_plane, far_plane).ToMatrix();
+            d3dDevice.Transform.Projection = TGCMatrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f),
+                                             D3DDevice.Instance.AspectRatio, D3DDevice.Instance.ZNearPlaneDistance,
+                                             D3DDevice.Instance.ZFarPlaneDistance).ToMatrix();//near_plane, far_plane).ToMatrix();
             //@@@@@CUIDADO TOY CAMBIANDO TODO EL VIEW ACA
             lightPos = new TGCVector3(0, 0, 0);
             lightDir = new TGCVector3(0,-1,-1) - lightPos;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TGC.Group.Model
 {
-    class EnemyManager : ActiveElementManager
+    public class EnemyManager : ActiveElementManager
     {
         public EnemyManager() : base()
         {

@@ -80,6 +80,14 @@ namespace TGC.Group.Model
             this.loader = loader;
             xwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"XWing\\xwing-TgcScene.xml").Meshes[0];
             alaXwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"XWing\\xwing-TgcScene.xml").Meshes[1];
+
+            //Shader
+            if (VariablesGlobales.SHADERS)
+            {
+                xwing.Effect = VariablesGlobales.shader;
+                alaXwing.Effect = VariablesGlobales.shader;
+            }
+
             //Posicion, rotacion y escala inicial
             escala = new TGCVector3(escalar,escalar,escalar);//(0.1f, 0.1f, 0.1f);
             matrizXwingInicial = TGCMatrix.Scaling(escala);

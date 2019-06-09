@@ -17,7 +17,7 @@ namespace TGC.Group.Model
     /// <summary>
     ///     Una clase de ejemplo que grafica pistas para poder tener una referencia de la velocidad de la nave
     /// </summary>
-    public class MainRunway : SceneElement, InteractiveElement
+    public class MainRunway : SceneElement
     {
         private TgcSceneLoader loader;
         TgcScene escena_bomba, escena_alrededores, escena_alrededores2,hierro, tubo_rojo_gira, tubo_rojo_derecho;
@@ -26,7 +26,6 @@ namespace TGC.Group.Model
         //TgcScene piso;
         private int n;
         TgcFrustum frustum;
-        private Torreta unaTorreta;
         private bool frustum_culling = true;
         /// <summary>
         ///     n representa la cantidad de pistas que va a graficar
@@ -43,8 +42,8 @@ namespace TGC.Group.Model
             tubo_rojo_gira = loader.loadSceneFromFile("Padawans_media\\XWing\\pipeline-TgcScene.xml");
             tubo_rojo_derecho = loader.loadSceneFromFile("Padawans_media\\XWing\\tuberia-TgcScene.xml");
 
-            unaTorreta = new Torreta(loader, targetTorretas, new TGCVector3(50f, 10f, 0f), new TGCVector3(0, FastMath.PI_HALF, 0));
-
+            VariablesGlobales.managerEnemigos.AgregarElemento(new Torreta(loader, targetTorretas,
+                            new TGCVector3(50f, 10f, 0f), new TGCVector3(0, FastMath.PI_HALF, 0)));
             //bloques de construccion
             //piso = loader.loadSceneFromFile("Padawans_media\\XWing\\m1-TgcScene.xml");
             //
@@ -161,6 +160,13 @@ namespace TGC.Group.Model
             //agregar al physics engine (por ahora no guardo los rigidbody, no se si sirven para algo)
             main_escena_instancia.ForEach(mesh_list => VariablesGlobales.physicsEngine.AgregarEscenario(mesh_list));
             //
+
+            //Shader
+            if (VariablesGlobales.SHADERS)
+            {
+                main_escena_instancia.ForEach(mesh_list => mesh_list.ForEach(mesh=>mesh.Effect=VariablesGlobales.shader));
+            }
+
         }
 
         public void Render(string technique)
@@ -185,7 +191,6 @@ namespace TGC.Group.Model
             {
                 main_escena_instancia.ForEach(escena => { RenderMeshList(escena); });//@@esta bien que renderize cada vez si no hay cambios??
             }
-            unaTorreta.Render();
         }
 
         public override void Render()
@@ -209,7 +214,6 @@ namespace TGC.Group.Model
             {
                 main_escena_instancia.ForEach(escena => { RenderMeshList(escena); });//@@esta bien que renderize cada vez si no hay cambios??
             }
-            unaTorreta.Render();
         }
 
         public override void Update()
@@ -220,18 +224,12 @@ namespace TGC.Group.Model
         public override void Dispose()
         {
             main_escena_instancia.ForEach(escena => { escena.ForEach(mesh => { mesh.Dispose(); }); });
-            unaTorreta.Dispose();
         }
 
         public override void RenderBoundingBox()
         {
             main_escena_instancia.ForEach(escena => { escena.ForEach(mesh => { mesh.BoundingBox.Render(); }); });
-            unaTorreta.RenderBoundingBox();
         }
 
-        public void UpdateInput(TgcD3dInput input, float ElapsedTime)
-        {
-            unaTorreta.UpdateInput(input, ElapsedTime);
-        }
     }
 }

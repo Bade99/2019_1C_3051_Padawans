@@ -10,7 +10,7 @@ using TGC.Core.Input;
 
 namespace TGC.Group.Model
 {
-    class Torreta : SceneElement, InteractiveElement
+    class Torreta : IActiveElement
     {
         private TgcSceneLoader loader;
         TgcMesh torreta;
@@ -38,7 +38,7 @@ namespace TGC.Group.Model
             matrizInicial = TGCMatrix.Scaling(factorEscala, factorEscala, factorEscala);
             torreta.AutoTransformEnable = false;
             Posicionar();
-
+            if(VariablesGlobales.SHADERS) torreta.Effect = VariablesGlobales.shader;
         }
 
         public void Posicionar()
@@ -56,24 +56,19 @@ namespace TGC.Group.Model
             torreta.Render();
         }
 
-        public override void RenderBoundingBox()
+        public void RenderBoundingBox()
         {
             torreta.BoundingBox.Render();
         }
 
-        public override void Update()
-        {
-
-        }
-
-        public override void Dispose()
+        public void Dispose()
         {
             torreta.Dispose();
         }
 
-        public void UpdateInput(TgcD3dInput input, float ElapsedTime)
+        public void Update(float elapsedTime)
         {
-            tiempoDesdeUltimoDisparo += ElapsedTime;
+            tiempoDesdeUltimoDisparo += elapsedTime;
             if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos)
             {
                 tiempoDesdeUltimoDisparo = 0f;
@@ -91,6 +86,11 @@ namespace TGC.Group.Model
             }
         }
 
-        public override void Render(){torreta.Render();}
+        public void Render(){torreta.Render();}
+
+        public bool Terminado()
+        {
+            return false;
+        }
     }
 }

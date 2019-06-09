@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using TGC.Core.Sound;
 
-
 namespace TGC.Group.Model
 {
     class Sonido : ISoundElement//WAV desde 8 a 32 bit
@@ -33,7 +32,7 @@ namespace TGC.Group.Model
             this.path = path;
             this.volumen = volumen;
             this.sonido = new TgcStaticSound();
-            if (this.volumen > 0) this.volumen = 0; 
+            if (this.volumen > 0) this.volumen = 0;
             sonido.loadSound(VariablesGlobales.mediaDir + this.path,this.volumen, VariablesGlobales.soundDevice);
             this.ID = ID;
             this.duracion = duracion*repeticiones;

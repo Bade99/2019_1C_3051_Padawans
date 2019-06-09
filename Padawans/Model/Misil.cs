@@ -46,7 +46,9 @@ namespace TGC.Group.Model
             misil = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + pathScene).Meshes[0];
             misil.AutoTransformEnable = false;
             escala = new TGCVector3(.2f, .2f, 4f);
-            
+
+            //Shader
+            if (VariablesGlobales.SHADERS) misil.Effect = VariablesGlobales.shader;
         }
 
 

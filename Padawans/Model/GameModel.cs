@@ -38,9 +38,20 @@ namespace TGC.Group.Model
         
         public override void Init()
         {
-            var d3dDevice = D3DDevice.Instance.Device;
-            var loader = new TgcSceneLoader();
+            VariablesGlobales.mediaDir = this.MediaDir;
+            VariablesGlobales.shadersDir = this.ShadersDir;
+            VariablesGlobales.soundDevice = DirectSound.DsDevice;
+            VariablesGlobales.loader = new TgcSceneLoader();
+
+            //var d3dDevice = D3DDevice.Instance.Device;
+
             cues_relative_posicion = new TGCVector2(.05f, .5f);
+
+            //Shaders & Post-processing @@ ver como hacer pa q estos se carguen primero!!!!
+            postProcess = new PostProcess(this);
+            VariablesGlobales.postProcess = postProcess;
+            renderer = new Renderer(this,postProcess);
+            
             /*
             D3DDevice.Instance.Device.Transform.Projection = TGCMatrix.PerspectiveFovLH(D3DDevice.Instance.FieldOfView, D3DDevice.Instance.AspectRatio,
                     D3DDevice.Instance.ZNearPlaneDistance, D3DDevice.Instance.ZFarPlaneDistance).ToMatrix();
@@ -49,38 +60,37 @@ namespace TGC.Group.Model
             VariablesGlobales.physicsEngine = physicsEngine;
 
             managerSonido = new SoundManager();
-            VariablesGlobales.mediaDir = this.MediaDir;
-            VariablesGlobales.shadersDir = this.ShadersDir;
-            VariablesGlobales.loader = new TgcSceneLoader();
-            VariablesGlobales.soundDevice = DirectSound.DsDevice;
-            //VariablesGlobales.elapsedTime debe ser actualizado por tanto va a Update()
             VariablesGlobales.managerSonido = managerSonido;
+
+            managerMenu = new MenuManager(new StartMenu(Key.Return),new PauseMenu(Key.Escape));
+
+            //VariablesGlobales.elapsedTime debe ser actualizado por tanto va a Update()
+
             managerElementosTemporales = new TemporaryElementManager();
             VariablesGlobales.managerElementosTemporales = managerElementosTemporales;
 
-            xwing = new Xwing(loader, new TGCVector3(0, 1000f, 2000));
-            pistaReferencia = new MainRunway(loader, 5, this.Frustum, xwing);
-
+            xwing = new Xwing(VariablesGlobales.loader, new TGCVector3(0, 1000f, 2000));
             VariablesGlobales.xwing = xwing;
 
             managerEnemigos = new EnemyManager();
+            VariablesGlobales.managerEnemigos = managerEnemigos;
+
+            pistaReferencia = new MainRunway(VariablesGlobales.loader, 5, this.Frustum, xwing);
+
             managerEnemigos.AgregarElemento(new XwingEnemigo(new TGCVector3(200f, 600f, 500f), xwing, 20));
-            worldSphere = new WorldSphere(loader, xwing);
+            worldSphere = new WorldSphere(VariablesGlobales.loader, xwing);
             followingCamera = new FollowingCamera(xwing);
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ActiveElementManager[] { managerElementosTemporales });
             cues = new CueManager(new Cue(new DelayCueLauncher(3),"Bitmaps\\WASD.png", .3f, cues_relative_posicion,3),
                                   new Cue(new DelayCueLauncher(3),"Bitmaps\\Pause.png", .3f, cues_relative_posicion,3),
                                   new Cue(new DelayCueLauncher(3),"Bitmaps\\Left_Mouse.png",.3f,cues_relative_posicion,3)
                                   );
-            managerSonido.ReproducirSonido(SoundManager.SONIDOS.BACKGROUND_BATTLE);
-            managerMenu = new MenuManager(new StartMenu(Key.Return),new PauseMenu(Key.Escape));
 
-            postProcess = new PostProcess(this);
-            VariablesGlobales.postProcess = postProcess;
+
             postProcess.AgregarElemento(xwing);
             postProcess.AgregarElemento(managerElementosTemporales);
 
-            renderer = new Renderer(this,postProcess);
+            managerSonido.ReproducirSonido(SoundManager.SONIDOS.BACKGROUND_BATTLE);
         }
         public override void Update()
         {
@@ -98,10 +108,9 @@ namespace TGC.Group.Model
                 followingCamera.Update(Camara,Input,ElapsedTime);
                 managerElementosTemporales.Update(ElapsedTime);
                 managerEnemigos.Update(ElapsedTime);
-                pistaReferencia.UpdateInput(Input, ElapsedTime);
                 boundingBoxHelper.UpdateInput(Input, ElapsedTime);
             }
-            Thread.Sleep(1);//@mientras mas chico el numero mas ganas en performance, tmb podemos sacar esto y listo
+            //Thread.Sleep(1);//@mientras mas chico el numero mas ganas en performance, tmb podemos sacar esto y listo
 
             PostUpdate();
         }
