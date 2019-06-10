@@ -12,33 +12,35 @@ namespace TGC.Group.Model
 {
     class Torreta : IActiveElement
     {
-        private TgcSceneLoader loader;
         TgcMesh torreta;
         private TGCVector3 posicion;
         private TGCVector3 rotation;
         private TGCMatrix matrizInicial;
         private readonly float tiempoEntreDisparos = 1.5f;
         private float tiempoDesdeUltimoDisparo = 1.5f;
-        private readonly float distanciaMinimaATarget = 1000;
-        private readonly TGCVector3 origenDeDisparos = new TGCVector3(0, 70, -20);
+        private readonly float distanciaMinimaATarget = 300f;
+        private readonly float factorEscala = .1f;
+        private readonly TGCVector3 origenDeDisparos;
         private TGCVector3 tamanioBoundingBox;
-        private readonly float factorEscala = 0.5f;
         private TGCVector3 rotacionBase;
         private Xwing target;
+        private bool isActive;
 
-        public Torreta(TgcSceneLoader loader, Xwing target, TGCVector3 posicion, TGCVector3 rotacionBase)
+        TGCVector3 DistanciaAXwing;
+
+        public Torreta(Xwing target, TGCVector3 posicion, TGCVector3 rotacionBase)
         {
-            this.loader = loader;
+            origenDeDisparos = new TGCVector3(0 * factorEscala, 70 * factorEscala, -20 * factorEscala);
             this.target = target;
             this.posicion = posicion;
             this.rotacionBase = rotacionBase;
             this.rotation = rotacionBase;
-            torreta = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "XWing\\torreta-TgcScene.xml").Meshes[0];
+            torreta = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + "XWing\\torreta-TgcScene.xml").Meshes[0];
             tamanioBoundingBox = torreta.BoundingBox.calculateSize();
             matrizInicial = TGCMatrix.Scaling(factorEscala, factorEscala, factorEscala);
             torreta.AutoTransformEnable = false;
             Posicionar();
-            if(VariablesGlobales.SHADERS) torreta.Effect = VariablesGlobales.shader;
+            if (VariablesGlobales.SHADERS) VariablesGlobales.shaderManager.AgregarMesh(torreta, ShaderManager.MESH_TYPE.SHADOW);
         }
 
         public void Posicionar()
@@ -60,27 +62,33 @@ namespace TGC.Group.Model
             torreta.Dispose();
         }
 
-        public void Update(float elapsedTime)
+        public void Update()
         {
-            tiempoDesdeUltimoDisparo += elapsedTime;
+            tiempoDesdeUltimoDisparo += VariablesGlobales.elapsedTime;
             if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos)
             {
                 tiempoDesdeUltimoDisparo = 0f;
-                TGCVector3 vectorDistanciaAXwing = 
-                    CommonHelper.SumarVectores(target.GetPosition(), -(CommonHelper.SumarVectores(posicion, origenDeDisparos)));
-                if (vectorDistanciaAXwing.Length() < distanciaMinimaATarget)
+
+                DistanciaAXwing = target.GetPosition() - posicion; //+ origenDeDisparos;
+
+                if (DistanciaAXwing.Length() < distanciaMinimaATarget)
                 {
-                    CoordenadaEsferica direccionXwing = new CoordenadaEsferica(vectorDistanciaAXwing.X, 
-                        vectorDistanciaAXwing.Y, vectorDistanciaAXwing.Z);
-                    Posicionar();
+                    isActive = true;
+                    CoordenadaEsferica direccionXwing = new CoordenadaEsferica(DistanciaAXwing.X,
+                        DistanciaAXwing.Y, DistanciaAXwing.Z);
+                    //Posicionar();
                     VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(
-                        CommonHelper.SumarVectores(posicion, origenDeDisparos), 
+                        posicion+ torreta.BoundingBox.calculateSize()*factorEscala,
                         direccionXwing, direccionXwing.GetRotation(), "Misil\\misil_torreta.xml"));
                 }
+                else isActive = false;
             }
         }
 
-        public void Render(){torreta.Render();}
+        public void Render(){
+            if(isActive)
+                torreta.Render();
+        }
 
         public bool Terminado()
         {

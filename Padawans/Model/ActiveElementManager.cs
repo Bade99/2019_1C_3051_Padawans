@@ -12,12 +12,12 @@ namespace TGC.Group.Model
         {
             elems = new List<IActiveElement>();
         }
-        public void Update(float ElapsedTime)
+        public void Update()
         {
             if (this.Terminado() == false)
             {
                 elems.RemoveAll(elem => { if (elem.Terminado()) elem.Dispose(); return elem.Terminado() == true; });
-                elems.ForEach(elem => { elem.Update(ElapsedTime); });
+                elems.ForEach(elem => { elem.Update(); });
             }
         }
         public void Render()

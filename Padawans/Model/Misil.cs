@@ -22,9 +22,7 @@ namespace TGC.Group.Model
         private TGCVector3 posicion;
         //Como el misil nunca cambia la trayectoria, guardo las coordenadas cartesianas de la coordenada
         //esferica para no calcular tantos senos y cosenos
-        private float xCoordEsferica;
-        private float yCoordEsferica;
-        private float zCoordEsferica;
+        private TGCVector3 coordEsferica;
         private float tiempoDeVida = 10f;
         private readonly float velocidadGeneral = 1000f;
         private bool terminado = false;
@@ -39,9 +37,7 @@ namespace TGC.Group.Model
         public Misil(TGCVector3 posicionNave, CoordenadaEsferica coordenadaEsferica, TGCVector3 rotacionNave, string pathScene)
         {
             this.rotacionNave = rotacionNave;
-            this.xCoordEsferica = coordenadaEsferica.GetXCoord();
-            this.yCoordEsferica = coordenadaEsferica.GetYCoord();
-            this.zCoordEsferica = coordenadaEsferica.GetZCoord();
+            this.coordEsferica = coordenadaEsferica.GetXYZCoord();
             this.posicion = posicionNave;
             misil = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + pathScene).Meshes[0];
             misil.AutoTransformEnable = false;
@@ -52,22 +48,19 @@ namespace TGC.Group.Model
         }
 
 
-        public void Update(float ElapsedTime)
+        public void Update()
         {
 
-            tiempoDeVida -= ElapsedTime;
+            tiempoDeVida -= VariablesGlobales.elapsedTime;
             
             if (tiempoDeVida < 0f)
             {
                 terminado = true;
             }
             else {
-                TGCVector3 delta = new TGCVector3(
-                    xCoordEsferica * velocidadGeneral * ElapsedTime,
-                    yCoordEsferica * velocidadGeneral * ElapsedTime,
-                    zCoordEsferica * velocidadGeneral * ElapsedTime);
+                TGCVector3 delta = coordEsferica * velocidadGeneral * VariablesGlobales.elapsedTime;
 
-                posicion = CommonHelper.SumarVectores(posicion, delta);
+                posicion = posicion + delta;
 
                 misil.Transform = TGCMatrix.Scaling(escala) * TGCMatrix.RotationY(FastMath.PI_HALF) * TGCMatrix.RotationYawPitchRoll(rotacionNave.Y,rotacionNave.X,rotacionNave.Z) * TGCMatrix.Translation(posicion);
             }
@@ -100,5 +93,8 @@ namespace TGC.Group.Model
             misil.Dispose();
         }
 
+        public void ComputeDistance()
+        {
+        }
     }
 }

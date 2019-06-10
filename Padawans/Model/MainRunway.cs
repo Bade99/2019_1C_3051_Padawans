@@ -11,6 +11,7 @@ using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
 using TGC.Core.Collision;
 using TGC.Core.BoundingVolumes;
+using System;
 
 namespace TGC.Group.Model
 {
@@ -21,20 +22,27 @@ namespace TGC.Group.Model
     {
         private TgcSceneLoader loader;
         TgcScene escena_bomba, escena_alrededores, escena_alrededores2,hierro, tubo_rojo_gira, tubo_rojo_derecho;
-        List<List<TgcMesh>> main_escena_instancia = new List<List<TgcMesh>>();//deberia ser lista de lista de lista
+        List<List<TgcMesh>> main_escena_instancia; //deberia ser lista de lista de lista
         //bloques de construccion
         //TgcScene piso;
         private int n;
         TgcFrustum frustum;
         private bool frustum_culling = true;
+
+        Random random;
+
+        Xwing target;
+
         /// <summary>
         ///     n representa la cantidad de pistas que va a graficar
         /// </summary>
         public MainRunway(TgcSceneLoader loader, int n, TgcFrustum frustum, Xwing targetTorretas)
         {
+            main_escena_instancia = new List<List<TgcMesh>>();
+            random = new Random();
             this.loader = loader;
             this.frustum = frustum;
-
+            this.target = targetTorretas;
             escena_bomba = loader.loadSceneFromFile("Padawans_media\\XWing\\TRENCH_RUN-TgcScene.xml");
             escena_alrededores = loader.loadSceneFromFile("Padawans_media\\XWing\\death+star-TgcScene.xml");
             escena_alrededores2 = loader.loadSceneFromFile("Padawans_media\\XWing\\death+star2-TgcScene.xml");
@@ -42,8 +50,6 @@ namespace TGC.Group.Model
             tubo_rojo_gira = loader.loadSceneFromFile("Padawans_media\\XWing\\pipeline-TgcScene.xml");
             tubo_rojo_derecho = loader.loadSceneFromFile("Padawans_media\\XWing\\tuberia-TgcScene.xml");
 
-            VariablesGlobales.managerEnemigos.AgregarElemento(new Torreta(loader, targetTorretas,
-                            new TGCVector3(50f, 10f, 0f), new TGCVector3(0, FastMath.PI_HALF, 0)));
             //bloques de construccion
             //piso = loader.loadSceneFromFile("Padawans_media\\XWing\\m1-TgcScene.xml");
             //
@@ -51,7 +57,6 @@ namespace TGC.Group.Model
             this.n = n;
 
             Escena_Principal();
-
 
         }
 
@@ -99,6 +104,32 @@ namespace TGC.Group.Model
 
             AddListListMeshToMain(todas_escenas);//@lo agrego acá asi puedo retornar la ultima posicion por si es necesaria, conviene hacer asi??
             return posicion;
+        }
+
+        private void CrearTorreta(TGCVector3 pos, TGCVector3 rotation)
+        {
+            Torreta torreta = new Torreta(target, pos, rotation);
+            VariablesGlobales.managerEnemigos.AgregarElemento(torreta);
+            //new TGCVector3(50f, 10f, 0f), new TGCVector3(0, FastMath.PI_HALF, 0))
+        }
+
+        private float MyRandom()//retorna float entre 0 y 1 de a .1 incrementos, puede ser positivo o negativo
+        {
+            float signo = random.Next(1)==1 ? 1f : -1f;
+            return ((float)random.Next(10) / 10f)*signo;
+        }
+
+        private void PonerTorretas(TGCVector3 posInicial, TGCVector3 posFinal,TGCVector3 rotation,
+                                    float mitadAnchoPista,int cantidad)
+        {
+            float signoZFinal = (float)Math.Sign(posFinal.Z);
+            //mejor hacer abs de zinicial - zfinal y usar el signo de zfinal p sumarle a zinicial
+            int zLargo =(int)FastMath.Abs(posInicial.Z-posFinal.Z);
+            for (int i = 0; i < cantidad; i++)
+            {//@@Problema aca con el random, solo sirve pa ints positivos, cambiarlo y obtener el + o - afuera, esta tirando exception
+                CrearTorreta(new TGCVector3(posInicial.X+mitadAnchoPista*MyRandom() + 30, posInicial.Y-65,posInicial.Z+ signoZFinal * (float)random.Next(zLargo)),rotation);
+            }
+            
         }
 
         private void Escena_Principal()
@@ -167,6 +198,7 @@ namespace TGC.Group.Model
             //agregar al physics engine (por ahora no guardo los rigidbody, no se si sirven para algo)
             main_escena_instancia.ForEach(mesh_list => VariablesGlobales.physicsEngine.AgregarEscenario(mesh_list));
             //
+            PonerTorretas(posicion_inicial, posicion_final, new TGCVector3(0,FastMath.PI,0),50f,30);
 
         }
 

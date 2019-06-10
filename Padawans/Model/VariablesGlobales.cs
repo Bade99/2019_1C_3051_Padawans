@@ -28,5 +28,6 @@ namespace TGC.Group.Model
         public static float time = 5;//para testeos con temporizador
         public static bool SHADERS = true;
         public static Effect shader;//effect que todos los objetos a renderizar deben usar
+        public static bool DameLuz = true;
     }
 }

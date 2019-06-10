@@ -8,7 +8,7 @@ namespace TGC.Group.Model
 {
     public interface IActiveElement
     {
-        void Update(float ElapsedTime);
+        void Update();
         bool Terminado();
         void Render();
         void RenderBoundingBox();

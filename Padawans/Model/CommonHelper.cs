@@ -197,6 +197,5 @@ namespace TGC.Group.Model
 
             return radAngles;
         }
-
     }
 }

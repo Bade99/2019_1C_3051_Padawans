@@ -56,9 +56,9 @@ namespace TGC.Group.Model
             coordenadaAXwing = new CoordenadaEsferica(vectorDistancia.X, vectorDistancia.Y, vectorDistancia.Z);
         }
 
-        public void Update(float elapsedTime)
+        public void Update()
         {
-            timer += elapsedTime;
+            timer += VariablesGlobales.elapsedTime;
             //Que chequee la posicion de la nave enemiga cada cierto tiempo, por ejemplo 2 segundos
             if (timer > intervaloParaChequearXwing)
             {
@@ -74,7 +74,7 @@ namespace TGC.Group.Model
             //Dirigirse en direccion al xwing
             coordenadaEsferica = coordenadaAXwing;
             //Moverse en direccion de la coordenadaEsferica y la velocidad general
-            posicion = CommonHelper.MoverPosicionEnDireccionCoordenadaEsferica(posicion, coordenadaEsferica, velocidadGeneral, elapsedTime);
+            posicion = CommonHelper.MoverPosicionEnDireccionCoordenadaEsferica(posicion, coordenadaEsferica, velocidadGeneral, VariablesGlobales.elapsedTime);
             nave.Meshes.ForEach(mesh => {
                 mesh.Transform = TGCMatrix.Scaling(scale) *
                 TGCMatrix.RotationYawPitchRoll(coordenadaEsferica.GetRotation().Y, coordenadaEsferica.GetRotation().X, coordenadaEsferica.GetRotation().Z) * 

@@ -71,7 +71,7 @@ namespace TGC.Group.Model
             managerElementosTemporales = new TemporaryElementManager();
             VariablesGlobales.managerElementosTemporales = managerElementosTemporales;
 
-            xwing = new Xwing(VariablesGlobales.loader, new TGCVector3(0, 1000f, 2000));
+            xwing = new Xwing(VariablesGlobales.loader, new TGCVector3(0, 1000f, 1000));
             VariablesGlobales.xwing = xwing;
 
             managerEnemigos = new EnemyManager();
@@ -108,8 +108,8 @@ namespace TGC.Group.Model
                 xwing.UpdateInput(Input,ElapsedTime);
                 xwing.Update();
                 followingCamera.Update(Camara,Input,ElapsedTime);
-                managerElementosTemporales.Update(ElapsedTime);
-                managerEnemigos.Update(ElapsedTime);
+                managerElementosTemporales.Update();
+                managerEnemigos.Update();
                 boundingBoxHelper.UpdateInput(Input, ElapsedTime);
             }
             //Thread.Sleep(1);//@mientras mas chico el numero mas ganas en performance, tmb podemos sacar esto y listo

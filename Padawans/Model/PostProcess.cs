@@ -121,12 +121,14 @@ namespace TGC.Group.Model
             // lograr que los objetos del borde generen sombras
             shadowProj = TGCMatrix.PerspectiveFovLH(Geometry.DegreeToRadian(80), D3DDevice.Instance.AspectRatio,
                                                     50, 5000);
-            //d3dDevice.Transform.Projection = TGCMatrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f),
-            //                                 D3DDevice.Instance.AspectRatio, D3DDevice.Instance.ZNearPlaneDistance,
-            //                                 D3DDevice.Instance.ZFarPlaneDistance).ToMatrix();//near_plane, far_plane).ToMatrix();
+            /*
+            d3dDevice.Transform.Projection = TGCMatrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f),
+                                             D3DDevice.Instance.AspectRatio, D3DDevice.Instance.ZNearPlaneDistance,
+                                             D3DDevice.Instance.ZFarPlaneDistance).ToMatrix();//near_plane, far_plane).ToMatrix();
             //@@@@@CUIDADO TOY CAMBIANDO TODO EL VIEW ACA
-            lightPos = new TGCVector3(0, 50, 50);
-            lightDir = new TGCVector3(0,-1,0);
+            */
+            lightPos = new TGCVector3(0, 100, 50);
+            lightDir = new TGCVector3(0,-1,1);
             lightDir.Normalize();
         }
 
@@ -404,17 +406,24 @@ namespace TGC.Group.Model
         private void RenderShaders()// x ahora solo shadowmap
         {
             // Calculo la matriz de view de la luz
-            TGCVector3 light_pos = VariablesGlobales.xwing.GetPosition();
-            TGCVector3 light_dir = VariablesGlobales.xwing.GetCoordenadaEsferica().GetXYZCoord();
-            shader.SetValue("g_vLightPos", new Vector4(light_pos.X, light_pos.Y, light_pos.Z, 1));
-            shader.SetValue("g_vLightDir", new Vector4(light_dir.X, light_dir.Y, light_dir.Z, 1));
-            lightView = TGCMatrix.LookAtLH(light_pos, light_pos + light_dir, new TGCVector3(0, 0, 1));
-            /*
-            shader.SetValue("g_vLightPos", new Vector4(lightPos.X, lightPos.Y, lightPos.Z, 1));
-            shader.SetValue("g_vLightDir", new Vector4(lightDir.X, lightDir.Y, lightDir.Z, 1));
-            lightView = TGCMatrix.LookAtLH(lightPos, lightPos + lightDir, new TGCVector3(0, 0, 1));
-            */
+
+            if (VariablesGlobales.DameLuz)
+            {
+                TGCVector3 light_pos = VariablesGlobales.xwing.GetPosition();
+                TGCVector3 light_dir = VariablesGlobales.xwing.GetCoordenadaEsferica().GetXYZCoord();
+                shader.SetValue("g_vLightPos", new Vector4(light_pos.X, light_pos.Y, light_pos.Z, 1));
+                shader.SetValue("g_vLightDir", new Vector4(light_dir.X, light_dir.Y, light_dir.Z, 1));
+                lightView = TGCMatrix.LookAtLH(light_pos, light_pos + light_dir, new TGCVector3(0, 0, 1));
+            }
+            else
+            {
+                shader.SetValue("g_vLightPos", new Vector4(lightPos.X, lightPos.Y, lightPos.Z, 1));
+                shader.SetValue("g_vLightDir", new Vector4(lightDir.X, lightDir.Y, lightDir.Z, 1));
+                lightView = TGCMatrix.LookAtLH(lightPos, lightPos + lightDir, new TGCVector3(0, 0, 1));
+            }
             //@@@@xq está el up vector en la z??
+            
+            
 
             // inicializacion standard:
             shader.SetValue("g_mProjLight", shadowProj.ToMatrix());
