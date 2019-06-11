@@ -79,7 +79,7 @@ namespace TGC.Group.Model
             managerElementosTemporales = new TemporaryElementManager();
             VariablesGlobales.managerElementosTemporales = managerElementosTemporales;
 
-            xwing = new Xwing(VariablesGlobales.loader, new TGCVector3(0, 1000f, -12000));
+            xwing = new Xwing(VariablesGlobales.loader, new TGCVector3(0, 1000f, 1000));
             VariablesGlobales.xwing = xwing;
 
             managerEnemigos = new EnemyManager();

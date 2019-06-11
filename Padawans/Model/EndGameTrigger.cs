@@ -17,6 +17,7 @@ namespace TGC.Group.Model
         float timer = 3;
         Cue obi_festeja;
         FullScreenElement congrats;
+        bool soundAdded=false;
 
         public EndGameTrigger(TGCVector3 position, TGCVector3 size)
         {
@@ -64,7 +65,6 @@ namespace TGC.Group.Model
                     duracion -= VariablesGlobales.elapsedTime;
                 }
                 else timer -= VariablesGlobales.elapsedTime;
-                //@@obi festejando
             }
         }
         public bool GameFinished()
@@ -83,6 +83,11 @@ namespace TGC.Group.Model
         }
         public void RenderWon()//@@agregar postprocesado q se oscurezca la pantalla
         {
+            if (!soundAdded)
+            {
+                VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.EXPLOSION_FINAL);
+                soundAdded = true;
+            }
             obi_festeja.Update();
             obi_festeja.Render();
             congrats.Render();
