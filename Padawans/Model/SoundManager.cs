@@ -94,13 +94,16 @@ namespace TGC.Group.Model
                 case SONIDOS.XWING_ENGINE:
                     AgregarElemento(new Sonido("Sonidos\\XWing_engine.wav", -600, 1, -1, 0, ""));
                     break;
+                case SONIDOS.XWING_BOMB:
+                    AgregarElemento(new Sonido("Sonidos\\Xwing_bomb_sound.wav", 0, 2, 1, 0, ""));
+                    break;
             }
          }
 
 
         public enum SONIDOS
         {
-            DISPARO_MISIL_XWING, DISPARO_MISIL_ENEMIGO, BACKGROUND_BATTLE, LUKE_OBI_WAN, MAIN_MENU, PAUSE, FLYBY_2, XWING_ENGINE
+            DISPARO_MISIL_XWING, DISPARO_MISIL_ENEMIGO, BACKGROUND_BATTLE, LUKE_OBI_WAN, MAIN_MENU, PAUSE, FLYBY_2, XWING_ENGINE,NO_SOUND,XWING_BOMB
         }
     }
 }

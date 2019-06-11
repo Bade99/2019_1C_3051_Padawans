@@ -13,15 +13,18 @@ namespace TGC.Group.Model
         List<ICueLauncher> targets;
         TGCVector3 position, size;
         bool gameFinished;
+        float duracion =5;
         float timer = 3;
         Cue obi_festeja;
+        FullScreenElement congrats;
 
         public EndGameTrigger(TGCVector3 position, TGCVector3 size)
         {
             targets = new List<ICueLauncher>();
             this.position = position;
             this.size = size;
-            obi_festeja = new Cue(null, "Bitmaps\\Game_Won.png", VariablesGlobales.cues_relative_scale, VariablesGlobales.cues_relative_position, 5);
+            obi_festeja = new Cue(null, "Bitmaps\\Game_Won.png", VariablesGlobales.cues_relative_scale, VariablesGlobales.cues_relative_position, duracion);
+            congrats = new FullScreenElement("Bitmaps\\Congrats.png", SoundManager.SONIDOS.NO_SOUND, duracion);
         }
 
         public void AgregarTarget(ITarget target)
@@ -76,6 +79,7 @@ namespace TGC.Group.Model
         {
             obi_festeja.Update();
             obi_festeja.Render();
+            congrats.Render();
         }
     }
 }

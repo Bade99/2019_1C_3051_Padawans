@@ -30,7 +30,7 @@ namespace TGC.Group.Model
             this.posicion = position;
             this.coordEsferica = coordenadaEsferica.GetXYZCoord();
             escala = new TGCVector3(.05f, .05f,.05f);
-
+            VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.XWING_BOMB);
             //@toy en seria duda de esto
             if (VariablesGlobales.SHADERS) VariablesGlobales.shaderManager.AgregarMesh(bomba, ShaderManager.MESH_TYPE.SHADOW);
         }

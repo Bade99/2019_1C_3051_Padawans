@@ -374,7 +374,7 @@ namespace TGC.Group.Model
                 var pSurf = base_render.GetSurfaceLevel(0);
                 d3dDevice.SetRenderTarget(0, pSurf);
                 d3dDevice.DepthStencilSurface = base_depth;
-                d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.FromArgb(0, 0, 0), 1.0f, 0);
+                //d3dDevice.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.FromArgb(0, 0, 0), 1.0f, 0);
 
                 d3dDevice.BeginScene();
                 // dibujo la escena pp dicha

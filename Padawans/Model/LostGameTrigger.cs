@@ -11,11 +11,14 @@ namespace TGC.Group.Model
     {
         PositionAABBCueLauncher juegoTerminado;
         bool fin = false;
+        float duracion = 5;
         Cue obi_triste;
+        FullScreenElement failed;
         public LostGameTrigger(ITarget target,TGCVector3 position)
         {
             juegoTerminado = new PositionAABBCueLauncher(target, position, new TGCVector3(1000,1000,20));
-            obi_triste = new Cue(null, "Bitmaps\\Game_Lost.png", VariablesGlobales.cues_relative_scale, VariablesGlobales.cues_relative_position, 5);
+            obi_triste = new Cue(null, "Bitmaps\\Game_Lost.png", VariablesGlobales.cues_relative_scale, VariablesGlobales.cues_relative_position, duracion);
+            failed = new FullScreenElement("Bitmaps\\Failed.png", SoundManager.SONIDOS.NO_SOUND, duracion);
         }
         public void Update()
         {
@@ -36,6 +39,7 @@ namespace TGC.Group.Model
         {
             obi_triste.Update();
             obi_triste.Render();
+            failed.Render();
         }
     }
 }

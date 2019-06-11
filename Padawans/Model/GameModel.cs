@@ -69,7 +69,6 @@ namespace TGC.Group.Model
             managerSonido = new SoundManager();
             VariablesGlobales.managerSonido = managerSonido;
 
-            managerMenu = new MenuManager(new StartMenu(Key.Return),new PauseMenu(Key.Escape));
 
             //VariablesGlobales.elapsedTime debe ser actualizado por tanto va a Update()
 
@@ -109,15 +108,17 @@ namespace TGC.Group.Model
             VariablesGlobales.endgameManager = endGameManager;
 
             managerSonido.ReproducirSonido(SoundManager.SONIDOS.BACKGROUND_BATTLE);
+
+            managerMenu = new MenuManager(new StartMenu(Key.Return),new PauseMenu(Key.Escape));//tiene q ir ultimo pa parar el resto de sonidos
         }
         public override void Update()
         {
             //seguir menu inicio
             PreUpdate();
+            VariablesGlobales.elapsedTime = ElapsedTime;
             managerMenu.Update(Input);
             managerSonido.Update();
             if (!managerMenu.IsCurrent()) { //si no estoy en un menu ->
-                VariablesGlobales.elapsedTime = ElapsedTime;
                 physicsEngine.Update();
                 worldSphere.Update();
                 xwing.UpdateInput(Input,ElapsedTime);
@@ -130,7 +131,6 @@ namespace TGC.Group.Model
                 boundingBoxHelper.UpdateInput(Input, ElapsedTime);
                 endGameManager.Update();
             }
-            //Thread.Sleep(1);//@mientras mas chico el numero mas ganas en performance, tmb podemos sacar esto y listo
 
             PostUpdate();
         }
@@ -164,6 +164,10 @@ namespace TGC.Group.Model
 
         public override void Render()
         {
+            if (Input.keyPressed(Key.T))
+            {
+                float a = 1;
+            }
             renderer.Render();
         }
         public void CustomPreRender()
