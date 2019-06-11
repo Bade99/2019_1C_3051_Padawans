@@ -11,7 +11,7 @@ using TGC.Core.Input;
 
 namespace TGC.Group.Model
 {
-    class StartMenu : IMenu //@queda calcular el escalado de la textura
+    class StartMenu : IMenu
     {
         private CustomSprite fondo;
         private CustomBitmap bitmap;

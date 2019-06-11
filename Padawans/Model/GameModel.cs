@@ -9,11 +9,14 @@ using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
 using System.Collections.Generic;
+using TGC.Group.Form;
+using Microsoft.DirectX.Direct3D;
 
 namespace TGC.Group.Model
 {
     public class GameModel : TgcExample , IRenderizer
     {
+        private GameForm gameForm;
         private Renderer renderer;
         private ShaderManager shaderManager;
         private Xwing xwing;
@@ -34,11 +37,12 @@ namespace TGC.Group.Model
 
         //public TGCBox caja;
 
-        public GameModel(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
+        public GameModel(string mediaDir, string shadersDir,GameForm gameForm) : base(mediaDir, shadersDir)
         {
             Category = Game.Default.Category;
             Name = Game.Default.Name;
             Description = Game.Default.Description;
+            this.gameForm = gameForm;
         }
         
         public override void Init()
@@ -103,7 +107,7 @@ namespace TGC.Group.Model
             hole = new Hole(new TGCVector3(0, -40, -13875));
             postProcess.AgregarElemento(hole);
 
-            endGameManager = new EndgameManager(new EndGameTrigger(new TGCVector3(0,-50,-13900),new TGCVector3(100,100,100)),
+            endGameManager = new EndgameManager(this,new EndGameTrigger(new TGCVector3(0,-50,-13900),new TGCVector3(100,100,100)),
                                     new LostGameTrigger(xwing,new TGCVector3(0,-30,-14000)));
             VariablesGlobales.endgameManager = endGameManager;
 
@@ -220,7 +224,10 @@ namespace TGC.Group.Model
             physicsEngine.Dispose();
         }
 
-
+        public void GameEnded()
+        {
+            gameForm.RestartGame();
+        }
 
         /*solo para saber qué hacen
         protected virtual void PreRender()

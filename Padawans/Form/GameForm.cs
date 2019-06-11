@@ -68,6 +68,12 @@ namespace TGC.Group.Form
             InitRenderLoop();
         }
 
+        public void RestartGame()
+        {
+            GameForm_FormClosing(null, null);
+            GameForm_Load(null,null);
+        }
+
         private void GameForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (ApplicationRunning)
@@ -103,7 +109,7 @@ namespace TGC.Group.Form
 
             //Juego a ejecutar, si quisiéramos tener diferentes modelos aquí podemos cambiar la instancia e invocar a otra clase.
             Modelo = new GameModel(currentDirectory + Game.Default.MediaDirectory,
-                currentDirectory + Game.Default.ShadersDirectory);
+                currentDirectory + Game.Default.ShadersDirectory,this);
            
 
             //Cargar juego.

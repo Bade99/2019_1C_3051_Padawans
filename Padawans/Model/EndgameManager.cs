@@ -13,14 +13,16 @@ namespace TGC.Group.Model
         LostGameTrigger juegoTerminadoTrigger;
         float timerGameLost = 5f;
         bool juegoGanado=false, juegoPerdido=false;
+        GameModel currentGame;
         /// <summary>
         /// Recibe el xwing para saber cuando llegó al final de la pista, 
         /// y tmb le podes ir agregando las bombas para que chequee q ganaste el juego
         /// </summary>
-        public EndgameManager(EndGameTrigger endGameTrigger, LostGameTrigger juegoPerdidoTrigger)
+        public EndgameManager(GameModel currentGame,EndGameTrigger endGameTrigger, LostGameTrigger juegoTerminadoTrigger)
         {
+            this.currentGame = currentGame;
             this.endGameTrigger = endGameTrigger;
-            this.juegoTerminadoTrigger = juegoPerdidoTrigger;
+            this.juegoTerminadoTrigger = juegoTerminadoTrigger;
         }
         public void Update()
         {
@@ -43,6 +45,8 @@ namespace TGC.Group.Model
         }
         public void Render()
         {
+            if (endGameTrigger.Terminado() || juegoTerminadoTrigger.Terminado()) currentGame.GameEnded();
+
             if (juegoGanado) endGameTrigger.Render();
             else if (juegoPerdido) juegoTerminadoTrigger.Render();
         }

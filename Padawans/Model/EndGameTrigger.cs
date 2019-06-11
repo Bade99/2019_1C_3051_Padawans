@@ -61,6 +61,7 @@ namespace TGC.Group.Model
                 if (timer < 0)
                 {
                     RenderWon();
+                    duracion -= VariablesGlobales.elapsedTime;
                 }
                 else timer -= VariablesGlobales.elapsedTime;
                 //@@obi festejando
@@ -69,6 +70,11 @@ namespace TGC.Group.Model
         public bool GameFinished()
         {
             return gameFinished;
+        }
+
+        public bool Terminado()
+        {
+            return duracion < 0;
         }
 
         public void Dispose()

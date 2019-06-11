@@ -29,12 +29,18 @@ namespace TGC.Group.Model
             if (fin)
             {
                 RenderLost();
+                duracion -= VariablesGlobales.elapsedTime;
             }
         }
         public bool GameFinished()
         {
             return fin;
         }
+        public bool Terminado()
+        {
+            return duracion < 0;
+        }
+
         public void RenderLost()//@@agregar postprocesado q se oscurezca la pantalla
         {
             obi_triste.Update();
