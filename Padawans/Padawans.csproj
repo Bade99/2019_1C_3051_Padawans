@@ -121,6 +121,7 @@
     <Compile Include="Model\DynamicCueManager.cs" />
     <Compile Include="Model\EndgameManager.cs" />
     <Compile Include="Model\EndGameTrigger.cs" />
+    <Compile Include="Model\Hole.cs" />
     <Compile Include="Model\LostGameTrigger.cs" />
     <Compile Include="Model\ICueLauncher.cs" />
     <Compile Include="Model\CueManager.cs" />

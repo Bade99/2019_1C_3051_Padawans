@@ -30,6 +30,7 @@ namespace TGC.Group.Model
         private PostProcess postProcess;
         private DynamicCueManager dynamicCueManager;
         private EndgameManager endGameManager;
+        private Hole hole;
 
         //public TGCBox caja;
 
@@ -75,7 +76,7 @@ namespace TGC.Group.Model
             managerElementosTemporales = new TemporaryElementManager();
             VariablesGlobales.managerElementosTemporales = managerElementosTemporales;
 
-            xwing = new Xwing(VariablesGlobales.loader, new TGCVector3(0, 1000f, 1000));
+            xwing = new Xwing(VariablesGlobales.loader, new TGCVector3(0, 1000f, -12000));
             VariablesGlobales.xwing = xwing;
 
             managerEnemigos = new EnemyManager();
@@ -100,6 +101,8 @@ namespace TGC.Group.Model
             */
             postProcess.AgregarElemento(xwing);
             postProcess.AgregarElemento(managerElementosTemporales);
+            hole = new Hole(new TGCVector3(0, -40, -13875));
+            postProcess.AgregarElemento(hole);
 
             endGameManager = new EndgameManager(new EndGameTrigger(new TGCVector3(0,-50,-13900),new TGCVector3(100,100,100)),
                                     new LostGameTrigger(xwing,new TGCVector3(0,-30,-14000)));
@@ -138,8 +141,8 @@ namespace TGC.Group.Model
         public void RenderizarMeshes()
         {
             physicsEngine.Render(Input);
-
             worldSphere.Render();
+            hole.Render();
             xwing.Render();
             pistaReferencia.Render();
             managerElementosTemporales.Render();
