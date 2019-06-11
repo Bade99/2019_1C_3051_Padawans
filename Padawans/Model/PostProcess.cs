@@ -322,6 +322,15 @@ namespace TGC.Group.Model
 
             d3dDevice.EndScene();
         }
+        public void DoEndgameRender()
+        {
+            if (VariablesGlobales.endgameManager.Fin())
+            {
+                d3dDevice.BeginScene();
+                gameModel.RenderizarFinJuego();
+                d3dDevice.EndScene();
+            }
+        }
 
         public void DoMenuRender()
         {

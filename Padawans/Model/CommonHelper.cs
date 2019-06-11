@@ -120,7 +120,7 @@ namespace TGC.Group.Model
 
             return m;
         } 
-        public TGCVector3 DividirPorEscalar(TGCVector3 v, float e)
+        public static TGCVector3 DividirPorEscalar(TGCVector3 v, float e)
         {
             return new TGCVector3(v.X / e, v.Y / e, v.Z / e);
         }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TGC.Core.SceneLoader;
 using Microsoft.DirectX.Direct3D;
+using TGC.Core.Mathematica;
 
 namespace TGC.Group.Model
 {
@@ -29,5 +30,8 @@ namespace TGC.Group.Model
         public static bool SHADERS = true;
         public static Effect shader;//effect que todos los objetos a renderizar deben usar
         public static bool DameLuz = true;
+        public static EndgameManager endgameManager;
+        public static TGCVector2 cues_relative_position;
+        public static float cues_relative_scale;
     }
 }

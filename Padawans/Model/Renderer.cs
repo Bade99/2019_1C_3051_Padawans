@@ -38,7 +38,7 @@ namespace TGC.Group.Model
                 postProcess.RenderPostProcess("bloom");
                 postProcess.DoExtrasRender();
                 postProcess.DoMenuRender();
-
+                postProcess.DoEndgameRender();
                 postProcess.RenderToScreen();
 
                 postProcess.ClearBaseRender();

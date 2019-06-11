@@ -115,13 +115,19 @@
       <DependentUpon>Game.settings</DependentUpon>
     </Compile>
     <Compile Include="Model\ActiveElementManager.cs" />
+    <Compile Include="Model\Bomba.cs" />
     <Compile Include="Model\BoundingBoxHelper.cs" />
     <Compile Include="Model\Debug_Draw_Bullet.cs" />
+    <Compile Include="Model\DynamicCueManager.cs" />
+    <Compile Include="Model\EndgameManager.cs" />
+    <Compile Include="Model\EndGameTrigger.cs" />
+    <Compile Include="Model\LostGameTrigger.cs" />
     <Compile Include="Model\ICueLauncher.cs" />
     <Compile Include="Model\CueManager.cs" />
     <Compile Include="Model\DelayCueLauncher.cs" />
     <Compile Include="Model\IPostProcess.cs" />
     <Compile Include="Model\IRenderizer.cs" />
+    <Compile Include="Model\ITarget.cs" />
     <Compile Include="Model\PauseMenu.cs" />
     <Compile Include="Model\Cue.cs" />
     <Compile Include="Model\CustomBitmap.cs" />

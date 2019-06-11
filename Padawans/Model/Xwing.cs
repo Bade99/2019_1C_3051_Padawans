@@ -18,7 +18,7 @@ namespace TGC.Group.Model
     /// <summary>
     ///     La nave principal que utiliza el jugador
     /// </summary>
-    public class Xwing : SceneElement, InteractiveElement, IPostProcess
+    public class Xwing : SceneElement, InteractiveElement, IPostProcess,ITarget
     {
         private TgcSceneLoader loader;
         TgcMesh xwing,alaXwing;
@@ -59,6 +59,8 @@ namespace TGC.Group.Model
         private float rotacionBarrelRoll;
         private float tiempoEntreDisparos=.5f;
         private float tiempoDesdeUltimoDisparo = .5f;
+        private float tiempoDesdeUltimaBomba = 5f;
+        private float tiempoEntreBombas = 5f;
         //matrices de transformaciones
         private TGCMatrix matrizXwingInicial;
 
@@ -369,6 +371,18 @@ namespace TGC.Group.Model
                 {
                     tiempoDesdeUltimoDisparo = 0f;
                     VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(CalcularPosicionInicialMisil(), coordenadaEsferica, rotation, "Misil\\misil_xwing-TgcScene.xml"));
+                    VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.DISPARO_MISIL_XWING);
+                }
+            }
+            tiempoDesdeUltimaBomba += ElapsedTime;
+            if (input.keyPressed(Key.G))
+            {
+                if (tiempoDesdeUltimaBomba > tiempoEntreBombas)
+                {
+                    tiempoDesdeUltimaBomba = 0f;
+                    var bomba = new Bomba(this.GetPosition(),coordenadaEsferica);
+                    VariablesGlobales.endgameManager.AgregarBomba(bomba);
+                    VariablesGlobales.managerElementosTemporales.AgregarElemento(bomba);
                     VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.DISPARO_MISIL_XWING);
                 }
             }

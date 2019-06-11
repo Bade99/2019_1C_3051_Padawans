@@ -28,7 +28,10 @@ namespace TGC.Group.Model
         private CueManager cues;
         private PhysicsEngine physicsEngine;
         private PostProcess postProcess;
-        private TGCVector2 cues_relative_posicion;
+        private DynamicCueManager dynamicCueManager;
+        private EndgameManager endGameManager;
+
+        //public TGCBox caja;
 
         public GameModel(string mediaDir, string shadersDir) : base(mediaDir, shadersDir)
         {
@@ -46,7 +49,8 @@ namespace TGC.Group.Model
 
             //var d3dDevice = D3DDevice.Instance.Device;
 
-            cues_relative_posicion = new TGCVector2(.05f, .5f);
+            VariablesGlobales.cues_relative_position = new TGCVector2(.05f, .5f);
+            VariablesGlobales.cues_relative_scale = .3f;
 
             //Shaders & Post-processing @@ ver como hacer pa q estos se carguen primero!!!!
             shaderManager = new ShaderManager();
@@ -83,14 +87,23 @@ namespace TGC.Group.Model
             worldSphere = new WorldSphere(VariablesGlobales.loader, xwing);
             followingCamera = new FollowingCamera(xwing);
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ActiveElementManager[] { managerElementosTemporales });
-            cues = new CueManager(new Cue(new DelayCueLauncher(3),"Bitmaps\\WASD.png", .3f, cues_relative_posicion,3),
-                                  new Cue(new DelayCueLauncher(3),"Bitmaps\\Pause.png", .3f, cues_relative_posicion,3),
-                                  new Cue(new DelayCueLauncher(3),"Bitmaps\\Left_Mouse.png",.3f,cues_relative_posicion,3)
+            cues = new CueManager(new Cue(new DelayCueLauncher(3),"Bitmaps\\WASD.png", VariablesGlobales.cues_relative_scale, VariablesGlobales.cues_relative_position,3),
+                                  new Cue(new DelayCueLauncher(3),"Bitmaps\\Pause.png", VariablesGlobales.cues_relative_scale, VariablesGlobales.cues_relative_position, 3),
+                                  new Cue(new DelayCueLauncher(3),"Bitmaps\\Left_Mouse.png", VariablesGlobales.cues_relative_scale, VariablesGlobales.cues_relative_position, 3)
                                   );
-
-
+            dynamicCueManager = new DynamicCueManager(new Cue(new PositionAABBCueLauncher(xwing,new TGCVector3(0,-30,-13200),new TGCVector3(100,100,100)),
+                                                            "Bitmaps\\G_Bomb.png", VariablesGlobales.cues_relative_scale, VariablesGlobales.cues_relative_position, 5));
+            /*
+            caja = new TGCBox();
+            caja.Position = new TGCVector3(0, -40, -13900);
+            caja.Size = new TGCVector3(100, 100, 100);
+            */
             postProcess.AgregarElemento(xwing);
             postProcess.AgregarElemento(managerElementosTemporales);
+
+            endGameManager = new EndgameManager(new EndGameTrigger(new TGCVector3(0,-50,-13900),new TGCVector3(100,100,100)),
+                                    new LostGameTrigger(xwing,new TGCVector3(0,-30,-14000)));
+            VariablesGlobales.endgameManager = endGameManager;
 
             managerSonido.ReproducirSonido(SoundManager.SONIDOS.BACKGROUND_BATTLE);
         }
@@ -103,14 +116,16 @@ namespace TGC.Group.Model
             if (!managerMenu.IsCurrent()) { //si no estoy en un menu ->
                 VariablesGlobales.elapsedTime = ElapsedTime;
                 physicsEngine.Update();
-                cues.Update();
                 worldSphere.Update();
                 xwing.UpdateInput(Input,ElapsedTime);
                 xwing.Update();
+                cues.Update();
+                dynamicCueManager.Update();
                 followingCamera.Update(Camara,Input,ElapsedTime);
                 managerElementosTemporales.Update();
                 managerEnemigos.Update();
                 boundingBoxHelper.UpdateInput(Input, ElapsedTime);
+                endGameManager.Update();
             }
             //Thread.Sleep(1);//@mientras mas chico el numero mas ganas en performance, tmb podemos sacar esto y listo
 
@@ -134,7 +149,14 @@ namespace TGC.Group.Model
         public void RenderizarExtras()//renderizar estas cosas luego de los shaders@@@@
         {
             cues.Render();
+            dynamicCueManager.Render();
+            //caja.BoundingBox.Render();
             boundingBoxHelper.RenderBoundingBoxes();
+        }
+
+        public void RenderizarFinJuego()//va a necesitar al menos un shader de oscurecer
+        {
+            endGameManager.Render();
         }
 
         public override void Render()

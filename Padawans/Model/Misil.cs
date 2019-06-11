@@ -92,9 +92,5 @@ namespace TGC.Group.Model
         {
             misil.Dispose();
         }
-
-        public void ComputeDistance()
-        {
-        }
     }
 }
