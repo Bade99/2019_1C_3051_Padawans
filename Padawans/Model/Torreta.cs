@@ -7,6 +7,8 @@ using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using System.Drawing;
 using TGC.Core.Input;
+using TGC.Core.Particle;
+using TGC.Core.Direct3D;
 
 namespace TGC.Group.Model
 {
@@ -25,6 +27,9 @@ namespace TGC.Group.Model
         private TGCVector3 rotacionBase;
         private Xwing target;
         private bool isActive;
+        private int vida;
+
+        private ParticleEmitter particulaHumo;
 
         TGCVector3 DistanciaAXwing;
 
@@ -40,16 +45,27 @@ namespace TGC.Group.Model
             matrizInicial = TGCMatrix.Scaling(factorEscala, factorEscala, factorEscala);
             torreta.AutoTransformEnable = false;
             Posicionar();
+            this.vida = 3;
             if (VariablesGlobales.SHADERS) VariablesGlobales.shaderManager.AgregarMesh(torreta, ShaderManager.MESH_TYPE.SHADOW);
+            //EMISOR PARTICULAS
+            particulaHumo = new ParticleEmitter(VariablesGlobales.mediaDir + "Particulas\\pisada.png", 10);
+            particulaHumo.Position = this.posicion;
+            particulaHumo.MinSizeParticle = 4;
+            particulaHumo.MaxSizeParticle = 6;
+            particulaHumo.ParticleTimeToLive = 1;
+            particulaHumo.CreationFrecuency = 1;
+            particulaHumo.Dispersion = 100;
+            particulaHumo.Speed = new TGCVector3(30, 30, 30);
         }
 
         public void Posicionar()
         {
-            torreta.Transform = matrizInicial * TGCMatrix.RotationYawPitchRoll(rotation.Y, 0, 0) * TGCMatrix.Translation(posicion);     
-                /* Esto permite que rote en su eje, pero lo dejo desactivado porque los misiles quedan mal
-                * TGCMatrix.Translation(-FastMath.Cos(rotation.Y) * (tamanioBoundingBox.X * factorEscala), 0,
-                -FastMath.Sin(rotation.Y) * (tamanioBoundingBox.Z * factorEscala));
-                */
+            torreta.Transform = matrizInicial * TGCMatrix.RotationYawPitchRoll(rotation.Y, 0, 0) * TGCMatrix.Translation(posicion);
+            /* Esto permite que rote en su eje, pero lo dejo desactivado porque los misiles quedan mal
+            * TGCMatrix.Translation(-FastMath.Cos(rotation.Y) * (tamanioBoundingBox.X * factorEscala), 0,
+            -FastMath.Sin(rotation.Y) * (tamanioBoundingBox.Z * factorEscala));
+            */
+            particulaHumo.Position = this.posicion;
         }
 
         public void RenderBoundingBox()
@@ -60,6 +76,7 @@ namespace TGC.Group.Model
         public void Dispose()
         {
             torreta.Dispose();
+            particulaHumo.dispose();
         }
 
         public void Update()
@@ -71,7 +88,7 @@ namespace TGC.Group.Model
 
                 DistanciaAXwing = target.GetPosition() - posicion; //+ origenDeDisparos;
 
-                if (DistanciaAXwing.Length() < distanciaMinimaATarget)
+                if (this.vida > 0 && DistanciaAXwing.Length() < distanciaMinimaATarget)
                 {
                     isActive = true;
                     CoordenadaEsferica direccionXwing = new CoordenadaEsferica(DistanciaAXwing.X,
@@ -86,8 +103,17 @@ namespace TGC.Group.Model
         }
 
         public void Render(){
-            if(isActive)
+            if (isActive)
+            {
                 torreta.Render();
+                if (this.vida <= 0)
+                {
+                    //IMPORTANTE PARA PERMITIR EL EFECTO DE LA PARTICULA.
+                    D3DDevice.Instance.ParticlesEnabled = true;
+                    D3DDevice.Instance.EnableParticles();
+                    particulaHumo.render(VariablesGlobales.elapsedTime);
+                }
+            }
         }
 
         public bool Terminado()
