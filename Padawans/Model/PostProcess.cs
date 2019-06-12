@@ -128,7 +128,7 @@ namespace TGC.Group.Model
             //@@@@@CUIDADO TOY CAMBIANDO TODO EL VIEW ACA
             */
             lightPos = new TGCVector3(0, 100, 50);
-            lightDir = new TGCVector3(0,-1,1);
+            lightDir = new TGCVector3(0, -1, 1);
             lightDir.Normalize();
         }
 
@@ -420,19 +420,24 @@ namespace TGC.Group.Model
             {
                 TGCVector3 light_pos = VariablesGlobales.xwing.GetPosition();
                 TGCVector3 light_dir = VariablesGlobales.xwing.GetCoordenadaEsferica().GetXYZCoord();
-                shader.SetValue("g_vLightPos", new Vector4(light_pos.X, light_pos.Y, light_pos.Z, 1));
+                shader.SetValue("g_vLightPos", new Vector4(light_pos.X, light_pos.Y, light_pos.Z , 1));
                 shader.SetValue("g_vLightDir", new Vector4(light_dir.X, light_dir.Y, light_dir.Z, 1));
                 lightView = TGCMatrix.LookAtLH(light_pos, light_pos + light_dir, new TGCVector3(0, 0, 1));
             }
             else
             {
+                lightPos.Y = VariablesGlobales.xwing.GetPosition().Y+50;
+                lightPos.Z = VariablesGlobales.xwing.GetPosition().Z;
                 shader.SetValue("g_vLightPos", new Vector4(lightPos.X, lightPos.Y, lightPos.Z, 1));
+
+                lightDir =  VariablesGlobales.xwing.GetPosition() - lightPos;
+                lightDir.Normalize();
                 shader.SetValue("g_vLightDir", new Vector4(lightDir.X, lightDir.Y, lightDir.Z, 1));
-                lightView = TGCMatrix.LookAtLH(lightPos, lightPos + lightDir, new TGCVector3(0, 0, 1));
+                lightView = TGCMatrix.LookAtLH(lightPos, lightPos+lightDir, new TGCVector3(0, 0, 1));
             }
             //@@@@xq está el up vector en la z??
             
-            
+            //@@@@@@@@Probar solo renderizar en el shadow al xwing, y dsps poner al piso como render scene
 
             // inicializacion standard:
             shader.SetValue("g_mProjLight", shadowProj.ToMatrix());
