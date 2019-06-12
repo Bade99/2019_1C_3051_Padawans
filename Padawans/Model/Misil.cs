@@ -12,21 +12,17 @@ using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
 using TGC.Core.Sound;
+using BulletSharp;
 
 namespace TGC.Group.Model
 {
-    public class Misil : IActiveElement
+    public class Misil : BulletSceneElement, IActiveElement
     {
-        TgcMesh misil;
-        private TGCVector3 escala;
-        private TGCVector3 posicion;
         //Como el misil nunca cambia la trayectoria, guardo las coordenadas cartesianas de la coordenada
         //esferica para no calcular tantos senos y cosenos
-        private TGCVector3 coordEsferica;
         private float tiempoDeVida = 10f;
         private readonly float velocidadGeneral = 1000f;
         private bool terminado = false;
-        private TGCVector3 rotacionNave;
        
         /**
          * Posicion nave: Posicion inicial del misil
@@ -34,21 +30,25 @@ namespace TGC.Group.Model
          * Rotacion nave: Constante con el que misil se rota inicialmente para estar alineado a la trayectoria
          * pathscene: Path donde esta ubicado el mesh
          * */
-        public Misil(TGCVector3 posicionNave, CoordenadaEsferica coordenadaEsferica, TGCVector3 rotacionNave, string pathScene)
+        public Misil(TGCVector3 posicionInicial, CoordenadaEsferica coordenadaEsferica, TGCVector3 rotacionInicial, string pathScene)
         {
-            this.rotacionNave = rotacionNave;
-            this.coordEsferica = coordenadaEsferica.GetXYZCoord();
-            this.posicion = posicionNave;
-            misil = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + pathScene).Meshes[0];
-            misil.AutoTransformEnable = false;
-            escala = new TGCVector3(.2f, .2f, 4f);
-
+            this.rotation = rotacionInicial;
+            meshs = new TgcMesh[1];
+            meshs[0] = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + pathScene).Meshes[0];
+            meshs[0].AutoTransformEnable = false;
+            matrizEscalaInicial = TGCMatrix.Scaling(new TGCVector3(.2f, .2f, 4f)) * TGCMatrix.RotationY(FastMath.PI_HALF);
+            bulletVelocity = CommonHelper.VectorXEscalar(coordenadaEsferica.GetXYZCoord(), velocidadGeneral);
             //Shader
-            if (VariablesGlobales.SHADERS) VariablesGlobales.shaderManager.AgregarMesh(misil, ShaderManager.MESH_TYPE.SHADOW);
+            if (VariablesGlobales.SHADERS)
+            {
+                VariablesGlobales.shaderManager.AgregarMesh(meshs[0], ShaderManager.MESH_TYPE.SHADOW);
+            }
+            body = VariablesGlobales.physicsEngine.AgregarMisilEnemigo(meshs[0].BoundingBox.calculateSize(), 
+                1, posicionInicial, TGCVector3.Empty);
         }
 
 
-        public void Update()
+        public override void Update()
         {
 
             tiempoDeVida -= VariablesGlobales.elapsedTime;
@@ -58,11 +58,8 @@ namespace TGC.Group.Model
                 terminado = true;
             }
             else {
-                TGCVector3 delta = coordEsferica * velocidadGeneral * VariablesGlobales.elapsedTime;
 
-                posicion = posicion + delta;
-
-                misil.Transform = TGCMatrix.Scaling(escala) * TGCMatrix.RotationY(FastMath.PI_HALF) * TGCMatrix.RotationYawPitchRoll(rotacionNave.Y,rotacionNave.X,rotacionNave.Z) * TGCMatrix.Translation(posicion);
+                UpdateBullet();
             }
 
         }
@@ -72,25 +69,25 @@ namespace TGC.Group.Model
             return terminado;
         }
 
-        public void Render()
+        public override void Render()
         {
             if (!terminado)
             {
-                misil.Render();
+                meshs[0].Render();
             }
         }
 
-        public void RenderBoundingBox()
+        public override void RenderBoundingBox()
         {
             if (!terminado)
             {
-                misil.BoundingBox.Render();
+                meshs[0].BoundingBox.Render();
             }
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
-            misil.Dispose();
+            meshs[0].Dispose();
         }
     }
 }

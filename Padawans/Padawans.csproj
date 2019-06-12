@@ -117,6 +117,7 @@
     <Compile Include="Model\ActiveElementManager.cs" />
     <Compile Include="Model\Bomba.cs" />
     <Compile Include="Model\BoundingBoxHelper.cs" />
+    <Compile Include="Model\BulletSceneElement.cs" />
     <Compile Include="Model\Debug_Draw_Bullet.cs" />
     <Compile Include="Model\DynamicCueManager.cs" />
     <Compile Include="Model\EndgameManager.cs" />

@@ -12,6 +12,7 @@ namespace TGC.Group.Model
         {
             elems = new List<IActiveElement>();
         }
+
         public void Update()
         {
             if (this.Terminado() == false)

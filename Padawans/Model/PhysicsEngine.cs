@@ -17,6 +17,7 @@ namespace TGC.Group.Model
                         //cada entidad debe guardar su rigidbody para operar con él
     {
         protected DiscreteDynamicsWorld dynamicsWorld;
+        protected CollisionWorld collisionWorld;
         protected CollisionDispatcher dispatcher;
         protected DefaultCollisionConfiguration collisionConfiguration;
         protected SequentialImpulseConstraintSolver constraintSolver;
@@ -24,6 +25,7 @@ namespace TGC.Group.Model
 
         RigidBody main_character;
         //Si algo tiene masa 0 es estatico.
+        RigidBody misilActual;
 
         public PhysicsEngine()
         {
@@ -36,9 +38,16 @@ namespace TGC.Group.Model
             overlappingPairCache = new DbvtBroadphase(); //AxisSweep3(new BsVector3(-5000f, -5000f, -5000f), new BsVector3(5000f, 5000f, 5000f), 8192);
             dynamicsWorld = new DiscreteDynamicsWorld(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
             dynamicsWorld.Gravity = new TGCVector3(0, 0/*gravedad*/, 0).ToBulletVector3();
+            collisionWorld = new CollisionWorld(dispatcher, overlappingPairCache, collisionConfiguration);
             //
             dynamicsWorld.DebugDrawer = new Debug_Draw_Bullet();
             dynamicsWorld.DebugDrawer.DebugMode = DebugDrawModes.DrawWireframe;
+        }
+
+        public RigidBody AgregarMisilEnemigo(TGCVector3 size, float mass, TGCVector3 position, TGCVector3 rotation)
+        {
+            misilActual = AgregarObjeto(size, mass, position, rotation);
+            return misilActual;
         }
 
         public List<RigidBody> AgregarEscenario(List<TgcMesh> meshesEscenario)
@@ -56,22 +65,27 @@ namespace TGC.Group.Model
             return bodies;
         }
 
-        public RigidBody AgregarPersonaje(TGCVector3 size,float mass,TGCVector3 position,TGCVector3 rotation,float friction,bool inertia)
-            //solo pido los atributos basicos para el constructor, el resto lo debe definir el dueño del personaje
+        private RigidBody AgregarObjeto(TGCVector3 size, float mass, TGCVector3 position, TGCVector3 rotation)
         {
-            //new RigidBodyConstructionInfo(10, new DefaultMotionState(), shape...);
             var personaje_body = BulletRigidBodyFactory.Instance.CreateBox(
-                            size, 
+                            size,
                             mass,
                             position,
                             rotation.Y, rotation.X, rotation.Z,
-                            friction,
-                            inertia);
+                            .5f, true);
             dynamicsWorld.AddRigidBody(personaje_body);
-            main_character = personaje_body;
             personaje_body.SetCustomDebugColor(new BulletSharp.Math.Vector3(1, 0, 0));
             personaje_body.ActivationState = ActivationState.DisableDeactivation;
             return personaje_body;
+        }
+
+        public RigidBody AgregarPersonaje(TGCVector3 size,float mass,TGCVector3 position,TGCVector3 rotation)
+            //solo pido los atributos basicos para el constructor, el resto lo debe definir el dueño del personaje
+        {
+            //new RigidBodyConstructionInfo(10, new DefaultMotionState(), shape...);
+            main_character = AgregarObjeto(size, mass, position, rotation);
+            main_character.CollisionFlags = main_character.CollisionFlags | CollisionFlags.CustomMaterialCallback;
+            return main_character;
         }
 
         public void Update()

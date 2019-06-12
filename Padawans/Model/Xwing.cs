@@ -18,11 +18,10 @@ namespace TGC.Group.Model
     /// <summary>
     ///     La nave principal que utiliza el jugador
     /// </summary>
-    public class Xwing : SceneElement, InteractiveElement, IPostProcess,ITarget
+    public class Xwing : BulletSceneElement, InteractiveElement, IPostProcess,ITarget
     {
         private TgcSceneLoader loader;
         TgcMesh xwing,alaXwing;
-        public RigidBody body_xwing;
 
         //Post processing
         TgcMesh[] bloom;
@@ -62,19 +61,13 @@ namespace TGC.Group.Model
         private TGCMatrix matrizXwingInicial;
 
         //propiedades de la nave
-        private TGCVector3 posicion;
-        public TGCVector3 rotation;
-        private TGCVector3 escala;
         private float escalar = .1f;
-        private TGCVector3 bulletVelocity;
 
         public Xwing(TgcSceneLoader loader, TGCVector3 posicionInicial)
         {
-
             this.loader = loader;
             xwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"XWing\\xwing-TgcScene.xml").Meshes[0];
             alaXwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"XWing\\xwing-TgcScene.xml").Meshes[1];
-
             //Shader
             if (VariablesGlobales.SHADERS)
             {
@@ -83,9 +76,8 @@ namespace TGC.Group.Model
             }
 
             //Posicion, rotacion y escala inicial
-            escala = new TGCVector3(escalar,escalar,escalar);//(0.1f, 0.1f, 0.1f);
-            matrizXwingInicial = TGCMatrix.Scaling(escala);
-            posicion = posicionInicial;
+            TGCVector3 escala = new TGCVector3(escalar, escalar, escalar);
+            matrizEscalaInicial = TGCMatrix.Scaling(escala);
             rotation = new TGCVector3(0, FastMath.PI_HALF, -FastMath.QUARTER_PI*.8f);
 
             xwing.AutoTransformEnable = false;
@@ -107,8 +99,8 @@ namespace TGC.Group.Model
             rotationYAnimacionAdvance = 0;
 
             //agrego al physics engine
-            body_xwing = VariablesGlobales.physicsEngine.AgregarPersonaje( CommonHelper.MultiplicarVectores(xwing.BoundingBox.calculateSize(),escala),
-                                                                           0.1f, posicion,TGCVector3.Empty,.5f,true);
+            body = VariablesGlobales.physicsEngine.AgregarPersonaje( CommonHelper.MultiplicarVectores(xwing.BoundingBox.calculateSize(),escala),
+                                                                           0.1f, posicionInicial, TGCVector3.Empty);
             //@Params para modificar
             //body_xwing.Friction = 1;
             //body_xwing.Restitution=.1f;
@@ -120,8 +112,15 @@ namespace TGC.Group.Model
             bloom = new TgcMesh[2];
             bloom[0] = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "Postprocess\\Bloom\\Main_Xwing\\main_xwing.xml").Meshes[0];
             bloom[1] = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "Postprocess\\Bloom\\Main_Xwing\\main_xwing.xml").Meshes[1];
-            bloom[0].AutoTransformEnable = false; bloom[1].AutoTransformEnable = false;
-            //
+            bloom[0].AutoTransformEnable = false;
+            bloom[1].AutoTransformEnable = false;
+
+            //Bullet meshs
+            meshs = new TgcMesh[4];
+            meshs[0] = xwing;
+            meshs[1] = alaXwing;
+            meshs[2] = bloom[0];
+            meshs[3] = bloom[1];
 
             VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.FLYBY_2);
             VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.XWING_ENGINE);
@@ -143,16 +142,7 @@ namespace TGC.Group.Model
         {
             if (effect == "bloom")
             {
-                if (VariablesGlobales.BULLET)
-                {
-                    TGCMatrix bullet_transform = new TGCMatrix(body_xwing.InterpolationWorldTransform);
-                    bloom[0].Transform = matrizXwingInicial * GetRotationMatrix() * bullet_transform;
-                    bloom[1].Transform = matrizXwingInicial * GetRotationMatrix() * bullet_transform;
-                }
-                else {
-                    bloom[0].Transform = matrizXwingInicial * GetRotationMatrix() * TGCMatrix.Translation(posicion);
-                    bloom[1].Transform = matrizXwingInicial * GetRotationMatrix() * TGCMatrix.Translation(posicion);
-                }
+                TGCMatrix bullet_transform = new TGCMatrix(body.InterpolationWorldTransform);
                 bloom[0].Render();
                 bloom[1].Render();
             }
@@ -160,16 +150,7 @@ namespace TGC.Group.Model
 
         public override void Update()
         {
-            if (VariablesGlobales.BULLET)
-            {
-                body_xwing.LinearVelocity = bulletVelocity.ToBulletVector3();
-                TGCMatrix bullet_transform = new TGCMatrix(body_xwing.InterpolationWorldTransform);
-                xwing.Transform = matrizXwingInicial * GetRotationMatrix() * bullet_transform;
-                alaXwing.Transform = matrizXwingInicial * GetRotationMatrix() * bullet_transform;
-            } else {
-                xwing.Transform = matrizXwingInicial * GetRotationMatrix()* TGCMatrix.Translation(posicion);
-                alaXwing.Transform = matrizXwingInicial * GetRotationMatrix() * TGCMatrix.Translation(posicion);
-            }
+            UpdateBullet();
         }
 
         private void TestingInput(TgcD3dInput input)
@@ -248,6 +229,7 @@ namespace TGC.Group.Model
                     rotationYAnimation = false;
                 }
             }
+            /*
             if (barrelRoll)//Sigue andando mal :D
             {
                 var angulo = barrelRollAvance * FastMath.TWO_PI / 100;
@@ -266,17 +248,9 @@ namespace TGC.Group.Model
                     barrelRoll = false;
                     barrelRollAvance = 0;
                 }
-            }
+            }*/
 
-            if (VariablesGlobales.BULLET)
-            {
-                bulletVelocity = CommonHelper.VectorXEscalar(coordenadaEsferica.GetXYZCoord(), velocidadGeneral);
-            } else {
-                //Efecto de friccion, aceleracion o velocidad constante
-                posicion = CommonHelper.MoverPosicionEnDireccionCoordenadaEsferica(posicion, coordenadaEsferica, 
-                    velocidadGeneral, ElapsedTime);
-                ultimaPosicion = posicion + TGCVector3.One;
-            }
+            bulletVelocity = CommonHelper.VectorXEscalar(coordenadaEsferica.GetXYZCoord(), velocidadGeneral);
         }
 
         private void Disparar(TgcD3dInput input, float ElapsedTime)
@@ -356,20 +330,9 @@ namespace TGC.Group.Model
             }
         }
 
-        public TGCMatrix GetRotationMatrix()
-        {
-            return
-                TGCMatrix.RotationYawPitchRoll(rotation.Y, rotation.X, rotation.Z);
-        }
-
         private void ActualizarCoordenadaEsferica()
         {
-                coordenadaEsferica = new CoordenadaEsferica(this.rotation);
-                /*
-                body_xwing.InterpolationWorldTransform.Decompose(out _, out Quaternion rotation, out _);
-                TGCVector3 rotationEuler = CommonHelper.QuaternionToEuler(rotation);
-                coordenadaEsferica = new CoordenadaEsferica(rotationEuler);
-                */
+            coordenadaEsferica = new CoordenadaEsferica(this.rotation);
         }
 
         public override void Dispose()
@@ -394,14 +357,7 @@ namespace TGC.Group.Model
 
         public TGCVector3 GetPosition()
         {
-            if (VariablesGlobales.BULLET)
-            {
-                return new TGCVector3(body_xwing.CenterOfMassPosition);
-            }
-            else
-            {
-                return posicion;
-            }
+            return new TGCVector3(body.CenterOfMassPosition);
         }
 
         public CoordenadaEsferica GetCoordenadaEsferica()
