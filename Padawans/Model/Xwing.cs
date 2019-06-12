@@ -176,16 +176,27 @@ namespace TGC.Group.Model
 
             //Teclas especiales para moverse rapido y mas facil por el mapa
             TestingInput(input);
-
+            if (input.keyDown(Key.X))
+            {
+                rotation.X += ElapsedTime;
+            }
+            if (input.keyDown(Key.Y))
+            {
+                rotation.Y += ElapsedTime;
+            }
+            if (input.keyDown(Key.Z))
+            {
+                rotation.Z += ElapsedTime;
+            }
             //Movimientos flechas
             if (input.keyDown(Key.A))
             {
-                rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Down *ElapsedTime));
+                rotation.Add(TGCVector3.Down *ElapsedTime);
                 ActualizarCoordenadaEsferica();
             }
             if (input.keyDown(Key.D))
             {
-                rotation.Add(CommonHelper.ClampRotationY(TGCVector3.Up * ElapsedTime));
+                rotation.Add(TGCVector3.Up * ElapsedTime);
                 ActualizarCoordenadaEsferica();
             }
             if (input.keyDown(Key.W) && !rotationYAnimation)
@@ -215,26 +226,6 @@ namespace TGC.Group.Model
                     rotationYAnimation = false;
                 }
             }
-            /*
-            if (barrelRoll)//Sigue andando mal :D
-            {
-                var angulo = barrelRollAvance * FastMath.TWO_PI / 100;
-                
-                if (barrelRollAvance == 0)
-                {
-                    if (ultimaPosicion.X - posicion.X >= 0) rotacionBarrelRoll = -FastMath.TWO_PI / 100;
-                    else rotacionBarrelRoll = FastMath.TWO_PI / 100;
-                }
-                
-                rotation.Add(left * rotacionBarrelRoll);
-
-                barrelRollAvance++;
-                if (barrelRollAvance >= 100)
-                {
-                    barrelRoll = false;
-                    barrelRollAvance = 0;
-                }
-            }*/
 
             bulletVelocity = CommonHelper.VectorXEscalar(coordenadaEsferica.GetXYZCoord(), velocidadGeneral);
         }
