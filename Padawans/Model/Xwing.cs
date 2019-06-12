@@ -33,7 +33,7 @@ namespace TGC.Group.Model
         private readonly float friccion = 10f;
         private readonly float maximaVelocidad = 300;
         private readonly float limiteAnguloPolar=0.1f;
-        private readonly float progressUnityRotationAdvance = FastMath.PI / 60;
+        private readonly float progressUnityRotationAdvance = FastMath.PI / 10;
 
         private TGCVector3 left = new TGCVector3(-1, 0, 0);
         private TGCVector3 right = new TGCVector3(1, 0, 0);
@@ -50,7 +50,6 @@ namespace TGC.Group.Model
         private bool rotationYAnimation;
         private float rotationYAnimacionAdvance;
         private CoordenadaEsferica coordenadaEsferica;
-        private bool swapPolarKeys = false;
         private TGCVector3 ultimaPosicion;
         private float rotacionBarrelRoll;
         private float tiempoEntreDisparos=.5f;
@@ -191,24 +190,11 @@ namespace TGC.Group.Model
             }
             if (input.keyDown(Key.W) && !rotationYAnimation)
             {
-                if (!swapPolarKeys)
-                {
-                    UpArrow(ElapsedTime);
-                }
-                else
-                {
-                    DownArrow(ElapsedTime);
-                }
+                UpArrow(ElapsedTime);
             }
             if (input.keyDown(Key.S) && !rotationYAnimation)
             {
-                if (!swapPolarKeys)
-                {
-                    DownArrow(ElapsedTime);
-                } else
-                {
-                    UpArrow(ElapsedTime);
-                }
+                DownArrow(ElapsedTime);
             }
             AcelerarYFrenar(input, ElapsedTime);
             Disparar(input, ElapsedTime);
@@ -312,7 +298,6 @@ namespace TGC.Group.Model
             else
             {
                 rotationYAnimation = true;
-                swapPolarKeys = !swapPolarKeys;
             }
         }
 
@@ -326,7 +311,7 @@ namespace TGC.Group.Model
             else
             {
                 rotationYAnimation = true;
-                swapPolarKeys = !swapPolarKeys;
+
             }
         }
 
