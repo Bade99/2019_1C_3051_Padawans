@@ -68,11 +68,9 @@ namespace TGC.Group.Model
                             friction,
                             inertia);
             dynamicsWorld.AddRigidBody(personaje_body);
+            main_character = personaje_body;
             personaje_body.SetCustomDebugColor(new BulletSharp.Math.Vector3(1, 0, 0));
             personaje_body.ActivationState = ActivationState.DisableDeactivation;
-
-            main_character = personaje_body;//me guardo el personaje ppal
-
             return personaje_body;
         }
 

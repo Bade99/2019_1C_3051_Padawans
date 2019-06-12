@@ -41,14 +41,8 @@ public class FollowingCamera
     {
         //ElapsedTime = 0.01f;
         CoordenadaEsferica anguloNave = new CoordenadaEsferica(xwing.GetCoordenadaEsferica().acimutal, xwing.GetCoordenadaEsferica().polar + DESVIO_ANGULO_POLAR);
-        if (VariablesGlobales.BULLET)
-        {
-            this.coordenadaEsferica = anguloNave;
-        } else
-        {
-            CalcularDeltaAcimutal(ElapsedTime, anguloNave);
-            CalcularDeltaPolar(ElapsedTime, anguloNave);
-        }
+        CalcularDeltaAcimutal(ElapsedTime, anguloNave);
+        CalcularDeltaPolar(ElapsedTime, anguloNave);
 
         RueditaMouse(Input);
         cameraPosition = CommonHelper.SumarVectores(xwing.GetPosition(), GetDistancePoint());

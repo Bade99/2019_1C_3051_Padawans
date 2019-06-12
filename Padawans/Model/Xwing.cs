@@ -24,16 +24,13 @@ namespace TGC.Group.Model
         TgcMesh xwing,alaXwing;
         public RigidBody body_xwing;
 
-
         //Post processing
         TgcMesh[] bloom;
         //
 
         //Constantes
         private readonly float minimaVelocidad = 7f;
-        private readonly float velocidadEjes = 10f;
         private readonly float aceleracion = 80;
-        //private readonly float aceleracion = 1;//Bullet
         private readonly float friccion = 10f;
         private readonly float maximaVelocidad = 300;
         private readonly float limiteAnguloPolar=0.1f;
@@ -69,14 +66,10 @@ namespace TGC.Group.Model
         public TGCVector3 rotation;
         private TGCVector3 escala;
         private float escalar = .1f;
-
-        //private readonly float velocidad_giro_bullet = 5f;
-        private float tiempo =5;
+        private TGCVector3 bulletVelocity;
 
         public Xwing(TgcSceneLoader loader, TGCVector3 posicionInicial)
         {
-
-            //TGCMatrix rotation_matrix = TGCMatrix.RotationX(1); 
 
             this.loader = loader;
             xwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"XWing\\xwing-TgcScene.xml").Meshes[0];
@@ -98,8 +91,14 @@ namespace TGC.Group.Model
             xwing.AutoTransformEnable = false;
             alaXwing.AutoTransformEnable = false;
 
-            if(VariablesGlobales.BULLET) velocidadGeneral = 5f;//Bullet
-            else velocidadGeneral = 300f;// minimaVelocidad;
+            if (VariablesGlobales.BULLET)
+            {
+                velocidadGeneral = 5f;
+            }
+            else
+            {
+                velocidadGeneral = 300f;
+            }
 
             barrelRoll = false;
 
@@ -109,7 +108,7 @@ namespace TGC.Group.Model
 
             //agrego al physics engine
             body_xwing = VariablesGlobales.physicsEngine.AgregarPersonaje( CommonHelper.MultiplicarVectores(xwing.BoundingBox.calculateSize(),escala),
-                                                                           1, posicion,rotation,.5f,true);
+                                                                           0.1f, posicion,TGCVector3.Empty,.5f,true);
             //@Params para modificar
             //body_xwing.Friction = 1;
             //body_xwing.Restitution=.1f;
@@ -146,19 +145,13 @@ namespace TGC.Group.Model
             {
                 if (VariablesGlobales.BULLET)
                 {
-                    //Bullet
                     TGCMatrix bullet_transform = new TGCMatrix(body_xwing.InterpolationWorldTransform);
-                    bloom[0].Transform = matrizXwingInicial * bullet_transform;
-                    bloom[1].Transform = matrizXwingInicial * bullet_transform;
-                    //
+                    bloom[0].Transform = matrizXwingInicial * GetRotationMatrix() * bullet_transform;
+                    bloom[1].Transform = matrizXwingInicial * GetRotationMatrix() * bullet_transform;
                 }
-                else
-                {
-                    //
-                    //Forma normal
+                else {
                     bloom[0].Transform = matrizXwingInicial * GetRotationMatrix() * TGCMatrix.Translation(posicion);
                     bloom[1].Transform = matrizXwingInicial * GetRotationMatrix() * TGCMatrix.Translation(posicion);
-                    //
                 }
                 bloom[0].Render();
                 bloom[1].Render();
@@ -169,18 +162,13 @@ namespace TGC.Group.Model
         {
             if (VariablesGlobales.BULLET)
             {
-            //Bullet
-            TGCMatrix bullet_transform = new TGCMatrix(body_xwing.InterpolationWorldTransform);
-            xwing.Transform = matrizXwingInicial * bullet_transform;
-            alaXwing.Transform = matrizXwingInicial * bullet_transform;
-            //
-            } else
-            {
-            //
-            //Forma normal
-            xwing.Transform = matrizXwingInicial * GetRotationMatrix()* TGCMatrix.Translation(posicion);
-            alaXwing.Transform = matrizXwingInicial * GetRotationMatrix() * TGCMatrix.Translation(posicion);
-            //
+                body_xwing.LinearVelocity = bulletVelocity.ToBulletVector3();
+                TGCMatrix bullet_transform = new TGCMatrix(body_xwing.InterpolationWorldTransform);
+                xwing.Transform = matrizXwingInicial * GetRotationMatrix() * bullet_transform;
+                alaXwing.Transform = matrizXwingInicial * GetRotationMatrix() * bullet_transform;
+            } else {
+                xwing.Transform = matrizXwingInicial * GetRotationMatrix()* TGCMatrix.Translation(posicion);
+                alaXwing.Transform = matrizXwingInicial * GetRotationMatrix() * TGCMatrix.Translation(posicion);
             }
         }
 
@@ -199,83 +187,7 @@ namespace TGC.Group.Model
 
         public void UpdateInput(TgcD3dInput input, float ElapsedTime)
         {
-            if (VariablesGlobales.BULLET) UpdateInputBullet(input, ElapsedTime);
-            else UpdateInputManual(input, ElapsedTime);
-        }
-
-        public void UpdateInputBullet(TgcD3dInput input, float ElapsedTime)//no uso elapsedtime x ahora, creo q ni hace falta
-        {
-            body_xwing.ApplyCentralForce(coordenadaEsferica.GetXYZCoord().ToBulletVector3()* velocidadGeneral *ElapsedTime);
-
-            //Movimientos flechas
-            if (input.keyDown(Key.A))
-            {
-                body_xwing.ApplyTorque(TGCVector3.Down.ToBulletVector3());
-            }
-            if (input.keyDown(Key.D))
-            {
-
-                body_xwing.ApplyTorque(TGCVector3.Up.ToBulletVector3());
-
-                //body_xwing.AngularVelocity = coordenadaEsferica.GetXYZCoord().ToBulletVector3();
-                //body_xwing.ApplyCentralImpulse(new BulletSharp.Math.Vector3(-1, 0, 0));
-            }
-            if (input.keyDown(Key.W) && !rotationYAnimation)
-            {
-                if (!swapPolarKeys)
-                {
-                    UpArrowBullet(ElapsedTime);
-                }
-                else
-                {
-                    DownArrowBullet(ElapsedTime);
-                }
-            }
-            if (input.keyDown(Key.S) && !rotationYAnimation)
-            {
-                if (!swapPolarKeys)
-                {
-                    DownArrowBullet(ElapsedTime);
-                }
-                else
-                {
-                    UpArrowBullet(ElapsedTime);
-                }
-            }
-
-            AcelerarYFrenar(input, ElapsedTime);
-            Disparar(input, ElapsedTime);
-            ActualizarCoordenadaEsferica();
-        }
-
-        private void DownArrowBullet(float ElapsedTime)
-        {
-            if (coordenadaEsferica.polar < (FastMath.PI - limiteAnguloPolar))
-            {
-                var down_arrow = new TGCVector3(-1, 0, 0);
-
-                body_xwing.ApplyTorque(down_arrow.ToBulletVector3());
-            }
-            else
-            {
-                rotationYAnimation = true;
-                swapPolarKeys = !swapPolarKeys;
-            }
-        }
-
-        private void UpArrowBullet(float ElapsedTime)
-        {
-            if (coordenadaEsferica.polar > limiteAnguloPolar)
-            {
-                var up_arrow = new TGCVector3(1, 0, 0);
-
-                body_xwing.ApplyTorque(up_arrow.ToBulletVector3());
-            }
-            else
-            {
-                rotationYAnimation = true;
-                swapPolarKeys = !swapPolarKeys;
-            }
+            UpdateInputManual(input, ElapsedTime);
         }
 
         public void UpdateInputManual(TgcD3dInput input,float ElapsedTime)
@@ -356,10 +268,15 @@ namespace TGC.Group.Model
                 }
             }
 
-            //Efecto de friccion, aceleracion o velocidad constante
-            posicion = CommonHelper.MoverPosicionEnDireccionCoordenadaEsferica(posicion, coordenadaEsferica, 
-                velocidadGeneral, ElapsedTime);
-            ultimaPosicion = posicion + TGCVector3.One;
+            if (VariablesGlobales.BULLET)
+            {
+                bulletVelocity = CommonHelper.VectorXEscalar(coordenadaEsferica.GetXYZCoord(), velocidadGeneral);
+            } else {
+                //Efecto de friccion, aceleracion o velocidad constante
+                posicion = CommonHelper.MoverPosicionEnDireccionCoordenadaEsferica(posicion, coordenadaEsferica, 
+                    velocidadGeneral, ElapsedTime);
+                ultimaPosicion = posicion + TGCVector3.One;
+            }
         }
 
         private void Disparar(TgcD3dInput input, float ElapsedTime)
@@ -447,16 +364,12 @@ namespace TGC.Group.Model
 
         private void ActualizarCoordenadaEsferica()
         {
-            if (VariablesGlobales.BULLET)
-            {
+                coordenadaEsferica = new CoordenadaEsferica(this.rotation);
+                /*
                 body_xwing.InterpolationWorldTransform.Decompose(out _, out Quaternion rotation, out _);
                 TGCVector3 rotationEuler = CommonHelper.QuaternionToEuler(rotation);
                 coordenadaEsferica = new CoordenadaEsferica(rotationEuler);
-            }
-            else
-            {
-                coordenadaEsferica = new CoordenadaEsferica(rotation);
-            }
+                */
         }
 
         public override void Dispose()
