@@ -44,7 +44,6 @@ namespace TGC.Group.Model
             tamanioBoundingBox = torreta.BoundingBox.calculateSize();
             matrizInicial = TGCMatrix.Scaling(factorEscala, factorEscala, factorEscala);
             torreta.AutoTransformEnable = false;
-            Posicionar();
             this.vida = 3;
             if (VariablesGlobales.SHADERS) VariablesGlobales.shaderManager.AgregarMesh(torreta, ShaderManager.MESH_TYPE.SHADOW);
             //EMISOR PARTICULAS
@@ -56,6 +55,7 @@ namespace TGC.Group.Model
             particulaHumo.CreationFrecuency = 1;
             particulaHumo.Dispersion = 100;
             particulaHumo.Speed = new TGCVector3(30, 30, 30);
+            Posicionar();
         }
 
         public void Posicionar()
