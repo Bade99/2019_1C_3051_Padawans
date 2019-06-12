@@ -12,9 +12,8 @@ using TGC.Core.SceneLoader;
 using TGC.Core.Input;
 
 namespace TGC.Group.Model
-{//@@@Hay que agregar el rigid body y dsps agregarlo como collision object e indicar con q colisiona!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    public class PhysicsEngine //solo se usa para agregar meshes al world, e indicar atributos -> te devuelve el rigid body a usar, 
-                        //cada entidad debe guardar su rigidbody para operar con él
+{
+    public class PhysicsEngine
     {
         protected DiscreteDynamicsWorld dynamicsWorld;
         protected CollisionWorld collisionWorld;
@@ -22,15 +21,13 @@ namespace TGC.Group.Model
         protected DefaultCollisionConfiguration collisionConfiguration;
         protected SequentialImpulseConstraintSolver constraintSolver;
         protected BroadphaseInterface overlappingPairCache;
+        private CollisionCallback collisionCallback;
 
         RigidBody main_character;
-        //Si algo tiene masa 0 es estatico.
-        RigidBody misilActual;
 
         public PhysicsEngine()
         {
-            //escenario = new List<TgcMesh>();
-            //base para bullet
+            collisionCallback = new CollisionCallback();
             collisionConfiguration = new DefaultCollisionConfiguration();
             dispatcher = new CollisionDispatcher(collisionConfiguration);
             GImpactCollisionAlgorithm.RegisterAlgorithm(dispatcher);
@@ -46,7 +43,8 @@ namespace TGC.Group.Model
 
         public RigidBody AgregarMisilEnemigo(TGCVector3 size, float mass, TGCVector3 position, TGCVector3 rotation)
         {
-            misilActual = AgregarObjeto(size, mass, position, rotation);
+            RigidBody misilActual = AgregarObjeto(size, mass, position, rotation);
+            dynamicsWorld.ContactPairTest(main_character, misilActual, collisionCallback);
             return misilActual;
         }
 
@@ -56,7 +54,6 @@ namespace TGC.Group.Model
             meshesEscenario.ForEach(mesh =>
             {
                 var body = CreateRigidBodyFromTgcMesh(mesh);
-                //atribs a recibir por param
                 body.Friction = 0.5f;
                 //
                 dynamicsWorld.AddRigidBody(body);
@@ -80,9 +77,7 @@ namespace TGC.Group.Model
         }
 
         public RigidBody AgregarPersonaje(TGCVector3 size,float mass,TGCVector3 position,TGCVector3 rotation)
-            //solo pido los atributos basicos para el constructor, el resto lo debe definir el dueño del personaje
         {
-            //new RigidBodyConstructionInfo(10, new DefaultMotionState(), shape...);
             main_character = AgregarObjeto(size, mass, position, rotation);
             main_character.CollisionFlags = main_character.CollisionFlags | CollisionFlags.CustomMaterialCallback;
             return main_character;
@@ -109,13 +104,6 @@ namespace TGC.Group.Model
             constraintSolver.Dispose();
             overlappingPairCache.Dispose();
         }
-
-        //Robado de tgc asi lo puedo modificar
-        /// <summary>
-        /// Se crea uncuerpo rigido a partir de un TgcMesh, pero no tiene masa por lo que va a ser estatico.
-        /// </summary>
-        /// <param name="mesh">TgcMesh</param>
-        /// <returns>Cuerpo rigido de un Mesh</returns>
         private RigidBody CreateRigidBodyFromTgcMesh(TgcMesh mesh)
         {
             var vertexCoords = mesh.getVertexPositions();

@@ -195,6 +195,7 @@ namespace TGC.Group.Model
             DrawText.drawText("Cam distance: " + followingCamera.fixedDistanceCamera, 0, 100, Color.White);
             TGCVector3 esf_coord = xwing.GetCoordenadaEsferica().GetXYZCoord();
             DrawText.drawText("xwing coord esf: " + esf_coord.X + " , " + esf_coord.Y + " , " + esf_coord.Z, 0, 110, Color.White);
+            DrawText.drawText("Vidas " + VariablesGlobales.vidas, 0, 120, Color.White);
         }
         public void NormalPostRender()
         {

@@ -15,7 +15,7 @@ namespace TGC.Group.Model
         protected TGCVector3 bulletVelocity;
         protected TgcMesh[] meshs;
         protected TGCVector3 rotation;
-        protected TGCMatrix matrizEscalaInicial;
+        protected TGCMatrix matrizInicialTransformacion;
 
         public void UpdateBullet()
         {
@@ -23,7 +23,7 @@ namespace TGC.Group.Model
             TGCMatrix bullet_transform = new TGCMatrix(body.InterpolationWorldTransform);
             for (int a=0;a<meshs.Length;a++)
             {
-                meshs[a].Transform = matrizEscalaInicial * GetRotationMatrix() * bullet_transform;
+                meshs[a].Transform = matrizInicialTransformacion * GetRotationMatrix() * bullet_transform;
             }
         }
         protected TGCMatrix GetRotationMatrix()

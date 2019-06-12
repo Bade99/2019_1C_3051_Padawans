@@ -77,7 +77,7 @@ namespace TGC.Group.Model
 
             //Posicion, rotacion y escala inicial
             TGCVector3 escala = new TGCVector3(escalar, escalar, escalar);
-            matrizEscalaInicial = TGCMatrix.Scaling(escala);
+            matrizInicialTransformacion = TGCMatrix.Scaling(escala);
             rotation = new TGCVector3(0, FastMath.PI_HALF, -FastMath.QUARTER_PI*.8f);
 
             xwing.AutoTransformEnable = false;

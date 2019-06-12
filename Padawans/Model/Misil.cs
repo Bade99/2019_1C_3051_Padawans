@@ -36,7 +36,7 @@ namespace TGC.Group.Model
             meshs = new TgcMesh[1];
             meshs[0] = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + pathScene).Meshes[0];
             meshs[0].AutoTransformEnable = false;
-            matrizEscalaInicial = TGCMatrix.Scaling(new TGCVector3(.2f, .2f, 4f)) * TGCMatrix.RotationY(FastMath.PI_HALF);
+            matrizInicialTransformacion = TGCMatrix.Scaling(new TGCVector3(.2f, .2f, 4f)) * TGCMatrix.RotationY(FastMath.PI_HALF);
             bulletVelocity = CommonHelper.VectorXEscalar(coordenadaEsferica.GetXYZCoord(), velocidadGeneral);
             //Shader
             if (VariablesGlobales.SHADERS)
