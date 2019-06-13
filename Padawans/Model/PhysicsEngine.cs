@@ -21,13 +21,17 @@ namespace TGC.Group.Model
         protected DefaultCollisionConfiguration collisionConfiguration;
         protected SequentialImpulseConstraintSolver constraintSolver;
         protected BroadphaseInterface overlappingPairCache;
-        private CollisionCallback collisionCallback;
+        private NaveMisilCollisionCallback collisionNaveMisilCallback;
+        private Dictionary<int, RigidBody> listaMisiles;
+        private List<int> listaIdMisilesQueColisionaronConXwing;
+        private int misilIdCount = 20;
+        private static readonly int ID_XWING = 1;
 
         RigidBody main_character;
 
         public PhysicsEngine()
         {
-            collisionCallback = new CollisionCallback();
+            collisionNaveMisilCallback = new NaveMisilCollisionCallback();
             collisionConfiguration = new DefaultCollisionConfiguration();
             dispatcher = new CollisionDispatcher(collisionConfiguration);
             GImpactCollisionAlgorithm.RegisterAlgorithm(dispatcher);
@@ -39,13 +43,44 @@ namespace TGC.Group.Model
             //
             dynamicsWorld.DebugDrawer = new Debug_Draw_Bullet();
             dynamicsWorld.DebugDrawer.DebugMode = DebugDrawModes.DrawWireframe;
+            listaMisiles = new Dictionary<int, RigidBody>();
+            listaIdMisilesQueColisionaronConXwing = new List<int>();
         }
 
         public RigidBody AgregarMisilEnemigo(TGCVector3 size, float mass, TGCVector3 position, TGCVector3 rotation)
         {
             RigidBody misilActual = AgregarObjeto(size, mass, position, rotation);
-            dynamicsWorld.ContactPairTest(main_character, misilActual, collisionCallback);
+            misilActual.UserIndex = misilIdCount;
+            misilActual.CollisionFlags =  CollisionFlags.CustomMaterialCallback;
+            listaMisiles.Add(misilIdCount, misilActual);
+            misilIdCount++;
             return misilActual;
+        }
+
+        public void ChequearColisionesXwingConMisiles()
+        {
+            listaMisiles.Values.ToList<RigidBody>().ForEach((misil) =>
+            {
+                dynamicsWorld.ContactPairTest(misil, main_character, collisionNaveMisilCallback);
+            });
+        }
+
+        public void EliminarMisilDeLista(int misilId)
+        {
+            listaMisiles.Remove(misilId);
+        }
+
+        public void AgregarColisionConXwing(int misilId)
+        {
+            listaIdMisilesQueColisionaronConXwing.Add(misilId);
+        }
+        /**
+         * Metodo que elimina un misilId de la lista, para que cada colision con el xwing se contabilice
+         * solo una vez
+         * */
+        public bool CheckCollisionMisilXwing(int misilId)
+        {
+            return listaIdMisilesQueColisionaronConXwing.Contains(misilId);
         }
 
         public List<RigidBody> AgregarEscenario(List<TgcMesh> meshesEscenario)
@@ -64,22 +99,23 @@ namespace TGC.Group.Model
 
         private RigidBody AgregarObjeto(TGCVector3 size, float mass, TGCVector3 position, TGCVector3 rotation)
         {
-            var personaje_body = BulletRigidBodyFactory.Instance.CreateBox(
+            var objeto = BulletRigidBodyFactory.Instance.CreateBox(
                             size,
                             mass,
                             position,
                             rotation.Y, rotation.X, rotation.Z,
                             .5f, true);
-            dynamicsWorld.AddRigidBody(personaje_body);
-            personaje_body.SetCustomDebugColor(new BulletSharp.Math.Vector3(1, 0, 0));
-            personaje_body.ActivationState = ActivationState.DisableDeactivation;
-            return personaje_body;
+            dynamicsWorld.AddRigidBody(objeto);
+            objeto.SetCustomDebugColor(new BulletSharp.Math.Vector3(1, 0, 0));
+            objeto.ActivationState = ActivationState.DisableDeactivation;
+            return objeto;
         }
 
         public RigidBody AgregarPersonaje(TGCVector3 size,float mass,TGCVector3 position,TGCVector3 rotation)
         {
             main_character = AgregarObjeto(size, mass, position, rotation);
-            main_character.CollisionFlags = main_character.CollisionFlags | CollisionFlags.CustomMaterialCallback;
+            main_character.CollisionFlags = CollisionFlags.CustomMaterialCallback;
+            main_character.UserIndex = 1;
             return main_character;
         }
         public void EliminarObjeto(RigidBody body)

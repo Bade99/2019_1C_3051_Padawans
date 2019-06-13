@@ -20,7 +20,7 @@ namespace TGC.Group.Model
     {
         //Como el misil nunca cambia la trayectoria, guardo las coordenadas cartesianas de la coordenada
         //esferica para no calcular tantos senos y cosenos
-        private float tiempoDeVida = 10f;
+        private float tiempoDeVida = 5f;
         private readonly float velocidadGeneral = 1000f;
         private bool terminado = false;
        
