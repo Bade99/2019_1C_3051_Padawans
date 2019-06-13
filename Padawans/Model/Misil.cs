@@ -88,6 +88,7 @@ namespace TGC.Group.Model
         public override void Dispose()
         {
             meshs[0].Dispose();
+            VariablesGlobales.physicsEngine.EliminarObjeto(body);
         }
     }
 }

@@ -46,21 +46,19 @@ namespace TGC.Group.Model
 
         private float velocidadGeneral;
         private bool barrelRoll;
-        private int barrelRollAvance=0;
         private bool rotationYAnimation;
         private float rotationYAnimacionAdvance;
         private CoordenadaEsferica coordenadaEsferica;
-        private TGCVector3 ultimaPosicion;
-        private float rotacionBarrelRoll;
+        private float barrelRollAdvance;
         private float tiempoEntreDisparos=.5f;
         private float tiempoDesdeUltimoDisparo = .5f;
         private float tiempoDesdeUltimaBomba = 5f;
         private float tiempoEntreBombas = 5f;
         //matrices de transformaciones
-        private TGCMatrix matrizXwingInicial;
 
         //propiedades de la nave
         private float escalar = .1f;
+        TGCVector3 escala;
 
         public Xwing(TgcSceneLoader loader, TGCVector3 posicionInicial)
         {
@@ -75,7 +73,7 @@ namespace TGC.Group.Model
             }
 
             //Posicion, rotacion y escala inicial
-            TGCVector3 escala = new TGCVector3(escalar, escalar, escalar);
+            escala = new TGCVector3(escalar, escalar, escalar);
             matrizInicialTransformacion = TGCMatrix.Scaling(escala);
             rotation = new TGCVector3(0, FastMath.PI_HALF, -FastMath.QUARTER_PI*.8f);
 
@@ -92,11 +90,10 @@ namespace TGC.Group.Model
             }
 
             barrelRoll = false;
-
+            barrelRollAdvance = 0;
             //Rotation y animation
             rotationYAnimation = false;
             rotationYAnimacionAdvance = 0;
-
             //agrego al physics engine
             body = VariablesGlobales.physicsEngine.AgregarPersonaje( CommonHelper.MultiplicarVectores(xwing.BoundingBox.calculateSize(),escala),
                                                                            0.1f, posicionInicial, TGCVector3.Empty);
@@ -176,34 +173,22 @@ namespace TGC.Group.Model
 
             //Teclas especiales para moverse rapido y mas facil por el mapa
             TestingInput(input);
-            if (input.keyDown(Key.X))
-            {
-                rotation.X += ElapsedTime;
-            }
-            if (input.keyDown(Key.Y))
-            {
-                rotation.Y += ElapsedTime;
-            }
-            if (input.keyDown(Key.Z))
-            {
-                rotation.Z += ElapsedTime;
-            }
             //Movimientos flechas
-            if (input.keyDown(Key.A))
+            if (input.keyDown(Key.A) && !barrelRoll)
             {
                 rotation.Add(TGCVector3.Down *ElapsedTime);
                 ActualizarCoordenadaEsferica();
             }
-            if (input.keyDown(Key.D))
+            if (input.keyDown(Key.D) && !barrelRoll)
             {
                 rotation.Add(TGCVector3.Up * ElapsedTime);
                 ActualizarCoordenadaEsferica();
             }
-            if (input.keyDown(Key.W) && !rotationYAnimation)
+            if (input.keyDown(Key.W) && !rotationYAnimation && !barrelRoll)
             {
                 UpArrow(ElapsedTime);
             }
-            if (input.keyDown(Key.S) && !rotationYAnimation)
+            if (input.keyDown(Key.S) && !rotationYAnimation && !barrelRoll)
             {
                 DownArrow(ElapsedTime);
             }
@@ -225,6 +210,17 @@ namespace TGC.Group.Model
                     rotationYAnimacionAdvance = 0;
                     rotationYAnimation = false;
                 }
+            }
+            if (barrelRoll)
+            {
+                barrelRollAdvance += ElapsedTime * 4;
+                if (barrelRollAdvance >= FastMath.TWO_PI)
+                {
+                    barrelRollAdvance = 0;
+                    barrelRoll = false;
+                }
+                matrizInicialTransformacion = matrizInicialTransformacion = TGCMatrix.Scaling(escala) 
+                    * TGCMatrix.RotationYawPitchRoll(0, barrelRollAdvance, 0);
             }
 
             bulletVelocity = CommonHelper.VectorXEscalar(coordenadaEsferica.GetXYZCoord(), velocidadGeneral);

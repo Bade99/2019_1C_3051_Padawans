@@ -82,6 +82,11 @@ namespace TGC.Group.Model
             main_character.CollisionFlags = main_character.CollisionFlags | CollisionFlags.CustomMaterialCallback;
             return main_character;
         }
+        public void EliminarObjeto(RigidBody body)
+        {
+            dynamicsWorld.RemoveRigidBody(body);
+            body.Dispose();
+        }
 
         public void Update()
         {
@@ -99,6 +104,7 @@ namespace TGC.Group.Model
         public void Dispose()
         {
             dynamicsWorld.Dispose();
+            collisionWorld.Dispose();
             dispatcher.Dispose();
             collisionConfiguration.Dispose();
             constraintSolver.Dispose();
