@@ -34,5 +34,6 @@ namespace TGC.Group.Model
         public static TGCVector2 cues_relative_position;
         public static float cues_relative_scale;
         public static int vidas = 3;
+        public static bool MODO_DIOS = false;
     }
 }

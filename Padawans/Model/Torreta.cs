@@ -20,7 +20,7 @@ namespace TGC.Group.Model
         private TGCMatrix matrizInicial;
         private readonly float tiempoEntreDisparos = 1.5f;
         private float tiempoDesdeUltimoDisparo = 1.5f;
-        private readonly float distanciaMinimaATarget = 300f;
+        private readonly float distanciaMinimaATarget = 600;
         private readonly float factorEscala = .1f;
         private readonly TGCVector3 origenDeDisparos;
         private TGCVector3 tamanioBoundingBox;

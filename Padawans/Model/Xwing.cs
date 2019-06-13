@@ -60,6 +60,12 @@ namespace TGC.Group.Model
         private float escalar = .1f;
         TGCVector3 escala;
 
+        //Ingreso modo Dios
+        private INGRESO_MODO_DIOS ingresoModoDios = INGRESO_MODO_DIOS.NADA;
+        private float timer;
+        private float limiteTimer = 5;
+        private float toleranciaDeRepeticion = 0.08f;
+
         public Xwing(TgcSceneLoader loader, TGCVector3 posicionInicial)
         {
             this.loader = loader;
@@ -192,6 +198,7 @@ namespace TGC.Group.Model
             {
                 DownArrow(ElapsedTime);
             }
+            IngresoModoDios(input, ElapsedTime);
             AcelerarYFrenar(input, ElapsedTime);
             Disparar(input, ElapsedTime);
 
@@ -274,7 +281,60 @@ namespace TGC.Group.Model
                 velocidadGeneral = minimaVelocidad;
             }
         }
+        private void IngresoModoDios(TgcD3dInput input, float ElapsedTime)
+        {
+            timer += ElapsedTime;
+            if (timer < toleranciaDeRepeticion)
+            {
+                return;
+            }
+            if (input.keyDown(Key.I))
+            {
+                ingresoModoDios = INGRESO_MODO_DIOS.I;
+                timer = 0;
+            }
+            if (input.keyDown(Key.D))
+            {
+                if (ingresoModoDios.Equals(INGRESO_MODO_DIOS.I))
+                {
+                    ingresoModoDios = INGRESO_MODO_DIOS.D_1;
+                    timer = 0;
+                } else if (ingresoModoDios.Equals(INGRESO_MODO_DIOS.D_1))
+                {
+                    ingresoModoDios = INGRESO_MODO_DIOS.D_2;
+                    timer = 0;
+                } else if(ingresoModoDios.Equals(INGRESO_MODO_DIOS.Q))
+                {
+                    ingresoModoDios = INGRESO_MODO_DIOS.NADA;
+                    timer = 0;
+                    VariablesGlobales.MODO_DIOS = !VariablesGlobales.MODO_DIOS;
+                } else
+                {
+                    AnularIngresoModoDios();
+                }
+            }
+            if (input.keyDown(Key.Q))
+            {
+                if (ingresoModoDios.Equals(INGRESO_MODO_DIOS.D_2))
+                {
+                    ingresoModoDios = INGRESO_MODO_DIOS.Q;
+                    timer = 0;
+                } else
+                {
+                    AnularIngresoModoDios();
+                }
+            } 
+            if (timer > limiteTimer)
+            {
+                AnularIngresoModoDios();
+            }
+        }
 
+        private void AnularIngresoModoDios()
+        {
+            ingresoModoDios = INGRESO_MODO_DIOS.NADA;
+            timer = 0;
+        }
         private void DownArrow(float ElapsedTime)
         {
             if (coordenadaEsferica.polar < (FastMath.PI - limiteAnguloPolar))
@@ -387,5 +447,7 @@ namespace TGC.Group.Model
                 return CommonHelper.SumarVectores(CommonHelper.SumarVectores(GetPosition(), deltaDireccionNave), deltaOrtogonalNave);
             }
         }
+
+        private enum INGRESO_MODO_DIOS { NADA, I, D_1, D_2, Q, D_3}
     }
 }

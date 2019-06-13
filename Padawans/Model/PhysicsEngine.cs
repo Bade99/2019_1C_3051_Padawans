@@ -52,6 +52,10 @@ namespace TGC.Group.Model
             RigidBody misilActual = AgregarObjeto(size, mass, position, rotation);
             misilActual.UserIndex = misilIdCount;
             misilActual.CollisionFlags =  CollisionFlags.CustomMaterialCallback;
+            if (VariablesGlobales.MODO_DIOS)
+            {
+                misilActual.SetIgnoreCollisionCheck(main_character, true);
+            }
             listaMisiles.Add(misilIdCount, misilActual);
             misilIdCount++;
             return misilActual;
@@ -59,6 +63,7 @@ namespace TGC.Group.Model
 
         public void ChequearColisionesXwingConMisiles()
         {
+            if (VariablesGlobales.MODO_DIOS) return;
             listaMisiles.Values.ToList<RigidBody>().ForEach((misil) =>
             {
                 dynamicsWorld.ContactPairTest(misil, main_character, collisionNaveMisilCallback);
