@@ -12,7 +12,7 @@ using TGC.Core.Direct3D;
 
 namespace TGC.Group.Model
 {
-    class Torreta : IActiveElement
+    class Torreta : IActiveElement, IPostProcess
     {
         TgcMesh torreta;
         private TGCVector3 posicion;
@@ -28,6 +28,7 @@ namespace TGC.Group.Model
         private Xwing target;
         private bool isActive;
         private int vida;
+        TGCVector3 deltaPosicionHumoTorreta = new TGCVector3(-5, 12, -5);
 
         private ParticleEmitter particulaHumo;
 
@@ -47,14 +48,14 @@ namespace TGC.Group.Model
             this.vida = 3;
             if (VariablesGlobales.SHADERS) VariablesGlobales.shaderManager.AgregarMesh(torreta, ShaderManager.MESH_TYPE.SHADOW);
             //EMISOR PARTICULAS
-            particulaHumo = new ParticleEmitter(VariablesGlobales.mediaDir + "Particulas\\pisada.png", 10);
+            particulaHumo = new ParticleEmitter(VariablesGlobales.mediaDir + "Particulas\\pisada.png", 30);
             particulaHumo.Position = this.posicion;
-            particulaHumo.MinSizeParticle = 4;
-            particulaHumo.MaxSizeParticle = 6;
-            particulaHumo.ParticleTimeToLive = 1;
-            particulaHumo.CreationFrecuency = 1;
-            particulaHumo.Dispersion = 100;
-            particulaHumo.Speed = new TGCVector3(30, 30, 30);
+            particulaHumo.MinSizeParticle = 1.5f;
+            particulaHumo.MaxSizeParticle = 2;
+            particulaHumo.ParticleTimeToLive = 0.2f;
+            particulaHumo.CreationFrecuency = 0.01f;
+            particulaHumo.Dispersion = 1;
+            particulaHumo.Speed = new TGCVector3(10, 10, 10);
             Posicionar();
         }
 
@@ -65,7 +66,7 @@ namespace TGC.Group.Model
             * TGCMatrix.Translation(-FastMath.Cos(rotation.Y) * (tamanioBoundingBox.X * factorEscala), 0,
             -FastMath.Sin(rotation.Y) * (tamanioBoundingBox.Z * factorEscala));
             */
-            particulaHumo.Position = this.posicion;
+            particulaHumo.Position = CommonHelper.SumarVectores(this.posicion, deltaPosicionHumoTorreta);
         }
 
         public void RenderBoundingBox()
@@ -106,13 +107,17 @@ namespace TGC.Group.Model
             if (isActive)
             {
                 torreta.Render();
-                if (this.vida <= 0)
-                {
-                    //IMPORTANTE PARA PERMITIR EL EFECTO DE LA PARTICULA.
-                    D3DDevice.Instance.ParticlesEnabled = true;
-                    D3DDevice.Instance.EnableParticles();
-                    particulaHumo.render(VariablesGlobales.elapsedTime);
-                }
+            }
+        }
+
+        public void RenderPostProcess(string effect)
+        {
+            if (this.vida <= 0)
+            {
+                //IMPORTANTE PARA PERMITIR EL EFECTO DE LA PARTICULA.
+                D3DDevice.Instance.ParticlesEnabled = true;
+                D3DDevice.Instance.EnableParticles();
+                particulaHumo.render(VariablesGlobales.elapsedTime);
             }
         }
 

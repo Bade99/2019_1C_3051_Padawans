@@ -110,6 +110,7 @@ namespace TGC.Group.Model
         {
             Torreta torreta = new Torreta(target, pos, rotation);
             VariablesGlobales.managerEnemigos.AgregarElemento(torreta);
+            VariablesGlobales.postProcess.AgregarElemento(torreta);
             //new TGCVector3(50f, 10f, 0f), new TGCVector3(0, FastMath.PI_HALF, 0))
         }
 
