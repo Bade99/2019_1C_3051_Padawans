@@ -40,7 +40,6 @@ namespace TGC.Group.Model
             dynamicsWorld = new DiscreteDynamicsWorld(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
             dynamicsWorld.Gravity = new TGCVector3(0, 0/*gravedad*/, 0).ToBulletVector3();
             collisionWorld = new CollisionWorld(dispatcher, overlappingPairCache, collisionConfiguration);
-            //
             dynamicsWorld.DebugDrawer = new Debug_Draw_Bullet();
             dynamicsWorld.DebugDrawer.DebugMode = DebugDrawModes.DrawWireframe;
             listaMisiles = new Dictionary<int, RigidBody>();
@@ -66,7 +65,7 @@ namespace TGC.Group.Model
             if (VariablesGlobales.MODO_DIOS) return;
             listaMisiles.Values.ToList<RigidBody>().ForEach((misil) =>
             {
-                dynamicsWorld.ContactPairTest(misil, main_character, collisionNaveMisilCallback);
+                collisionWorld.ContactPairTest(misil, main_character, collisionNaveMisilCallback);
             });
         }
 
@@ -111,8 +110,6 @@ namespace TGC.Group.Model
                             rotation.Y, rotation.X, rotation.Z,
                             .5f, true);
             dynamicsWorld.AddRigidBody(objeto);
-            objeto.SetCustomDebugColor(new BulletSharp.Math.Vector3(1, 0, 0));
-            objeto.ActivationState = ActivationState.DisableDeactivation;
             return objeto;
         }
 
@@ -138,7 +135,7 @@ namespace TGC.Group.Model
         {
             if (input.keyPressed(Microsoft.DirectX.DirectInput.Key.U))
             {
-            dynamicsWorld.DebugDrawWorld();
+                dynamicsWorld.DebugDrawWorld();
             }
         }
         

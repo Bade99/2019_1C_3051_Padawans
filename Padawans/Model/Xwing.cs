@@ -54,7 +54,6 @@ namespace TGC.Group.Model
         private float tiempoDesdeUltimoDisparo = .5f;
         private float tiempoDesdeUltimaBomba = 5f;
         private float tiempoEntreBombas = 5f;
-        //matrices de transformaciones
 
         //propiedades de la nave
         private float escalar = .1f;
@@ -71,44 +70,27 @@ namespace TGC.Group.Model
             this.loader = loader;
             xwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"XWing\\xwing-TgcScene.xml").Meshes[0];
             alaXwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"XWing\\xwing-TgcScene.xml").Meshes[1];
-            //Shader
+
+            escala = new TGCVector3(escalar, escalar, escalar);
+            matrizInicialTransformacion = TGCMatrix.Scaling(escala);
+            rotation = new TGCVector3(0, FastMath.PI_HALF, -FastMath.QUARTER_PI*.8f);
+
+            barrelRoll = false;
+            barrelRollAdvance = 0;
+            rotationYAnimation = false;
+            rotationYAnimacionAdvance = 0;
+            velocidadGeneral = 5f;
+
+            xwing.AutoTransformEnable = false;
+            alaXwing.AutoTransformEnable = false;
+
             if (VariablesGlobales.SHADERS)
             {
                 VariablesGlobales.shaderManager.AgregarMesh(xwing, ShaderManager.MESH_TYPE.SHADOW);
                 VariablesGlobales.shaderManager.AgregarMesh(alaXwing, ShaderManager.MESH_TYPE.SHADOW);
             }
-
-            //Posicion, rotacion y escala inicial
-            escala = new TGCVector3(escalar, escalar, escalar);
-            matrizInicialTransformacion = TGCMatrix.Scaling(escala);
-            rotation = new TGCVector3(0, FastMath.PI_HALF, -FastMath.QUARTER_PI*.8f);
-
-            xwing.AutoTransformEnable = false;
-            alaXwing.AutoTransformEnable = false;
-
-            if (VariablesGlobales.BULLET)
-            {
-                velocidadGeneral = 5f;
-            }
-            else
-            {
-                velocidadGeneral = 300f;
-            }
-
-            barrelRoll = false;
-            barrelRollAdvance = 0;
-            //Rotation y animation
-            rotationYAnimation = false;
-            rotationYAnimacionAdvance = 0;
-            //agrego al physics engine
             body = VariablesGlobales.physicsEngine.AgregarPersonaje( CommonHelper.MultiplicarVectores(xwing.BoundingBox.calculateSize(),escala),
                                                                            0.1f, posicionInicial, TGCVector3.Empty);
-            //@Params para modificar
-            //body_xwing.Friction = 1;
-            //body_xwing.Restitution=.1f;
-            //body_xwing.SetDamping(.5f,.5f);
-            //body_xwing.SpinningFriction=1;
-
             ActualizarCoordenadaEsferica();
 
             bloom = new TgcMesh[2];
@@ -117,7 +99,6 @@ namespace TGC.Group.Model
             bloom[0].AutoTransformEnable = false;
             bloom[1].AutoTransformEnable = false;
 
-            //Bullet meshs
             meshs = new TgcMesh[4];
             meshs[0] = xwing;
             meshs[1] = alaXwing;
@@ -140,7 +121,7 @@ namespace TGC.Group.Model
             alaXwing.BoundingBox.Render();
         }
 
-        public void RenderPostProcess(string effect)//renderiza el xwing q solo tiene las partes que se necesitan para ese efecto
+        public void RenderPostProcess(string effect)
         {
             if (effect == "bloom")
             {
@@ -170,19 +151,54 @@ namespace TGC.Group.Model
 
         public void UpdateInput(TgcD3dInput input, float ElapsedTime)
         {
-            UpdateInputManual(input, ElapsedTime);
-        }
-
-        public void UpdateInputManual(TgcD3dInput input,float ElapsedTime)
-        {
             //ElapsedTime = 0.01f; //Lo hardcodeo hasta que sepamos bien como hacer esto
-
-            //Teclas especiales para moverse rapido y mas facil por el mapa
             TestingInput(input);
-            //Movimientos flechas
+            MovimientoFlechas(input, ElapsedTime);
+            IngresoModoDios(input, ElapsedTime);
+            AcelerarYFrenar(input, ElapsedTime);
+            Disparar(input, ElapsedTime);
+            BarrelRoll(input, ElapsedTime);
+            RotationYAnimation();
+            EfectoFriccion(ElapsedTime);
+
+            bulletVelocity = CommonHelper.VectorXEscalar(coordenadaEsferica.GetXYZCoord(), velocidadGeneral);
+        }
+        private void RotationYAnimation()
+        {
+            if (rotationYAnimation)
+            {
+                rotationYAnimacionAdvance += progressUnityRotationAdvance;
+                rotation.Add(TGCVector3.Up * progressUnityRotationAdvance);
+                if (rotationYAnimacionAdvance >= FastMath.PI)
+                {
+                    rotationYAnimacionAdvance = 0;
+                    rotationYAnimation = false;
+                }
+            }
+        }
+        private void BarrelRoll(TgcD3dInput input, float ElapsedTime)
+        {
+            if (input.keyPressed(Key.Space))
+            {
+                barrelRoll = true;
+            }
+            if (barrelRoll)
+            {
+                barrelRollAdvance += ElapsedTime * 4;
+                if (barrelRollAdvance >= FastMath.TWO_PI)
+                {
+                    barrelRollAdvance = 0;
+                    barrelRoll = false;
+                }
+                matrizInicialTransformacion = matrizInicialTransformacion = TGCMatrix.Scaling(escala)
+                    * TGCMatrix.RotationYawPitchRoll(0, barrelRollAdvance, 0);
+            }
+        }
+        private void MovimientoFlechas(TgcD3dInput input, float ElapsedTime)
+        {
             if (input.keyDown(Key.A) && !barrelRoll)
             {
-                rotation.Add(TGCVector3.Down *ElapsedTime);
+                rotation.Add(TGCVector3.Down * ElapsedTime);
                 ActualizarCoordenadaEsferica();
             }
             if (input.keyDown(Key.D) && !barrelRoll)
@@ -198,39 +214,6 @@ namespace TGC.Group.Model
             {
                 DownArrow(ElapsedTime);
             }
-            IngresoModoDios(input, ElapsedTime);
-            AcelerarYFrenar(input, ElapsedTime);
-            Disparar(input, ElapsedTime);
-
-            //BarrelRoll con barra espaciadora
-            if (input.keyPressed(Key.Space))
-            {
-                barrelRoll = true;
-            }
-            //Rotation y animation
-            if (rotationYAnimation)
-            {
-                rotationYAnimacionAdvance += progressUnityRotationAdvance;
-                rotation.Add(TGCVector3.Up * progressUnityRotationAdvance);
-                if (rotationYAnimacionAdvance >= FastMath.PI)
-                {
-                    rotationYAnimacionAdvance = 0;
-                    rotationYAnimation = false;
-                }
-            }
-            if (barrelRoll)
-            {
-                barrelRollAdvance += ElapsedTime * 4;
-                if (barrelRollAdvance >= FastMath.TWO_PI)
-                {
-                    barrelRollAdvance = 0;
-                    barrelRoll = false;
-                }
-                matrizInicialTransformacion = matrizInicialTransformacion = TGCMatrix.Scaling(escala) 
-                    * TGCMatrix.RotationYawPitchRoll(0, barrelRollAdvance, 0);
-            }
-
-            bulletVelocity = CommonHelper.VectorXEscalar(coordenadaEsferica.GetXYZCoord(), velocidadGeneral);
         }
 
         private void Disparar(TgcD3dInput input, float ElapsedTime)
@@ -261,17 +244,18 @@ namespace TGC.Group.Model
 
         private void AcelerarYFrenar(TgcD3dInput input, float ElapsedTime)
         {
-            //Acelerar
             if (input.keyDown(Key.LeftShift) && velocidadGeneral < maximaVelocidad)
             {
                 velocidadGeneral += (aceleracion * ElapsedTime);
             }
-            //Frenar
             if (input.keyDown(Key.LeftControl))
             {
                 velocidadGeneral -= (aceleracion * ElapsedTime / 2);
             }
-            //Permite que la nave se detenga paulatinamente con la friccion
+        }
+
+        private void EfectoFriccion(float ElapsedTime)
+        {
             if (velocidadGeneral > minimaVelocidad)
             {
                 velocidadGeneral -= (friccion * ElapsedTime);
