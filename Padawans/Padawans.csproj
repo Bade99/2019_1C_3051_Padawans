@@ -118,7 +118,8 @@
     <Compile Include="Model\Bomba.cs" />
     <Compile Include="Model\BoundingBoxHelper.cs" />
     <Compile Include="Model\BulletSceneElement.cs" />
-    <Compile Include="Model\CollisionCallback.cs" />
+    <Compile Include="Model\NaveMisilCollisionCallback.cs" />
+    <Compile Include="Model\DebugDrawerTest.cs" />
     <Compile Include="Model\Debug_Draw_Bullet.cs" />
     <Compile Include="Model\DynamicCueManager.cs" />
     <Compile Include="Model\EndgameManager.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="Model\StartMenu.cs" />
     <Compile Include="Model\TemporaryElementManager.cs" />
     <Compile Include="Model\Torreta.cs" />
+    <Compile Include="Model\TorretaMisilCollisionCallback.cs" />
     <Compile Include="Model\VariablesGlobales.cs" />
     <Compile Include="Model\WorldSphere.cs" />
     <Compile Include="Model\InteractiveElement.cs" />

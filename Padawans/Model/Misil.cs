@@ -18,11 +18,9 @@ namespace TGC.Group.Model
 {
     public class Misil : BulletSceneElement, IActiveElement
     {
-        //Como el misil nunca cambia la trayectoria, guardo las coordenadas cartesianas de la coordenada
-        //esferica para no calcular tantos senos y cosenos
         private float tiempoDeVida = 5f;
-        private readonly float velocidadGeneral = 1000f;
         private bool terminado = false;
+        private static TGCVector3 escalaMisil = new TGCVector3(.2f, .2f, 4f);
        
         /**
          * Posicion nave: Posicion inicial del misil
@@ -30,21 +28,34 @@ namespace TGC.Group.Model
          * Rotacion nave: Constante con el que misil se rota inicialmente para estar alineado a la trayectoria
          * pathscene: Path donde esta ubicado el mesh
          * */
-        public Misil(TGCVector3 posicionInicial, CoordenadaEsferica coordenadaEsferica, TGCVector3 rotacionInicial, string pathScene)
+        public Misil(TGCVector3 posicionInicial, CoordenadaEsferica coordenadaEsferica, TGCVector3 rotacionInicial, string pathScene, OrigenMisil origenMisil)
         {
             this.rotation = rotacionInicial;
+            this.coordenadaEsferica = coordenadaEsferica;
+            this.position = posicionInicial;
+            velocidadGeneral = 1000f;
             meshs = new TgcMesh[1];
             meshs[0] = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + pathScene).Meshes[0];
             meshs[0].AutoTransformEnable = false;
-            matrizInicialTransformacion = TGCMatrix.Scaling(new TGCVector3(.2f, .2f, 4f)) * TGCMatrix.RotationY(FastMath.PI_HALF);
-            bulletVelocity = CommonHelper.VectorXEscalar(coordenadaEsferica.GetXYZCoord(), velocidadGeneral);
-            //Shader
+            matrizInicialTransformacion = TGCMatrix.Scaling(escalaMisil) * TGCMatrix.RotationY(FastMath.PI_HALF);
+
             if (VariablesGlobales.SHADERS)
             {
                 VariablesGlobales.shaderManager.AgregarMesh(meshs[0], ShaderManager.MESH_TYPE.SHADOW);
             }
-            body = VariablesGlobales.physicsEngine.AgregarMisilEnemigo(meshs[0].BoundingBox.calculateSize(), 
-                1, posicionInicial, TGCVector3.Empty);
+            TGCVector3 sizeEscalado = meshs[0].BoundingBox.calculateSize();
+            sizeEscalado.X *= escalaMisil.X;
+            sizeEscalado.Y *= escalaMisil.Y;
+            sizeEscalado.Z *= escalaMisil.Z;
+            switch (origenMisil)
+            {
+                case OrigenMisil.ENEMIGO:
+                    collisionObject = VariablesGlobales.physicsEngine.AgregarMisilEnemigo(sizeEscalado);
+                    break;
+                case OrigenMisil.XWING:
+                    collisionObject = VariablesGlobales.physicsEngine.AgregarMisilXwing(sizeEscalado);
+                    break;
+            }
         }
 
 
@@ -58,7 +69,6 @@ namespace TGC.Group.Model
                 terminado = true;
             }
             else {
-
                 UpdateBullet();
             }
 
@@ -88,7 +98,9 @@ namespace TGC.Group.Model
         public override void Dispose()
         {
             meshs[0].Dispose();
-            VariablesGlobales.physicsEngine.EliminarObjeto(body);
+            VariablesGlobales.physicsEngine.EliminarObjeto(collisionObject);
         }
+
+        public enum OrigenMisil { ENEMIGO, XWING}
     }
 }

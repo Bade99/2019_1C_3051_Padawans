@@ -1,4 +1,5 @@
 ﻿using BulletSharp;
+using BulletSharp.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,20 +12,23 @@ namespace TGC.Group.Model
 {
     public abstract class BulletSceneElement : SceneElement
     {
-        protected RigidBody body;
-        protected TGCVector3 bulletVelocity;
+        protected CollisionObject collisionObject;
         protected TgcMesh[] meshs;
         protected TGCVector3 rotation;
+        protected TGCVector3 position;
         protected TGCMatrix matrizInicialTransformacion;
+        protected CoordenadaEsferica coordenadaEsferica;
+        protected float velocidadGeneral;
 
         public void UpdateBullet()
         {
-            body.LinearVelocity = bulletVelocity.ToBulletVector3();
-            TGCMatrix bullet_transform = new TGCMatrix(body.InterpolationWorldTransform);
+            position = CommonHelper.MoverPosicionEnDireccionCoordenadaEsferica(position, coordenadaEsferica, velocidadGeneral, 0.01f);
+            TGCMatrix matrizPosicion = TGCMatrix.Translation(position);
             for (int a=0;a<meshs.Length;a++)
             {
-                meshs[a].Transform = matrizInicialTransformacion * GetRotationMatrix() * bullet_transform;
+                meshs[a].Transform = matrizInicialTransformacion * GetRotationMatrix() * matrizPosicion;
             }
+            collisionObject.WorldTransform = CommonHelper.TgcToBulletMatrix(matrizPosicion);
         }
         protected TGCMatrix GetRotationMatrix()
         {

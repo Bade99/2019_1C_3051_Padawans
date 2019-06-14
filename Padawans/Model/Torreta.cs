@@ -9,10 +9,11 @@ using System.Drawing;
 using TGC.Core.Input;
 using TGC.Core.Particle;
 using TGC.Core.Direct3D;
+using BulletSharp;
 
 namespace TGC.Group.Model
 {
-    class Torreta : IActiveElement, IPostProcess
+    public class Torreta : IActiveElement, IPostProcess
     {
         TgcMesh torreta;
         private TGCVector3 posicion;
@@ -29,6 +30,7 @@ namespace TGC.Group.Model
         private bool isActive;
         private int vida;
         TGCVector3 deltaPosicionHumoTorreta = new TGCVector3(-5, 12, -5);
+        public CollisionObject CollisionObject { get; set; }
 
         private ParticleEmitter particulaHumo;
 
@@ -57,6 +59,7 @@ namespace TGC.Group.Model
             particulaHumo.Dispersion = 1;
             particulaHumo.Speed = new TGCVector3(10, 10, 10);
             Posicionar();
+            CollisionObject = VariablesGlobales.physicsEngine.AgregarTorreta(this, CommonHelper.VectorXEscalar(tamanioBoundingBox, factorEscala));
         }
 
         public void Posicionar()
@@ -97,7 +100,7 @@ namespace TGC.Group.Model
                     //Posicionar();
                     VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(
                         posicion+ torreta.BoundingBox.calculateSize()*factorEscala,
-                        direccionXwing, direccionXwing.GetRotation(), "Misil\\misil_torreta.xml"));
+                        direccionXwing, direccionXwing.GetRotation(), "Misil\\misil_torreta.xml", Misil.OrigenMisil.ENEMIGO));
                 }
                 else isActive = false;
             }
@@ -124,6 +127,11 @@ namespace TGC.Group.Model
         public bool Terminado()
         {
             return false;
+        }
+
+        public void DisminuirVida()
+        {
+            vida--;
         }
     }
 }

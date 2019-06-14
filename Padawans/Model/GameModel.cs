@@ -124,7 +124,6 @@ namespace TGC.Group.Model
             managerSonido.Update();
             if (!managerMenu.IsCurrent()) { //si no estoy en un menu ->
                 physicsEngine.Update();
-                physicsEngine.ChequearColisionesXwingConMisiles();
                 worldSphere.Update();
                 xwing.UpdateInput(Input,ElapsedTime);
                 xwing.Update();

@@ -44,11 +44,9 @@ namespace TGC.Group.Model
         private readonly float DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL = 6;
         private readonly float EXTRA_ANGULO_POLAR_CANION_ABAJO = 0.3f;
 
-        private float velocidadGeneral;
         private bool barrelRoll;
         private bool rotationYAnimation;
         private float rotationYAnimacionAdvance;
-        private CoordenadaEsferica coordenadaEsferica;
         private float barrelRollAdvance;
         private float tiempoEntreDisparos=.5f;
         private float tiempoDesdeUltimoDisparo = .5f;
@@ -74,6 +72,7 @@ namespace TGC.Group.Model
             escala = new TGCVector3(escalar, escalar, escalar);
             matrizInicialTransformacion = TGCMatrix.Scaling(escala);
             rotation = new TGCVector3(0, FastMath.PI_HALF, -FastMath.QUARTER_PI*.8f);
+            position = posicionInicial;
 
             barrelRoll = false;
             barrelRollAdvance = 0;
@@ -89,8 +88,8 @@ namespace TGC.Group.Model
                 VariablesGlobales.shaderManager.AgregarMesh(xwing, ShaderManager.MESH_TYPE.SHADOW);
                 VariablesGlobales.shaderManager.AgregarMesh(alaXwing, ShaderManager.MESH_TYPE.SHADOW);
             }
-            body = VariablesGlobales.physicsEngine.AgregarPersonaje( CommonHelper.MultiplicarVectores(xwing.BoundingBox.calculateSize(),escala),
-                                                                           0.1f, posicionInicial, TGCVector3.Empty);
+            TGCVector3 sizeEscalado = CommonHelper.VectorXEscalar(xwing.BoundingBox.calculateSize(), escalar);
+            collisionObject = VariablesGlobales.physicsEngine.AgregarPersonaje(sizeEscalado);
             ActualizarCoordenadaEsferica();
 
             bloom = new TgcMesh[2];
@@ -125,7 +124,6 @@ namespace TGC.Group.Model
         {
             if (effect == "bloom")
             {
-                TGCMatrix bullet_transform = new TGCMatrix(body.InterpolationWorldTransform);
                 bloom[0].Render();
                 bloom[1].Render();
             }
@@ -160,8 +158,6 @@ namespace TGC.Group.Model
             BarrelRoll(input, ElapsedTime);
             RotationYAnimation();
             EfectoFriccion(ElapsedTime);
-
-            bulletVelocity = CommonHelper.VectorXEscalar(coordenadaEsferica.GetXYZCoord(), velocidadGeneral);
         }
         private void RotationYAnimation()
         {
@@ -224,7 +220,7 @@ namespace TGC.Group.Model
                 if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos)
                 {
                     tiempoDesdeUltimoDisparo = 0f;
-                    VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(CalcularPosicionInicialMisil(), coordenadaEsferica, rotation, "Misil\\misil_xwing-TgcScene.xml"));
+                    VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(CalcularPosicionInicialMisil(), coordenadaEsferica, rotation, "Misil\\misil_xwing-TgcScene.xml", Misil.OrigenMisil.XWING));
                     VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.DISPARO_MISIL_XWING);
                 }
             }
@@ -373,7 +369,7 @@ namespace TGC.Group.Model
 
         public TGCVector3 GetPosition()
         {
-            return new TGCVector3(body.CenterOfMassPosition);
+            return position;
         }
 
         public CoordenadaEsferica GetCoordenadaEsferica()

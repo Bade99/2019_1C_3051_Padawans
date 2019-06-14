@@ -119,7 +119,17 @@ namespace TGC.Group.Model
             m.M44 *= f;
 
             return m;
-        } 
+        }
+
+        public static Matrix TgcToBulletMatrix(TGCMatrix tgcMatrix)
+        {
+            return new Matrix(
+                tgcMatrix.M11, tgcMatrix.M12, tgcMatrix.M13, tgcMatrix.M14,
+                tgcMatrix.M21, tgcMatrix.M22, tgcMatrix.M23, tgcMatrix.M24,
+                tgcMatrix.M31, tgcMatrix.M32, tgcMatrix.M33, tgcMatrix.M34,
+                tgcMatrix.M41, tgcMatrix.M42, tgcMatrix.M43, tgcMatrix.M44
+            );
+        }
         public static TGCVector3 DividirPorEscalar(TGCVector3 v, float e)
         {
             return new TGCVector3(v.X / e, v.Y / e, v.Z / e);

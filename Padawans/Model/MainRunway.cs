@@ -192,14 +192,10 @@ namespace TGC.Group.Model
             escalador = new TGCVector3(30f, 50f, 50f);
             mesh_pivot = 0;
             rotacion = new TGCVector3(0f, 0f, 0f);
-            //PlaceSceneLine(hierro, posicion, escalador, (int)(n * .8f), mesh_pivot, 0,rotacion);
 
-            //-----
-
-            //agregar al physics engine (por ahora no guardo los rigidbody, no se si sirven para algo)
             main_escena_instancia.ForEach(mesh_list => VariablesGlobales.physicsEngine.AgregarEscenario(mesh_list));
             //
-            PonerTorretas(posicion_inicial, posicion_final, new TGCVector3(0,FastMath.PI,0),50f,30);
+            PonerTorretas(posicion_inicial, posicion_final, new TGCVector3(0, FastMath.PI, 0), 50f, 30);
 
         }
 

@@ -15,19 +15,22 @@ namespace TGC.Group.Model
 {
     public class PhysicsEngine
     {
-        protected DiscreteDynamicsWorld dynamicsWorld;
         protected CollisionWorld collisionWorld;
         protected CollisionDispatcher dispatcher;
         protected DefaultCollisionConfiguration collisionConfiguration;
         protected SequentialImpulseConstraintSolver constraintSolver;
         protected BroadphaseInterface overlappingPairCache;
         private NaveMisilCollisionCallback collisionNaveMisilCallback;
-        private Dictionary<int, RigidBody> listaMisiles;
+        private Dictionary<int, CollisionObject> listaMisilesEnemigo;
+        private Dictionary<int, CollisionObject> listaMisilesXwing;
+        private Dictionary<int, Torreta> listaTorretas;
         private List<int> listaIdMisilesQueColisionaronConXwing;
         private int misilIdCount = 20;
+        private int torretaIdCount = 1;
         private static readonly int ID_XWING = 1;
+        TorretaMisilCollisionCallback torretaMisilCollisionCallback = new TorretaMisilCollisionCallback();
 
-        RigidBody main_character;
+        CollisionObject main_character;
 
         public PhysicsEngine()
         {
@@ -37,41 +40,81 @@ namespace TGC.Group.Model
             GImpactCollisionAlgorithm.RegisterAlgorithm(dispatcher);
             constraintSolver = new SequentialImpulseConstraintSolver();
             overlappingPairCache = new DbvtBroadphase(); //AxisSweep3(new BsVector3(-5000f, -5000f, -5000f), new BsVector3(5000f, 5000f, 5000f), 8192);
-            dynamicsWorld = new DiscreteDynamicsWorld(dispatcher, overlappingPairCache, constraintSolver, collisionConfiguration);
-            dynamicsWorld.Gravity = new TGCVector3(0, 0/*gravedad*/, 0).ToBulletVector3();
             collisionWorld = new CollisionWorld(dispatcher, overlappingPairCache, collisionConfiguration);
-            dynamicsWorld.DebugDrawer = new Debug_Draw_Bullet();
-            dynamicsWorld.DebugDrawer.DebugMode = DebugDrawModes.DrawWireframe;
-            listaMisiles = new Dictionary<int, RigidBody>();
+            listaMisilesEnemigo = new Dictionary<int, CollisionObject>();
+            listaMisilesXwing = new Dictionary<int, CollisionObject>();
+            listaTorretas = new Dictionary<int, Torreta>();
             listaIdMisilesQueColisionaronConXwing = new List<int>();
+            collisionWorld.DebugDrawer = new DebugDrawerTest();
+            collisionWorld.DebugDrawer.DebugMode = DebugDrawModes.All;
         }
 
-        public RigidBody AgregarMisilEnemigo(TGCVector3 size, float mass, TGCVector3 position, TGCVector3 rotation)
+        public CollisionObject AgregarMisilEnemigo(TGCVector3 size)
         {
-            RigidBody misilActual = AgregarObjeto(size, mass, position, rotation);
-            misilActual.UserIndex = misilIdCount;
-            misilActual.CollisionFlags =  CollisionFlags.CustomMaterialCallback;
+            CollisionObject misilActual = AgregarMisil(size);
             if (VariablesGlobales.MODO_DIOS)
             {
                 misilActual.SetIgnoreCollisionCheck(main_character, true);
             }
-            listaMisiles.Add(misilIdCount, misilActual);
+            listaMisilesEnemigo.Add(misilIdCount, misilActual);
+            misilIdCount++;
+            misilActual.UserIndex = misilIdCount;
+            return misilActual;
+        }
+        public CollisionObject AgregarMisilXwing(TGCVector3 size)
+        {
+            CollisionObject misilActual = AgregarMisil(size);
+            listaMisilesXwing.Add(misilIdCount, misilActual);
             misilIdCount++;
             return misilActual;
         }
 
-        public void ChequearColisionesXwingConMisiles()
+        public CollisionObject AgregarTorreta(Torreta torreta, TGCVector3 size)
+        {
+            CollisionObject torretaCollision = CrearCollisionObject(size);
+            listaTorretas.Add(torretaIdCount, torreta);
+            torretaCollision.CollisionFlags = torretaCollision.CollisionFlags | CollisionFlags.CustomMaterialCallback;
+            torretaCollision.UserIndex = torretaIdCount;
+            torretaIdCount++;
+            collisionWorld.AddCollisionObject(torretaCollision);
+            return torretaCollision;
+        }
+
+        private CollisionObject AgregarMisil(TGCVector3 size)
+        {
+            CollisionObject misil = CrearCollisionObject(size);
+            misil.CollisionFlags = misil.CollisionFlags | CollisionFlags.CustomMaterialCallback;
+            collisionWorld.AddCollisionObject(misil);
+            return misil;
+        }
+
+        private void ChequearColisionesXwingConMisiles()
         {
             if (VariablesGlobales.MODO_DIOS) return;
-            listaMisiles.Values.ToList<RigidBody>().ForEach((misil) =>
+            listaMisilesEnemigo.Values.ToList<CollisionObject>().ForEach((misil) =>
             {
-                collisionWorld.ContactPairTest(misil, main_character, collisionNaveMisilCallback);
+                collisionWorld.ContactPairTest(misil, main_character, new NaveMisilCollisionCallback());
             });
+        }
+        private void ChequearColisionesTorretasConMisiles()
+        {
+            listaMisilesXwing.Values.ToList<CollisionObject>().ForEach((misil) =>
+            {
+                listaTorretas.Values.ToList<Torreta>().ForEach((torreta) =>
+                {
+                    collisionWorld.ContactPairTest(misil, torreta.CollisionObject, torretaMisilCollisionCallback);
+                });
+            });
+        }
+
+        public void DisminuirVidaTorreta(int torretaId)
+        {
+            listaTorretas[torretaId].DisminuirVida();
         }
 
         public void EliminarMisilDeLista(int misilId)
         {
-            listaMisiles.Remove(misilId);
+            listaMisilesEnemigo.Remove(misilId);
         }
 
         public void AgregarColisionConXwing(int misilId)
@@ -92,63 +135,71 @@ namespace TGC.Group.Model
             List<RigidBody> bodies = new List<RigidBody>();
             meshesEscenario.ForEach(mesh =>
             {
+                /**
                 var body = CreateRigidBodyFromTgcMesh(mesh);
                 body.Friction = 0.5f;
-                //
+                
                 dynamicsWorld.AddRigidBody(body);
                 bodies.Add(body);
+    */
             });
             return bodies;
         }
-
-        private RigidBody AgregarObjeto(TGCVector3 size, float mass, TGCVector3 position, TGCVector3 rotation)
+        public CollisionObject AgregarPersonaje(TGCVector3 size)
         {
-            var objeto = BulletRigidBodyFactory.Instance.CreateBox(
-                            size,
-                            mass,
-                            position,
-                            rotation.Y, rotation.X, rotation.Z,
-                            .5f, true);
-            dynamicsWorld.AddRigidBody(objeto);
-            return objeto;
-        }
-
-        public RigidBody AgregarPersonaje(TGCVector3 size,float mass,TGCVector3 position,TGCVector3 rotation)
-        {
-            main_character = AgregarObjeto(size, mass, position, rotation);
-            main_character.CollisionFlags = CollisionFlags.CustomMaterialCallback;
+            main_character = CrearCollisionObject(size);
+            main_character.CollisionFlags = main_character.CollisionFlags | CollisionFlags.CustomMaterialCallback;
             main_character.UserIndex = 1;
+            collisionWorld.AddCollisionObject(main_character);
             return main_character;
         }
-        public void EliminarObjeto(RigidBody body)
+        public void EliminarObjeto(CollisionObject objeto)
         {
-            dynamicsWorld.RemoveRigidBody(body);
-            body.Dispose();
+            collisionWorld.RemoveCollisionObject(objeto);
+            objeto.Dispose();
         }
 
         public void Update()
         {
-            dynamicsWorld.StepSimulation(1f/60f,5);
+            //           collisionWorld.DebugDrawWorld();
+            //           ChequearColisionesXwingConMisiles();
+            //           ChequearColisionesTorretasConMisiles();
+            collisionWorld.PerformDiscreteCollisionDetection();
+            int numManifolds = collisionWorld.Dispatcher.NumManifolds;
+            for (int i = 0; i < numManifolds; i++)
+            {
+                PersistentManifold contactManifold = collisionWorld.Dispatcher.GetManifoldByIndexInternal(i);
+                CollisionObject obA = contactManifold.Body0;
+                CollisionObject obB = contactManifold.Body1;
+                contactManifold.RefreshContactPoints(obA.WorldTransform, obB.WorldTransform);
+                int numContacts = contactManifold.NumContacts;
+                for (int j = 0; j < numContacts; j++)
+                {
+                    //Get the contact information
+                    ManifoldPoint pt = contactManifold.GetContactPoint(j);
+                    double ptdist = pt.Distance;
+                    if (Math.Abs(ptdist) < 3 && ( (obA.UserIndex == 1 && obB.UserIndex != 1)))
+                    {
+                        VariablesGlobales.vidas--;
+                    }
+                }
+            }
         }
         
         public void Render(TgcD3dInput input)
         {
-            if (input.keyPressed(Microsoft.DirectX.DirectInput.Key.U))
-            {
-                dynamicsWorld.DebugDrawWorld();
-            }
+
         }
         
         public void Dispose()
         {
-            dynamicsWorld.Dispose();
             collisionWorld.Dispose();
             dispatcher.Dispose();
             collisionConfiguration.Dispose();
             constraintSolver.Dispose();
             overlappingPairCache.Dispose();
         }
-        private RigidBody CreateRigidBodyFromTgcMesh(TgcMesh mesh)
+        private CollisionObject CreateCollisionObjectFromTgcMesh(TgcMesh mesh)
         {
             var vertexCoords = mesh.getVertexPositions();
 
@@ -162,15 +213,17 @@ namespace TGC.Group.Model
             DefaultMotionState motionState = new DefaultMotionState(transformationMatrix);
 
             var bulletShape = new BvhTriangleMeshShape(triangleMesh, false);
-            var boxLocalInertia = bulletShape.CalculateLocalInertia(0);
+            var collisionObject = new CollisionObject();
+            collisionObject.CollisionShape = bulletShape;
 
-            var bodyInfo = new RigidBodyConstructionInfo(0, motionState, bulletShape, boxLocalInertia);
-            var rigidBody = new RigidBody(bodyInfo);
-            rigidBody.Friction = 0.4f;
-            rigidBody.RollingFriction = 1;
-            rigidBody.Restitution = 1f;
-
-            return rigidBody;
+            return collisionObject;
+        }
+        private CollisionObject CrearCollisionObject(TGCVector3 size)
+        {
+            CollisionObject collisionObject = new CollisionObject();
+            BoxShape box2DShape = new BoxShape(CommonHelper.VectorXEscalar(size, 0.5f).ToBulletVector3());
+            collisionObject.CollisionShape = box2DShape;
+            return collisionObject;
         }
     }
 }
