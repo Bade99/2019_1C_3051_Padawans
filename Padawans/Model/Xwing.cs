@@ -44,7 +44,9 @@ namespace TGC.Group.Model
         private readonly float DISTANCIA_ORIGEN_MISIL_DIRECCION_ORTOGONAL = 6;
         private readonly float EXTRA_ANGULO_POLAR_CANION_ABAJO = 0.3f;
 
-        private bool barrelRoll;
+        private ESTADO_BARREL estadoBarrel = ESTADO_BARREL.NADA;
+        private readonly float tiempoPermanenciaMedioBarrelRoll = 2;
+        private float medioBarrelRollTimer = 0;
         private bool rotationYAnimation;
         private float rotationYAnimacionAdvance;
         private float barrelRollAdvance;
@@ -74,7 +76,6 @@ namespace TGC.Group.Model
             rotation = new TGCVector3(0, FastMath.PI_HALF, -FastMath.QUARTER_PI*.8f);
             position = posicionInicial;
 
-            barrelRoll = false;
             barrelRollAdvance = 0;
             rotationYAnimation = false;
             rotationYAnimacionAdvance = 0;
@@ -152,10 +153,11 @@ namespace TGC.Group.Model
             //ElapsedTime = 0.01f; //Lo hardcodeo hasta que sepamos bien como hacer esto
             TestingInput(input);
             MovimientoFlechas(input, ElapsedTime);
-            //IngresoModoDios(input, ElapsedTime);
+            IngresoModoDios(input, ElapsedTime);
             AcelerarYFrenar(input, ElapsedTime);
             Disparar(input, ElapsedTime);
             BarrelRoll(input, ElapsedTime);
+            MedioBarrelRoll(input, ElapsedTime);
             RotationYAnimation();
             EfectoFriccion(ElapsedTime);
         }
@@ -174,39 +176,77 @@ namespace TGC.Group.Model
         }
         private void BarrelRoll(TgcD3dInput input, float ElapsedTime)
         {
-            if (input.keyPressed(Key.Space))
+            if (input.keyPressed(Key.Space) && ESTADO_BARREL.NADA.Equals(estadoBarrel))
             {
-                barrelRoll = true;
+                estadoBarrel = ESTADO_BARREL.BARRELROLL;
             }
-            if (barrelRoll)
+            if (ESTADO_BARREL.BARRELROLL.Equals(estadoBarrel))
             {
                 barrelRollAdvance += ElapsedTime * 4;
+                matrizInicialTransformacion = matrizInicialTransformacion = TGCMatrix.Scaling(escala)
+                    * TGCMatrix.RotationYawPitchRoll(0, barrelRollAdvance, 0);
                 if (barrelRollAdvance >= FastMath.TWO_PI)
                 {
                     barrelRollAdvance = 0;
-                    barrelRoll = false;
+                    estadoBarrel = ESTADO_BARREL.NADA;
+                }
+            }
+        }
+        private void MedioBarrelRoll(TgcD3dInput input, float ElapsedTime)
+        {
+            if (input.keyPressed(Key.B) && ESTADO_BARREL.NADA.Equals(estadoBarrel))
+            {
+                estadoBarrel = ESTADO_BARREL.MEDIO_BARRELROLL;
+                medioBarrelRollTimer = 0;
+            }
+            if (ESTADO_BARREL.MEDIO_BARRELROLL.Equals(estadoBarrel))
+            {
+                barrelRollAdvance += ElapsedTime * 4;
+                matrizInicialTransformacion = matrizInicialTransformacion = TGCMatrix.Scaling(escala)
+                    * TGCMatrix.RotationYawPitchRoll(0, barrelRollAdvance, 0);
+                if (barrelRollAdvance >= FastMath.PI_HALF)
+                {
+                    estadoBarrel = ESTADO_BARREL.ESPERA_MEDIO_BARRELROLL;
+                }
+            }
+            if (ESTADO_BARREL.ESPERA_MEDIO_BARRELROLL.Equals(estadoBarrel))
+            {
+                medioBarrelRollTimer += ElapsedTime;
+                if (medioBarrelRollTimer >= tiempoPermanenciaMedioBarrelRoll)
+                {
+                    estadoBarrel = ESTADO_BARREL.VOLVIENDO_MEDIO_BARRELROLL;
+                }
+            }
+            if (ESTADO_BARREL.VOLVIENDO_MEDIO_BARRELROLL.Equals(estadoBarrel))
+            {
+                barrelRollAdvance -= ElapsedTime * 4;
+                if (barrelRollAdvance <= 0)
+                {
+                    barrelRollAdvance = 0;
+                    estadoBarrel = ESTADO_BARREL.NADA;
                 }
                 matrizInicialTransformacion = matrizInicialTransformacion = TGCMatrix.Scaling(escala)
                     * TGCMatrix.RotationYawPitchRoll(0, barrelRollAdvance, 0);
             }
+
         }
         private void MovimientoFlechas(TgcD3dInput input, float ElapsedTime)
         {
-            if (input.keyDown(Key.A) && !barrelRoll)
+            if (input.keyDown(Key.A))
             {
                 rotation.Add(TGCVector3.Down * ElapsedTime);
                 ActualizarCoordenadaEsferica();
             }
-            if (input.keyDown(Key.D) && !barrelRoll)
+            if (input.keyDown(Key.D))
             {
                 rotation.Add(TGCVector3.Up * ElapsedTime);
                 ActualizarCoordenadaEsferica();
             }
-            if (input.keyDown(Key.W) && !rotationYAnimation && !barrelRoll)
+            if (input.keyDown(Key.W) && !rotationYAnimation)
             {
                 UpArrow(ElapsedTime);
             }
-            if (input.keyDown(Key.S) && !rotationYAnimation && !barrelRoll)
+            if (input.keyDown(Key.S) && !rotationYAnimation)
             {
                 DownArrow(ElapsedTime);
             }
@@ -265,7 +305,7 @@ namespace TGC.Group.Model
                 velocidadGeneral = minimaVelocidad;
             }
         }
-        /*
+        
         private void IngresoModoDios(TgcD3dInput input, float ElapsedTime)
         {
             timer += ElapsedTime;
@@ -319,7 +359,7 @@ namespace TGC.Group.Model
         {
             ingresoModoDios = INGRESO_MODO_DIOS.NADA;
             timer = 0;
-        }*/
+        }
         private void DownArrow(float ElapsedTime)
         {
             if (coordenadaEsferica.polar < (FastMath.PI - limiteAnguloPolar))
@@ -434,5 +474,6 @@ namespace TGC.Group.Model
         }
 
         private enum INGRESO_MODO_DIOS { NADA, I, D_1, D_2, Q, D_3}
+        private enum ESTADO_BARREL { NADA, BARRELROLL, MEDIO_BARRELROLL, ESPERA_MEDIO_BARRELROLL, VOLVIENDO_MEDIO_BARRELROLL}
     }
 }
