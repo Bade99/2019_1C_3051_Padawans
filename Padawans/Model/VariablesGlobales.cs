@@ -33,7 +33,13 @@ namespace TGC.Group.Model
         public static EndgameManager endgameManager;
         public static TGCVector2 cues_relative_position;
         public static float cues_relative_scale;
-        public static int vidas = 3;
+        public static int vidas = 4;
+        public static int bombas = 1;
+        private static int max_bombas = 1;
         public static bool MODO_DIOS = false;
+        public static void SumarBomba()
+        {
+            bombas = FastMath.Min(bombas+1, max_bombas);
+        }
     }
 }

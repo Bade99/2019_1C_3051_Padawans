@@ -17,7 +17,6 @@ namespace TGC.Group.Model
         private CustomSprite cue;
         private CustomBitmap bitmap;
         private Drawer2D drawer2D;
-        private float delay;
         private float duracion;
         private bool terminado = false;
         private bool play_sound = true;
@@ -33,18 +32,11 @@ namespace TGC.Group.Model
 
             //cue.ScalingCenter = new TGCVector2((float)cue.Bitmap.Size.Width / 2f, (float)cue.Bitmap.Size.Height / 2f);
             cue.ScalingCenter = new TGCVector2(0, 0);
-            cue.Scaling = CalculeRelativeScaling(bitmap,relative_scale);
+            cue.Scaling = CommonHelper.CalculateRelativeScaling(bitmap,relative_scale);
             cue.Position = new TGCVector2(D3DDevice.Instance.Width* relative_pos.X, D3DDevice.Instance.Height* relative_pos.Y);
-            this.delay = delay;
             this.duracion = duracion;
         }
-        public TGCVector2 CalculeRelativeScaling(CustomBitmap bitmap,float scale)
-        {//hace el calculo sobre width
-            float screen_occupation = D3DDevice.Instance.Width * scale;
-            //float screen_ratio = D3DDevice.Instance.Width / bitmap.Width;
-            float escala_real = screen_occupation/ bitmap.Width;
-            return new TGCVector2(escala_real, escala_real); 
-        }
+
         public bool IsCurrent()
         {
             return cueLauncher.IsReady();

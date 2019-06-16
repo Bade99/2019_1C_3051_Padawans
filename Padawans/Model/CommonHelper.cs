@@ -207,5 +207,13 @@ namespace TGC.Group.Model
 
             return radAngles;
         }
+
+        public static TGCVector2 CalculateRelativeScaling(CustomBitmap bitmap, float scale)
+        {//hace el calculo sobre width
+            float screen_occupation = D3DDevice.Instance.Width * scale;
+            //float screen_ratio = D3DDevice.Instance.Width / bitmap.Width;
+            float escala_real = screen_occupation / bitmap.Width;
+            return new TGCVector2(escala_real, escala_real);
+        }
     }
 }

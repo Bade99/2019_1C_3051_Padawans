@@ -34,6 +34,7 @@ namespace TGC.Group.Model
         private DynamicCueManager dynamicCueManager;
         private EndgameManager endGameManager;
         private Hole hole;
+        private HUD hud;
 
         //public TGCBox caja;
 
@@ -52,6 +53,7 @@ namespace TGC.Group.Model
             VariablesGlobales.soundDevice = DirectSound.DsDevice;
             VariablesGlobales.loader = new TgcSceneLoader();
 
+            hud = new HUD();
             //var d3dDevice = D3DDevice.Instance.Device;
 
             VariablesGlobales.cues_relative_position = new TGCVector2(.05f, .5f);
@@ -155,6 +157,7 @@ namespace TGC.Group.Model
 
         public void RenderizarExtras()//renderizar estas cosas luego de los shaders@@@@
         {
+            hud.Render();
             cues.Render();
             dynamicCueManager.Render();
             //caja.BoundingBox.Render();
@@ -168,10 +171,6 @@ namespace TGC.Group.Model
 
         public override void Render()
         {
-            if (Input.keyPressed(Key.T))
-            {
-                float a = 1;
-            }
             renderer.Render();
         }
         public void CustomPreRender()

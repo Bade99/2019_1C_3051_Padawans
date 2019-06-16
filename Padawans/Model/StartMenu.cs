@@ -8,7 +8,7 @@ using TGC.Core.Direct3D;
 using TGC.Core.Geometry;
 using TGC.Core.Mathematica;
 using TGC.Core.Input;
-
+using Microsoft.DirectX.Direct3D;
 namespace TGC.Group.Model
 {
     class StartMenu : IMenu
@@ -42,6 +42,7 @@ namespace TGC.Group.Model
             }
         }
         public void Render() {
+            D3DDevice.Instance.Device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.FromArgb(0, 0, 0), 1.0f, 0);
             drawer2D.BeginDrawSprite();
 
             //Dibujar sprite (si hubiese mas, deberian ir todos aquí)

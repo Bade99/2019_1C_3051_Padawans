@@ -224,11 +224,15 @@ namespace TGC.Group.Model
                     VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.DISPARO_MISIL_XWING);
                 }
             }
+
             tiempoDesdeUltimaBomba += ElapsedTime;
+            if (tiempoDesdeUltimaBomba > tiempoEntreBombas) VariablesGlobales.SumarBomba();
+
             if (input.keyPressed(Key.G))
             {
                 if (tiempoDesdeUltimaBomba > tiempoEntreBombas)
                 {
+                    VariablesGlobales.bombas--;
                     tiempoDesdeUltimaBomba = 0f;
                     var bomba = new Bomba(this.GetPosition(),coordenadaEsferica);
                     VariablesGlobales.endgameManager.AgregarBomba(bomba);
