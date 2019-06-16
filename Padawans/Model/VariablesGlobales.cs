@@ -45,6 +45,5 @@ namespace TGC.Group.Model
         {
             bombas = FastMath.Max(bombas - 1, 0);
         }
-        public static bool GodMode = false;
     }
 }

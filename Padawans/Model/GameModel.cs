@@ -187,7 +187,7 @@ namespace TGC.Group.Model
         public void VariablesEnPantalla()
         {
             DrawText.drawText("Con la ruedita aleja/acerca la camara [Actual]: " + TGCVector3.PrintVector3(Camara.Position), 0, 10, Color.White);
-            DrawText.drawText("GodMode (IDDQD): " + iddqd + " : " + VariablesGlobales.GodMode, 0, 20, Color.White);
+            DrawText.drawText("GodMode (IDDQD): " + iddqd + " : " + VariablesGlobales.MODO_DIOS, 0, 20, Color.White);
 
             DrawText.drawText($"Con la tecla F se dibuja el bounding box.", 0, 30, Color.OrangeRed);
             DrawText.drawText("Posicion Xwing: " + TGCVector3.PrintVector3(xwing.GetPosition()), 0, 40, Color.OrangeRed);
@@ -240,7 +240,7 @@ namespace TGC.Group.Model
                     case 2:if (iddqd[1] == 'd') iddqd += 'd'; else iddqd = "";
                         break;
                     case 4:
-                        VariablesGlobales.GodMode = !VariablesGlobales.GodMode;
+                        VariablesGlobales.MODO_DIOS = !VariablesGlobales.MODO_DIOS;
                         iddqd = "";
                         break;
                     default:iddqd = "";

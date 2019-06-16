@@ -152,7 +152,7 @@ namespace TGC.Group.Model
             //ElapsedTime = 0.01f; //Lo hardcodeo hasta que sepamos bien como hacer esto
             TestingInput(input);
             MovimientoFlechas(input, ElapsedTime);
-            IngresoModoDios(input, ElapsedTime);
+            //IngresoModoDios(input, ElapsedTime);
             AcelerarYFrenar(input, ElapsedTime);
             Disparar(input, ElapsedTime);
             BarrelRoll(input, ElapsedTime);
@@ -265,6 +265,7 @@ namespace TGC.Group.Model
                 velocidadGeneral = minimaVelocidad;
             }
         }
+        /*
         private void IngresoModoDios(TgcD3dInput input, float ElapsedTime)
         {
             timer += ElapsedTime;
@@ -318,7 +319,7 @@ namespace TGC.Group.Model
         {
             ingresoModoDios = INGRESO_MODO_DIOS.NADA;
             timer = 0;
-        }
+        }*/
         private void DownArrow(float ElapsedTime)
         {
             if (coordenadaEsferica.polar < (FastMath.PI - limiteAnguloPolar))
