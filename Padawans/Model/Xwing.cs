@@ -232,7 +232,7 @@ namespace TGC.Group.Model
             {
                 if (tiempoDesdeUltimaBomba > tiempoEntreBombas)
                 {
-                    VariablesGlobales.bombas--;
+                    VariablesGlobales.RestarBomba();
                     tiempoDesdeUltimaBomba = 0f;
                     var bomba = new Bomba(this.GetPosition(),coordenadaEsferica);
                     VariablesGlobales.endgameManager.AgregarBomba(bomba);

@@ -36,7 +36,9 @@ namespace TGC.Group.Model
         private Hole hole;
         private HUD hud;
 
-        //public TGCBox caja;
+        //godmode:
+        string iddqd="";
+        //
 
         public GameModel(string mediaDir, string shadersDir,GameForm gameForm) : base(mediaDir, shadersDir)
         {
@@ -122,6 +124,7 @@ namespace TGC.Group.Model
             //seguir menu inicio
             PreUpdate();
             VariablesGlobales.elapsedTime = ElapsedTime;
+            GodMode();
             managerMenu.Update(Input);
             managerSonido.Update();
             if (!managerMenu.IsCurrent()) { //si no estoy en un menu ->
@@ -180,11 +183,13 @@ namespace TGC.Group.Model
         public void NormalPreRender()
         {
             PreRender();
-        }        
+        }
         public void VariablesEnPantalla()
         {
-            DrawText.drawText($"Con la tecla F se dibuja el bounding box.", 0, 20, Color.OrangeRed);
-            DrawText.drawText("Con la ruedita aleja/acerca la camara [Actual]: " + TGCVector3.PrintVector3(Camara.Position), 0, 30, Color.OrangeRed);
+            DrawText.drawText("Con la ruedita aleja/acerca la camara [Actual]: " + TGCVector3.PrintVector3(Camara.Position), 0, 10, Color.White);
+            DrawText.drawText("GodMode (IDDQD): " + iddqd + " : " + VariablesGlobales.GodMode, 0, 20, Color.White);
+
+            DrawText.drawText($"Con la tecla F se dibuja el bounding box.", 0, 30, Color.OrangeRed);
             DrawText.drawText("Posicion Xwing: " + TGCVector3.PrintVector3(xwing.GetPosition()), 0, 40, Color.OrangeRed);
             DrawText.drawText("Velocidad Xwing: " + xwing.GetVelocidadGeneral(), 0, 50, Color.OrangeRed);
             DrawText.drawText("La nave dispara con click izquierdo ", 0, 60, Color.White);
@@ -192,8 +197,7 @@ namespace TGC.Group.Model
             DrawText.drawText("Sonidos: " + managerSonido.CantidadElementos(), 0, 80, Color.White);
             DrawText.drawText("En un menu: " + managerMenu.IsCurrent(), 0, 90, Color.White);
             DrawText.drawText("Cam distance: " + followingCamera.fixedDistanceCamera, 0, 100, Color.White);
-            TGCVector3 esf_coord = xwing.GetCoordenadaEsferica().GetXYZCoord();
-            DrawText.drawText("xwing coord esf: " + esf_coord.X + " , " + esf_coord.Y + " , " + esf_coord.Z, 0, 110, Color.White);
+            DrawText.drawText("xwing coord esf: " + TGCVector3.PrintVector3(xwing.GetCoordenadaEsferica().GetXYZCoord()), 0, 110, Color.White);
             DrawText.drawText("Vidas " + VariablesGlobales.vidas, 0, 120, Color.White);
         }
         public void NormalPostRender()
@@ -222,6 +226,33 @@ namespace TGC.Group.Model
         public void GameEnded()
         {
             gameForm.RestartGame();
+        }
+
+        private void GodMode()
+        {
+            if (Input.keyPressed(Key.I)) iddqd = "i";
+            else if (Input.keyPressed(Key.D)&&iddqd.Length>0)
+            {
+                switch (iddqd.Length)
+                {
+                    case 1:iddqd += 'd';
+                        break;
+                    case 2:if (iddqd[1] == 'd') iddqd += 'd'; else iddqd = "";
+                        break;
+                    case 4:
+                        VariablesGlobales.GodMode = !VariablesGlobales.GodMode;
+                        iddqd = "";
+                        break;
+                    default:iddqd = "";
+                        break;
+                }
+            }
+            else if (Input.keyPressed(Key.Q))
+            {
+                if (iddqd.Length == 3 && iddqd == "idd")
+                    iddqd += 'q';
+                else iddqd = "";
+            }
         }
 
         /*solo para saber qué hacen
