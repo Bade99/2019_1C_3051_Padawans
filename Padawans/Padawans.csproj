@@ -118,7 +118,6 @@
     <Compile Include="Model\Bomba.cs" />
     <Compile Include="Model\BoundingBoxHelper.cs" />
     <Compile Include="Model\BulletSceneElement.cs" />
-    <Compile Include="Model\NaveMisilCollisionCallback.cs" />
     <Compile Include="Model\DebugDrawerTest.cs" />
     <Compile Include="Model\Debug_Draw_Bullet.cs" />
     <Compile Include="Model\DynamicCueManager.cs" />

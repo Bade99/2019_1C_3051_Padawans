@@ -18,6 +18,12 @@ namespace TGC.Group.Model
     class DebugDrawerTest : DebugDraw
     {
         public override DebugDrawModes DebugMode { get; set; }
+        private TgcLine linea;
+
+        public DebugDrawerTest()
+        {
+            linea = new TgcLine();
+        }
 
         public override void Draw3DText(ref Vector3 location, string textString)
         {
@@ -26,7 +32,12 @@ namespace TGC.Group.Model
 
         public override void DrawLine(ref Vector3 from, ref Vector3 to, ref Vector3 color)
         {
-            //Fran, podes hacer que este metodo dibuje una linea de from a to?
+            linea.PStart = new TGCVector3(from);
+            linea.PEnd = new TGCVector3(to);
+            linea.Color = Color.Green;
+            linea.Enabled = true;
+            linea.updateValues();
+            linea.Render();
 
         }
 

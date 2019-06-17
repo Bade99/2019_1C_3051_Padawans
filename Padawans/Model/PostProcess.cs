@@ -88,7 +88,9 @@ namespace TGC.Group.Model
 
             //Shaders
             if(VariablesGlobales.SHADERS)
+            {
                 IniciarShaders(ref shader);
+            }
             shaderManager.Effect(shader);//seteo el effect q se va a usar para todos los meshes
             this.shaderManager = shaderManager;
             //

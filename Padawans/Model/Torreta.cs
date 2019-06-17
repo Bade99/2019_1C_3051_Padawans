@@ -48,7 +48,10 @@ namespace TGC.Group.Model
             matrizInicial = TGCMatrix.Scaling(factorEscala, factorEscala, factorEscala);
             torreta.AutoTransformEnable = false;
             this.vida = 3;
-            if (VariablesGlobales.SHADERS) VariablesGlobales.shaderManager.AgregarMesh(torreta, ShaderManager.MESH_TYPE.SHADOW);
+            if (VariablesGlobales.SHADERS)
+            {
+                VariablesGlobales.shaderManager.AgregarMesh(torreta, ShaderManager.MESH_TYPE.SHADOW);
+            }
             //EMISOR PARTICULAS
             particulaHumo = new ParticleEmitter(VariablesGlobales.mediaDir + "Particulas\\pisada.png", 30);
             particulaHumo.Position = this.posicion;
