@@ -1,3 +1,4 @@
+using BulletSharp;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,7 +15,7 @@ using TGC.Core.Textures;
 
 namespace TGC.Group.Model
 {
-    class XwingEnemigo : IActiveElement
+    public class XwingEnemigo : IActiveElement
     {
         private TgcScene nave;
         private Xwing target;
@@ -26,13 +27,15 @@ namespace TGC.Group.Model
         //Expresado en segundos
         private readonly float intervaloParaChequearXwing = 2;
         //Escala inicial del mesh
-        private readonly TGCVector3 scale = new TGCVector3(.1f, .1f, .1f);
+        private static readonly float escalar = .1f;
+        private readonly TGCVector3 scale = new TGCVector3(escalar, escalar, escalar);
         //Radio de visibilidad de la nave para detectarte. Se aplica para ambas coordenadas, generando un cono de visibilidad
         private readonly float radioAperturaVisibilidad = (float)Math.PI / 4;
         //Distancia maxima a la que el enemigo ve al xwing propio
         private readonly float distanciaLejanaVisibilidad = 1000;
         //Velocidad fija de la nave enemigo
-        private float velocidadGeneral = 20;
+        private float velocidadGeneral;
+        private CollisionObject collisionObject;
 
         public XwingEnemigo(TGCVector3 posicionInicial, Xwing target, float velocidadInicial)
         {
@@ -57,6 +60,7 @@ namespace TGC.Group.Model
             //Calcula inicialmente en que direccion esta el xwing principal
             TGCVector3 vectorDistancia = CommonHelper.SumarVectores(target.GetPosition(), -posicion);
             coordenadaAXwing = new CoordenadaEsferica(vectorDistancia.X, vectorDistancia.Y, vectorDistancia.Z);
+            collisionObject = VariablesGlobales.physicsEngine.AgregarXwingEnemigo(this, CommonHelper.VectorXEscalar(nave.Meshes[0].BoundingBox.calculateSize(), escalar));
         }
 
         public void Update()

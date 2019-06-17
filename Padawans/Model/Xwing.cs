@@ -28,7 +28,7 @@ namespace TGC.Group.Model
         //
 
         //Constantes
-        private readonly float minimaVelocidad = 7f;
+        private readonly float minimaVelocidad = 30;
         private readonly float aceleracion = 80;
         private readonly float friccion = 10f;
         private readonly float maximaVelocidad = 300;
@@ -153,7 +153,6 @@ namespace TGC.Group.Model
             //ElapsedTime = 0.01f; //Lo hardcodeo hasta que sepamos bien como hacer esto
             TestingInput(input);
             MovimientoFlechas(input, ElapsedTime);
-            IngresoModoDios(input, ElapsedTime);
             AcelerarYFrenar(input, ElapsedTime);
             Disparar(input, ElapsedTime);
             BarrelRoll(input, ElapsedTime);
@@ -304,61 +303,6 @@ namespace TGC.Group.Model
             {
                 velocidadGeneral = minimaVelocidad;
             }
-        }
-        
-        private void IngresoModoDios(TgcD3dInput input, float ElapsedTime)
-        {
-            timer += ElapsedTime;
-            if (timer < toleranciaDeRepeticion)
-            {
-                return;
-            }
-            if (input.keyDown(Key.I))
-            {
-                ingresoModoDios = INGRESO_MODO_DIOS.I;
-                timer = 0;
-            }
-            if (input.keyDown(Key.D))
-            {
-                if (ingresoModoDios.Equals(INGRESO_MODO_DIOS.I))
-                {
-                    ingresoModoDios = INGRESO_MODO_DIOS.D_1;
-                    timer = 0;
-                } else if (ingresoModoDios.Equals(INGRESO_MODO_DIOS.D_1))
-                {
-                    ingresoModoDios = INGRESO_MODO_DIOS.D_2;
-                    timer = 0;
-                } else if(ingresoModoDios.Equals(INGRESO_MODO_DIOS.Q))
-                {
-                    ingresoModoDios = INGRESO_MODO_DIOS.NADA;
-                    timer = 0;
-                    VariablesGlobales.MODO_DIOS = !VariablesGlobales.MODO_DIOS;
-                } else
-                {
-                    AnularIngresoModoDios();
-                }
-            }
-            if (input.keyDown(Key.Q))
-            {
-                if (ingresoModoDios.Equals(INGRESO_MODO_DIOS.D_2))
-                {
-                    ingresoModoDios = INGRESO_MODO_DIOS.Q;
-                    timer = 0;
-                } else
-                {
-                    AnularIngresoModoDios();
-                }
-            } 
-            if (timer > limiteTimer)
-            {
-                AnularIngresoModoDios();
-            }
-        }
-
-        private void AnularIngresoModoDios()
-        {
-            ingresoModoDios = INGRESO_MODO_DIOS.NADA;
-            timer = 0;
         }
         private void DownArrow(float ElapsedTime)
         {

@@ -23,12 +23,13 @@ namespace TGC.Group.Model
         private Dictionary<int, CollisionObject> listaMisilesEnemigo;
         private Dictionary<int, CollisionObject> listaMisilesXwing;
         private Dictionary<int, Torreta> listaTorretas;
+        private Dictionary<int, XwingEnemigo> listaXwingEnemigos;
         private List<int> listaIdMisilesQueColisionaronConXwing;
-        private int misilXwingCount = 100;
-        private int misilEnemigoCount = 101;
-        private int torretaIdCount = 2;
+        private int misilXwingCount = 1000;
+        private int misilEnemigoCount = 1001;
+        private int torretaIdCount = 3;
+        private int xwingEnemigoIdCount = 2;
         private static readonly int ID_XWING = 1;
-        TorretaMisilCollisionCallback torretaMisilCollisionCallback = new TorretaMisilCollisionCallback();
 
         CollisionObject main_character;
 
@@ -36,15 +37,14 @@ namespace TGC.Group.Model
         {
             collisionConfiguration = new DefaultCollisionConfiguration();
             dispatcher = new CollisionDispatcher(collisionConfiguration);
-            Vector3 worldAabbMin = new Vector3(-5000, -5000, -5000);
-            Vector3 worldAabbMax = new Vector3(5000, 5000, 5000);
-            BroadphaseInterface broadPhase = new AxisSweep3_32Bit(worldAabbMin, worldAabbMax, 300, null, true );
-            //GImpactCollisionAlgorithm.RegisterAlgorithm(dispatcher);
-            //constraintSolver = new SequentialImpulseConstraintSolver();
-            //overlappingPairCache = new DbvtBroadphase(); //AxisSweep3(new BsVector3(-5000f, -5000f, -5000f), new BsVector3(5000f, 5000f, 5000f), 8192);
-            collisionWorld = new CollisionWorld(dispatcher, broadPhase, collisionConfiguration);
+            //Vector3 worldAabbMin = new Vector3(-5000, -5000, -5000);
+            //Vector3 worldAabbMax = new Vector3(5000, 5000, 5000);
+            overlappingPairCache = new DbvtBroadphase();
+            //BroadphaseInterface broadPhase = new AxisSweep3_32Bit(worldAabbMin, worldAabbMax, 300, null, true );
+            collisionWorld = new CollisionWorld(dispatcher, overlappingPairCache, collisionConfiguration);
             listaMisilesEnemigo = new Dictionary<int, CollisionObject>();
             listaMisilesXwing = new Dictionary<int, CollisionObject>();
+            listaXwingEnemigos = new Dictionary<int, XwingEnemigo>();
             listaTorretas = new Dictionary<int, Torreta>();
             listaIdMisilesQueColisionaronConXwing = new List<int>();
             collisionWorld.DebugDrawer = new DebugDrawerTest();
@@ -66,6 +66,7 @@ namespace TGC.Group.Model
         public CollisionObject AgregarMisilXwing(TGCVector3 size)
         {
             CollisionObject misilActual = AgregarMisil(size);
+            misilActual.UserIndex = misilXwingCount;
             listaMisilesXwing.Add(misilXwingCount, misilActual);
             misilXwingCount+=2;
             return misilActual;
@@ -75,39 +76,26 @@ namespace TGC.Group.Model
         {
             CollisionObject torretaCollision = CrearCollisionObject(size);
             listaTorretas.Add(torretaIdCount, torreta);
-            torretaCollision.CollisionFlags = torretaCollision.CollisionFlags | CollisionFlags.CustomMaterialCallback;
             torretaCollision.UserIndex = torretaIdCount;
-            torretaIdCount++;
+            torretaIdCount+=2;
             collisionWorld.AddCollisionObject(torretaCollision);
             return torretaCollision;
+        }
+        public CollisionObject AgregarXwingEnemigo(XwingEnemigo xwingEnemigo, TGCVector3 size)
+        {
+            CollisionObject xwingEnemigoCollision = CrearCollisionObject(size);
+            listaXwingEnemigos.Add(xwingEnemigoIdCount, xwingEnemigo);
+            xwingEnemigoCollision.UserIndex = torretaIdCount;
+            xwingEnemigoIdCount += 2;
+            collisionWorld.AddCollisionObject(xwingEnemigoCollision);
+            return xwingEnemigoCollision;
         }
 
         private CollisionObject AgregarMisil(TGCVector3 size)
         {
             CollisionObject misil = CrearCollisionObject(size);
-            misil.CollisionFlags = misil.CollisionFlags | CollisionFlags.CustomMaterialCallback;
             collisionWorld.AddCollisionObject(misil);
             return misil;
-        }
-        private void ChequearColisionesTorretasConMisiles()
-        {
-            listaMisilesXwing.Values.ToList<CollisionObject>().ForEach((misil) =>
-            {
-                listaTorretas.Values.ToList<Torreta>().ForEach((torreta) =>
-                {
-                    collisionWorld.ContactPairTest(misil, torreta.CollisionObject, torretaMisilCollisionCallback);
-                });
-            });
-        }
-
-        public void DisminuirVidaTorreta(int torretaId)
-        {
-            listaTorretas[torretaId].DisminuirVida();
-        }
-
-        public void EliminarMisilDeLista(int misilId)
-        {
-            listaMisilesEnemigo.Remove(misilId);
         }
 
         public List<RigidBody> AgregarEscenario(List<TgcMesh> meshesEscenario)
@@ -128,7 +116,6 @@ namespace TGC.Group.Model
         public CollisionObject AgregarPersonaje(TGCVector3 size)
         {
             main_character = CrearCollisionObject(size);
-            main_character.CollisionFlags = main_character.CollisionFlags | CollisionFlags.CustomMaterialCallback;
             main_character.UserIndex = 1;
             collisionWorld.AddCollisionObject(main_character);
             return main_character;
@@ -141,7 +128,7 @@ namespace TGC.Group.Model
 
         public void Update()
         {
-            collisionWorld.DebugDrawWorld();
+            //collisionWorld.DebugDrawWorld();
             collisionWorld.PerformDiscreteCollisionDetection();
             int numManifolds = collisionWorld.Dispatcher.NumManifolds;
             for (int i = 0; i < numManifolds; i++)
@@ -149,11 +136,6 @@ namespace TGC.Group.Model
                 PersistentManifold contactManifold = collisionWorld.Dispatcher.GetManifoldByIndexInternal(i);
                 CollisionObject obA = contactManifold.Body0;
                 CollisionObject obB = contactManifold.Body1;
-                if ((obA.UserIndex == 1 && obB.UserIndex == 103) 
-                    || (obA.UserIndex == 103 && obB.UserIndex == 1))
-                {
-                    int y = 1;
-                }
                 int misilId = obB.UserIndex;
                 int objetoId = obA.UserIndex;
                 if (objetoId == ID_XWING && EsMisilEnemigo(misilId) 
@@ -162,18 +144,34 @@ namespace TGC.Group.Model
                     contactManifold.RefreshContactPoints(obA.WorldTransform, obB.WorldTransform);
                     XwingCollision(contactManifold, misilId);
                 }
-             }
+                if ((EsTorreta(objetoId) && EsMisilXWing(misilId)) || (EsTorreta(misilId) && EsMisilXWing(objetoId)))
+                {
+                    contactManifold.RefreshContactPoints(obA.WorldTransform, obB.WorldTransform);
+                    TorretaCollision(contactManifold, misilId, objetoId);
+                }
+                if (EsMisilXWing(misilId) || EsMisilXWing(objetoId))
+                {
+                    int h = 0;
+                }
+            }
         }
 
         private bool EsMisilEnemigo(int misilId)
         {
-            return (misilId % 2 == 1 && misilId > 100);
+            return (misilId % 2 == 1 && misilId > 1000);
         }
         private bool EsMisilXWing(int misilId)
         {
-            return (misilId % 2 == 0) && misilId > 99;
+            return (misilId % 2 == 0) && misilId > 999;
         }
-
+        private bool EsTorreta(int misilId)
+        {
+            return (misilId % 2 == 1) && misilId < 1000;
+        }
+        private bool EsXwingEnemigo(int misilId)
+        {
+            return (misilId % 2 == 0) && misilId < 999;
+        }
         private void XwingCollision(PersistentManifold contactManifold, int misilId)
         {
             int numContacts = contactManifold.NumContacts;
@@ -185,14 +183,25 @@ namespace TGC.Group.Model
                 if (Math.Abs(ptdist) < 5)
                 {
                     listaIdMisilesQueColisionaronConXwing.Add(misilId);
-                    if (VariablesGlobales.vidas == 4)
-                    {
-                        VariablesGlobales.vidas--;
-                    } else
-                    {
-                        VariablesGlobales.vidas++;
-                    }
-                    
+                    collisionWorld.RemoveCollisionObject(listaMisilesEnemigo[misilId]);
+                    listaMisilesEnemigo.Remove(misilId);
+                    VariablesGlobales.vidas--;
+                }
+            }
+
+        }
+        private void TorretaCollision(PersistentManifold contactManifold, int misilId, int objetoId)
+        {
+            int numContacts = contactManifold.NumContacts;
+            for (int j = 0; j < numContacts; j++)
+            {
+                ManifoldPoint pt = contactManifold.GetContactPoint(j);
+                double ptdist = pt.Distance;
+                if (Math.Abs(ptdist) < 5)
+                {
+                    collisionWorld.RemoveCollisionObject(listaMisilesXwing[misilId]);
+                    listaMisilesXwing.Remove(misilId);
+                    listaTorretas[objetoId].DisminuirVida();
                 }
             }
 

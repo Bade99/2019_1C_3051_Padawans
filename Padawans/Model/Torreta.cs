@@ -30,7 +30,7 @@ namespace TGC.Group.Model
         private bool isActive;
         private int vida;
         TGCVector3 deltaPosicionHumoTorreta = new TGCVector3(-5, 12, -5);
-        public CollisionObject CollisionObject { get; set; }
+        public CollisionObject collisionObject { get; set; }
 
         private ParticleEmitter particulaHumo;
 
@@ -62,7 +62,7 @@ namespace TGC.Group.Model
             particulaHumo.Dispersion = 1;
             particulaHumo.Speed = new TGCVector3(10, 10, 10);
             Posicionar();
-            CollisionObject = VariablesGlobales.physicsEngine.AgregarTorreta(this, CommonHelper.VectorXEscalar(tamanioBoundingBox, factorEscala));
+            collisionObject = VariablesGlobales.physicsEngine.AgregarTorreta(this, CommonHelper.VectorXEscalar(tamanioBoundingBox, factorEscala));
         }
 
         public void Posicionar()
