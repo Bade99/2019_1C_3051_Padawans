@@ -209,7 +209,7 @@ namespace TGC.Group.Model
 
         public void Render(TgcD3dInput input)
         {
-            if (input.keyPressed(Microsoft.DirectX.DirectInput.Key.U))
+            if (VariablesGlobales.debugMode)
             {
                 collisionWorld.DebugDrawWorld();
             }

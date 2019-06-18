@@ -125,6 +125,7 @@ namespace TGC.Group.Model
             PreUpdate();
             VariablesGlobales.elapsedTime = ElapsedTime;
             GodMode();
+            DebugMode();
             managerMenu.Update(Input);
             managerSonido.Update();
             if (!managerMenu.IsCurrent()) { //si no estoy en un menu ->
@@ -163,7 +164,6 @@ namespace TGC.Group.Model
             hud.Render();
             cues.Render();
             dynamicCueManager.Render();
-            //caja.BoundingBox.Render();
             boundingBoxHelper.RenderBoundingBoxes();
         }
 
@@ -228,6 +228,13 @@ namespace TGC.Group.Model
             gameForm.RestartGame();
         }
 
+        private void DebugMode()
+        {
+            if (Input.keyPressed(Key.U))
+            {
+                VariablesGlobales.debugMode = !VariablesGlobales.debugMode;
+            }
+        }
         private void GodMode()
         {
             if (Input.keyPressed(Key.I)) iddqd = "i";
