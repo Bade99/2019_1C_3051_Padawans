@@ -147,9 +147,8 @@ namespace TGC.Group.Model
         {
             managerMenu.Render();//ahora mismo estamos haciendo doble render en el menu, dsps lo arreglo
         }
-        public void RenderizarMeshes()
+        public void RenderizarMeshes()//@@esta funcion ya no se usa
         {
-            physicsEngine.Render(Input);
             worldSphere.Render();
             hole.Render();
             xwing.Render();
@@ -160,6 +159,7 @@ namespace TGC.Group.Model
 
         public void RenderizarExtras()//renderizar estas cosas luego de los shaders@@@@
         {
+            physicsEngine.Render(Input);
             hud.Render();
             cues.Render();
             dynamicCueManager.Render();

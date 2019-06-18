@@ -47,8 +47,8 @@ namespace TGC.Group.Model
             listaXwingEnemigos = new Dictionary<int, XwingEnemigo>();
             listaTorretas = new Dictionary<int, Torreta>();
             listaIdMisilesQueColisionaronConXwing = new List<int>();
-            collisionWorld.DebugDrawer = new DebugDrawerTest();
-            collisionWorld.DebugDrawer.DebugMode = DebugDrawModes.All;
+            collisionWorld.DebugDrawer = new Debug_Draw_Bullet();
+            collisionWorld.DebugDrawer.DebugMode = DebugDrawModes.DrawWireframe;
         }
 
         public CollisionObject AgregarMisilEnemigo(TGCVector3 size)
@@ -209,7 +209,10 @@ namespace TGC.Group.Model
 
         public void Render(TgcD3dInput input)
         {
-
+            if (input.keyPressed(Microsoft.DirectX.DirectInput.Key.U))
+            {
+                collisionWorld.DebugDrawWorld();
+            }
         }
         
         public void Dispose()
@@ -242,6 +245,7 @@ namespace TGC.Group.Model
             CollisionObject collisionObject = new CollisionObject();
             BoxShape box2DShape = new BoxShape(CommonHelper.VectorXEscalar(size, 0.5f).ToBulletVector3());
             collisionObject.CollisionShape = box2DShape;
+            collisionObject.SetCustomDebugColor(new Vector3(1, 0, 0));
             return collisionObject;
         }
     }
