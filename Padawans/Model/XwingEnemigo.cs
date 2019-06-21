@@ -39,6 +39,7 @@ namespace TGC.Group.Model
         private readonly float AlturaMinimaChequeoXwing = 20;
         private bool activado = false;
         private readonly static float DistanciaMinimaPersecucion = 100;
+        private TGCVector3 vectorDistancia;
 
         public XwingEnemigo(TGCVector3 posicionInicial, Xwing target, float velocidadInicial, CoordenadaEsferica direccionInicial)
         {
@@ -63,7 +64,7 @@ namespace TGC.Group.Model
             });
             this.target = target;
             //Calcula inicialmente en que direccion esta el xwing principal
-            TGCVector3 vectorDistancia = CommonHelper.SumarVectores(target.GetPosition(), -posicion);
+            vectorDistancia = CommonHelper.SumarVectores(target.GetPosition(), -posicion);
             coordenadaAXwing = new CoordenadaEsferica(vectorDistancia.X, vectorDistancia.Y, vectorDistancia.Z);
             collisionObject = VariablesGlobales.physicsEngine.AgregarXwingEnemigo(this, CommonHelper.VectorXEscalar(nave.Meshes[0].BoundingBox.calculateSize(), escalar));
         }
@@ -128,7 +129,7 @@ namespace TGC.Group.Model
   **/
         public bool XwingSeEncuentraEnRadioDeVisibilidad()
         {
-            TGCVector3 vectorDistancia = CommonHelper.SumarVectores(target.GetPosition(), -posicion);
+            vectorDistancia = CommonHelper.SumarVectores(target.GetPosition(), -posicion);
             if (vectorDistancia.Length() > DistanciaMinimaPersecucion)
             {
                 coordenadaAXwing = new CoordenadaEsferica(vectorDistancia.X, vectorDistancia.Y, vectorDistancia.Z);
@@ -154,7 +155,7 @@ namespace TGC.Group.Model
             switch (tipo)
             {
                 case ShaderManager.MESH_TYPE.SHADOW:
-                    if (CommonHelper.InDistance(posicion, target.GetPosition(), 1000))//optimizar
+                    if (vectorDistancia.Length() < 2000)//optimizar
                         nave.RenderAll();
                     break;
             }

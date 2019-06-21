@@ -126,42 +126,42 @@ namespace TGC.Group.Model
                 xwing, 80, new CoordenadaEsferica(FastMath.PI_HALF * 3, FastMath.PI_HALF*0.8f)));
             //Dos esperandote mas atras
             managerEnemigos.AgregarElemento(new XwingEnemigo(
-                new TGCVector3(400f, 200, -2300f), 
+                new TGCVector3(400f, 100, -2300f), 
                 xwing, 100, new CoordenadaEsferica(3 * FastMath.QUARTER_PI, FastMath.PI_HALF)));
             managerEnemigos.AgregarElemento(new XwingEnemigo(
-                new TGCVector3(-400f, 200, -2300f),
+                new TGCVector3(-400f, 100, -2300f),
                 xwing, 100, new CoordenadaEsferica(FastMath.QUARTER_PI, FastMath.PI_HALF)));
             //Cuatro en linea de frente
             managerEnemigos.AgregarElemento(new XwingEnemigo(
-                new TGCVector3(-200, 150, -4000),
+                new TGCVector3(-200, 130, -4000),
                 xwing, 150, new CoordenadaEsferica(FastMath.PI_HALF, FastMath.PI_HALF)));
             managerEnemigos.AgregarElemento(new XwingEnemigo(
-                new TGCVector3(-50, 100, -4000),
+                new TGCVector3(-50, 80, -4000),
                 xwing, 150, new CoordenadaEsferica(FastMath.PI_HALF, FastMath.PI_HALF)));
             managerEnemigos.AgregarElemento(new XwingEnemigo(
-                new TGCVector3(-50, 100, -4000),
+                new TGCVector3(-50, 80, -4000),
                 xwing, 150, new CoordenadaEsferica(FastMath.PI_HALF, FastMath.PI_HALF)));
             managerEnemigos.AgregarElemento(new XwingEnemigo(
-                new TGCVector3(-200, 150, -4000),
+                new TGCVector3(-200, 130, -4000),
                 xwing, 150, new CoordenadaEsferica(FastMath.PI_HALF, FastMath.PI_HALF)));
             //Los seis grosos
             managerEnemigos.AgregarElemento(new XwingEnemigo(
-                new TGCVector3(-50, 150, -7000),
+                new TGCVector3(-50, 100, -7000),
                 xwing, 210, new CoordenadaEsferica(FastMath.QUARTER_PI, FastMath.PI_HALF)));
             managerEnemigos.AgregarElemento(new XwingEnemigo(
-                new TGCVector3(50, 150, -7000),
+                new TGCVector3(50, 100, -7000),
                 xwing, 210, new CoordenadaEsferica(2 * FastMath.QUARTER_PI, FastMath.PI_HALF)));
             managerEnemigos.AgregarElemento(new XwingEnemigo(
-                new TGCVector3(-100, 170, -7000),
+                new TGCVector3(-100, 120, -7000),
                 xwing, 210, new CoordenadaEsferica(3 * FastMath.QUARTER_PI, FastMath.PI_HALF)));
             managerEnemigos.AgregarElemento(new XwingEnemigo(
-                new TGCVector3(100, 170, -7000),
+                new TGCVector3(100, 120, -7000),
                 xwing, 210, new CoordenadaEsferica(5 * FastMath.QUARTER_PI, FastMath.PI_HALF)));
             managerEnemigos.AgregarElemento(new XwingEnemigo(
-                new TGCVector3(-50, 120, -7000),
+                new TGCVector3(-50, 80, -7000),
                 xwing, 210, new CoordenadaEsferica(6 * FastMath.QUARTER_PI, FastMath.PI_HALF)));
             managerEnemigos.AgregarElemento(new XwingEnemigo(
-                new TGCVector3(50, 120, -7000),
+                new TGCVector3(50, 80, -7000),
                 xwing, 210, new CoordenadaEsferica(7 * FastMath.QUARTER_PI, FastMath.PI_HALF)));
         }
 
