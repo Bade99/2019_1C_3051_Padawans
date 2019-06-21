@@ -1,4 +1,4 @@
-using Microsoft.DirectX.DirectInput;
+//using Microsoft.DirectX.DirectInput;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
@@ -12,26 +12,28 @@ using TGC.Core.Textures;
 using TGC.Core.Collision;
 using TGC.Core.BoundingVolumes;
 using System;
+using Microsoft.DirectX.Direct3D;
 
 namespace TGC.Group.Model
 {
     /// <summary>
     ///     Una clase de ejemplo que grafica pistas para poder tener una referencia de la velocidad de la nave
     /// </summary>
-    public class MainRunway : SceneElement
+    public class MainRunway : SceneElement,IShaderObject
     {
         private TgcSceneLoader loader;
         TgcScene escena_bomba, escena_alrededores, escena_alrededores2,hierro, tubo_rojo_gira, tubo_rojo_derecho;
-        List<List<TgcMesh>> main_escena_instancia; //deberia ser lista de lista de lista
+        List<List<TgcMesh>> main_escena_instancia, main_escena_instancia_shadow; //deberia ser lista de lista de lista
         //bloques de construccion
         //TgcScene piso;
         private int n;
         TgcFrustum frustum;
-        private bool frustum_culling = true;
 
         Random random;
 
         Xwing target;
+
+        Effect shadow;
 
         /// <summary>
         ///     n representa la cantidad de pistas que va a graficar
@@ -39,6 +41,7 @@ namespace TGC.Group.Model
         public MainRunway(TgcSceneLoader loader, int n, TgcFrustum frustum, Xwing targetTorretas)
         {
             main_escena_instancia = new List<List<TgcMesh>>();
+            main_escena_instancia_shadow = new List<List<TgcMesh>>();
             random = new Random();
             this.loader = loader;
             this.frustum = frustum;
@@ -53,6 +56,12 @@ namespace TGC.Group.Model
             //bloques de construccion
             //piso = loader.loadSceneFromFile("Padawans_media\\XWing\\m1-TgcScene.xml");
             //
+
+            if (VariablesGlobales.SHADERS)
+            {
+                shadow = VariablesGlobales.shaderManager.AskForEffect(ShaderManager.MESH_TYPE.SHADOW);
+                VariablesGlobales.shaderManager.AddObject(this);
+            }
 
             this.n = n;
 
@@ -70,6 +79,11 @@ namespace TGC.Group.Model
         private void AddListListMeshToMain(List<List<TgcMesh>> todas_escenas)
         {
             todas_escenas.ForEach(escena => { main_escena_instancia.Add(escena); });
+        }
+        private void AddListListMeshToMainShadow(List<List<TgcMesh>> todas_escenas)
+        {
+            todas_escenas.ForEach(s => s.ForEach(m => m.Effect = shadow));
+            todas_escenas.ForEach(escena => { main_escena_instancia_shadow.Add(escena); });
         }
 
         private TGCVector3 PlaceSceneLine(TgcScene escena, TGCVector3 posicion, TGCVector3 escalador, 
@@ -97,12 +111,11 @@ namespace TGC.Group.Model
                                                 todas_escenas[i][mesh_pivot].BoundingBox.calculateSize().Z - distancia_extra);//sip de momento solo en z
             }
             //Shader
-            if(shader)
-                todas_escenas.ForEach(scena => scena.ForEach(mesh => VariablesGlobales.shaderManager.AgregarMesh(mesh, ShaderManager.MESH_TYPE.SHADOW)));
-            else 
-                todas_escenas.ForEach(scena => scena.ForEach(mesh => VariablesGlobales.shaderManager.AgregarMesh(mesh, ShaderManager.MESH_TYPE.DEFAULT)));
+            if (shader)
+                AddListListMeshToMainShadow(todas_escenas);
+            else
+                AddListListMeshToMain(todas_escenas);
 
-            AddListListMeshToMain(todas_escenas);//@lo agrego acá asi puedo retornar la ultima posicion por si es necesaria, conviene hacer asi??
             return posicion;
         }
 
@@ -199,33 +212,32 @@ namespace TGC.Group.Model
 
         }
 
-        public override void Render()
+        public void SetTechnique(string technique, ShaderManager.MESH_TYPE tipo)
         {
-            if (frustum_culling)
+            switch (tipo)
             {
-                foreach (var listMesh in main_escena_instancia)
-                {
-                    foreach (var mesh in listMesh)
-                    {
-                        //Solo mostrar la malla si colisiona contra el Frustum
-                        var huboColision = TgcCollisionUtils.classifyFrustumAABB(this.frustum, mesh.BoundingBox);
-                        if (huboColision != TgcCollisionUtils.FrustumResult.OUTSIDE)
-                        {
-                            mesh.Render();
-                        }
-                    }
-                }
-            }
-            else
-            {
-                main_escena_instancia.ForEach(escena => { RenderMeshList(escena); });//@@esta bien que renderize cada vez si no hay cambios??
+                case ShaderManager.MESH_TYPE.SHADOW: main_escena_instancia_shadow.ForEach(s => s.ForEach(m => m.Technique = technique)); break;
             }
         }
 
-        public override void Update()
+        public void Render(ShaderManager.MESH_TYPE tipo)
         {
-
+            switch (tipo)
+            {
+                case ShaderManager.MESH_TYPE.DEFAULT:
+                    main_escena_instancia.ForEach(s => s.ForEach(m =>
+                    { if (TgcCollisionUtils.classifyFrustumAABB(this.frustum, m.BoundingBox) != TgcCollisionUtils.FrustumResult.OUTSIDE) m.Render(); }));
+                    break;
+                case ShaderManager.MESH_TYPE.SHADOW:
+                    main_escena_instancia_shadow.ForEach(s => s.ForEach(m =>
+                    { if (TgcCollisionUtils.classifyFrustumAABB(this.frustum, m.BoundingBox) != TgcCollisionUtils.FrustumResult.OUTSIDE) m.Render(); }));
+                    break;
+            }
         }
+
+        public override void Render(){}
+
+        public override void Update(){}
 
         public override void Dispose()
         {
@@ -236,6 +248,5 @@ namespace TGC.Group.Model
         {
             main_escena_instancia.ForEach(escena => { escena.ForEach(mesh => { mesh.BoundingBox.Render(); }); });
         }
-
     }
 }

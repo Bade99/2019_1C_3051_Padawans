@@ -12,13 +12,14 @@ using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
 using BulletSharp;
 using BulletSharp.Math;
+using Microsoft.DirectX.Direct3D;
 
 namespace TGC.Group.Model
 {
     /// <summary>
     ///     La nave principal que utiliza el jugador
     /// </summary>
-    public class Xwing : BulletSceneElement, InteractiveElement, IPostProcess,ITarget
+    public class Xwing : BulletSceneElement, InteractiveElement, IPostProcess,ITarget,IShaderObject
     {
         private TgcSceneLoader loader;
         TgcMesh xwing,alaXwing;
@@ -80,8 +81,13 @@ namespace TGC.Group.Model
 
             if (VariablesGlobales.SHADERS)
             {
-                VariablesGlobales.shaderManager.AgregarMesh(xwing, ShaderManager.MESH_TYPE.DEFAULT);
-                VariablesGlobales.shaderManager.AgregarMesh(alaXwing, ShaderManager.MESH_TYPE.DEFAULT);
+                Microsoft.DirectX.Direct3D.Effect shader = VariablesGlobales.shaderManager.AskForEffect(ShaderManager.MESH_TYPE.SHADOW);
+                if (shader != null)
+                {
+                    xwing.Effect = shader;
+                    alaXwing.Effect = shader;
+                }
+                VariablesGlobales.shaderManager.AddObject(this);
             }
             collisionObject = VariablesGlobales.physicsEngine.AgregarPersonaje(xwing.BoundingBox.calculateSize());
             ActualizarCoordenadaEsferica();
@@ -100,12 +106,6 @@ namespace TGC.Group.Model
 
             VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.FLYBY_2);
             VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.XWING_ENGINE);
-        }
-
-        public override void Render()
-        {
-            xwing.Render();
-            alaXwing.Render();
         }
 
         public override void RenderBoundingBox()
@@ -429,6 +429,22 @@ namespace TGC.Group.Model
                 return CommonHelper.SumarVectores(CommonHelper.SumarVectores(GetPosition(), deltaDireccionNave), deltaOrtogonalNave);
             }
         }
+
+        public void SetTechnique(string technique, ShaderManager.MESH_TYPE tipo)
+        {
+            switch (tipo)
+            {
+                case ShaderManager.MESH_TYPE.SHADOW: xwing.Technique = technique; alaXwing.Technique = technique; break;
+            }
+        }
+
+        public void Render(ShaderManager.MESH_TYPE tipo)
+        {
+            xwing.Render();
+            alaXwing.Render();
+        }
+
+        public override void Render(){}
 
         private enum INGRESO_MODO_DIOS { NADA, I, D_1, D_2, Q, D_3}
         private enum ESTADO_BARREL { NADA, BARRELROLL, MEDIO_BARRELROLL, ESPERA_MEDIO_BARRELROLL, VOLVIENDO_MEDIO_BARRELROLL}

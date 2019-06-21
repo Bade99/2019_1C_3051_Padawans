@@ -10,10 +10,11 @@ using TGC.Core.Input;
 using TGC.Core.Particle;
 using TGC.Core.Direct3D;
 using BulletSharp;
+using Microsoft.DirectX.Direct3D;
 
 namespace TGC.Group.Model
 {
-    public class Torreta : IActiveElement, IPostProcess
+    public class Torreta : IActiveElement, IPostProcess, IShaderObject
     {
         TgcMesh torreta;
         private TGCVector3 posicion;
@@ -46,7 +47,10 @@ namespace TGC.Group.Model
             this.vida = 3;
             if (VariablesGlobales.SHADERS)
             {
-                VariablesGlobales.shaderManager.AgregarMesh(torreta, ShaderManager.MESH_TYPE.DEFAULT);
+                Effect shader = VariablesGlobales.shaderManager.AskForEffect(ShaderManager.MESH_TYPE.SHADOW);
+                if (shader != null)
+                    torreta.Effect = shader;
+                VariablesGlobales.shaderManager.AddObject(this);
             }
             //EMISOR PARTICULAS
             particulaHumo = new ParticleEmitter(VariablesGlobales.mediaDir + "Particulas\\pisada.png", 30);
@@ -58,6 +62,14 @@ namespace TGC.Group.Model
             particulaHumo.Speed = new TGCVector3(10, 10, 10);
             collisionObject = VariablesGlobales.physicsEngine.AgregarTorreta(this, torreta.BoundingBox.calculateSize());
             Posicionar();
+        }
+
+        public void SetTechnique(string technique, ShaderManager.MESH_TYPE tipo)
+        {
+            switch (tipo)
+            {
+                case ShaderManager.MESH_TYPE.SHADOW: torreta.Technique = technique; break;
+            }
         }
 
         public void Posicionar()
@@ -105,10 +117,13 @@ namespace TGC.Group.Model
             }
         }
 
-        public void Render(){
+        public void Render(ShaderManager.MESH_TYPE tipo){
             if (isActive)
             {
-                torreta.Render();
+                switch (tipo)
+                {
+                    case ShaderManager.MESH_TYPE.SHADOW: torreta.Render();break;
+                }
             }
         }
 
@@ -132,5 +147,7 @@ namespace TGC.Group.Model
         {
             vida--;
         }
+
+        public void Render(){}
     }
 }

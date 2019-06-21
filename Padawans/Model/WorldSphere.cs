@@ -1,40 +1,44 @@
 ﻿using System.Collections.Generic;
 using TGC.Core.SceneLoader;
 using TGC.Core.Mathematica;
+using Microsoft.DirectX.Direct3D;
 
 namespace TGC.Group.Model
 {
-    class WorldSphere : SceneElement //probé con skybox y no me gustó el resultado
+    class WorldSphere : SceneElement,IShaderObject //probé con skybox y no me gustó el resultado
     {
         private TgcSceneLoader loader;
-        TgcScene worldsphere;
+        TgcMesh worldsphere;
         Xwing pivot;
 
         public WorldSphere(TgcSceneLoader loader, Xwing pivot)
         {
             this.loader = loader;
             this.pivot = pivot;
-            worldsphere = loader.loadSceneFromFile("Padawans_media\\XWing\\GeodesicSphere02-TgcScene.xml");//tiene un solo mesh
-            worldsphere.Meshes[0].Rotation = new TGCVector3(2,5,1);
-            worldsphere.Meshes[0].Scale = new TGCVector3(100f, 100f, 100f);
-            VariablesGlobales.shaderManager.AgregarMesh(worldsphere.Meshes[0], ShaderManager.MESH_TYPE.DEFAULT);
+            worldsphere = loader.loadSceneFromFile("Padawans_media\\XWing\\GeodesicSphere02-TgcScene.xml").Meshes[0];//tiene un solo mesh
+            worldsphere.Rotation = new TGCVector3(2,5,1);
+            worldsphere.Scale = new TGCVector3(100f, 100f, 100f);
+            if (VariablesGlobales.SHADERS)
+            {
+                Effect shader = VariablesGlobales.shaderManager.AskForEffect(ShaderManager.MESH_TYPE.DEFAULT);
+                if (shader != null)
+                    worldsphere.Effect = shader;
+                VariablesGlobales.shaderManager.AddObject(this);
+            }
         }
 
-        public override void Render()
-        {
-            worldsphere.Meshes[0].Render();
-        }
+        public override void Render(){}
 
         public override void Update()
         {
             //@hacer que se mueva con el xwing
-            worldsphere.Meshes[0].Position = pivot.GetPosition();
-            worldsphere.Meshes[0].Rotation += new TGCVector3(.00001f,.00001f,.00001f);//creo que agregar elapsedtime no es necesario
+            worldsphere.Position = pivot.GetPosition();
+            worldsphere.Rotation += new TGCVector3(.00001f,.00001f,.00001f);//creo que agregar elapsedtime no es necesario
         }
 
         public override void Dispose()
         {
-            worldsphere.DisposeAll();
+            worldsphere.Dispose();
         }
 
         public override void RenderBoundingBox()
@@ -42,5 +46,14 @@ namespace TGC.Group.Model
             worldsphere.BoundingBox.Render();
         }
 
+        public void SetTechnique(string technique, ShaderManager.MESH_TYPE tipo){}
+
+        public void Render(ShaderManager.MESH_TYPE tipo)
+        {
+            switch (tipo)
+            {
+                case ShaderManager.MESH_TYPE.DEFAULT: worldsphere.Render(); break;
+            }
+        }
     }
 }

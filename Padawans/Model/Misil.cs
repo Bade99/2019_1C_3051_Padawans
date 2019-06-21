@@ -13,10 +13,11 @@ using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
 using TGC.Core.Sound;
 using BulletSharp;
+using Microsoft.DirectX.Direct3D;
 
 namespace TGC.Group.Model
 {
-    public class Misil : BulletSceneElement, IActiveElement
+    public class Misil : BulletSceneElement, IActiveElement,IShaderObject
     {
         private float tiempoDeVida = 5;
         private bool terminado = false;
@@ -41,7 +42,10 @@ namespace TGC.Group.Model
 
             if (VariablesGlobales.SHADERS)
             {
-                VariablesGlobales.shaderManager.AgregarMesh(meshs[0], ShaderManager.MESH_TYPE.SHADOW);
+                Effect shader = VariablesGlobales.shaderManager.AskForEffect(ShaderManager.MESH_TYPE.SHADOW);
+                if (shader != null)
+                    meshs[0].Effect = shader;
+                VariablesGlobales.shaderManager.AddObject(this);
             }
             switch (origenMisil)
             {
@@ -75,12 +79,9 @@ namespace TGC.Group.Model
             return terminado;
         }
 
-        public override void Render()
-        {
+        public override void Render(){
             if (!terminado)
-            {
                 meshs[0].Render();
-            }
         }
 
         public override void RenderBoundingBox()
@@ -95,6 +96,25 @@ namespace TGC.Group.Model
         {
             meshs[0].Dispose();
             VariablesGlobales.physicsEngine.EliminarObjeto(collisionObject);
+        }
+
+        public void SetTechnique(string technique, ShaderManager.MESH_TYPE tipo)
+        {
+            switch (tipo)
+            {
+                case ShaderManager.MESH_TYPE.SHADOW: meshs[0].Technique = technique; break;
+            }
+        }
+
+        public void Render(ShaderManager.MESH_TYPE tipo)
+        {
+            if (!terminado)
+            {
+                switch (tipo)
+                {
+                    case ShaderManager.MESH_TYPE.SHADOW: meshs[0].Render();break;
+                }
+            }
         }
 
         public enum OrigenMisil { ENEMIGO, XWING}

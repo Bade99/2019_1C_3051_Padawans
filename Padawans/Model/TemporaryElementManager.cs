@@ -15,7 +15,7 @@ namespace TGC.Group.Model
 
         public void RenderPostProcess(string effect)
         {
-            elems.ForEach(elem => elem.Render());
+            elems.ForEach(elem => elem.Render());//@@encontrar una solucion para esto
         }
     }
 }

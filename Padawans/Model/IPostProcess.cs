@@ -9,6 +9,5 @@ namespace TGC.Group.Model
     public interface IPostProcess
     {
         void RenderPostProcess(string effect);
-        void Render();//el render comun
     }
 }

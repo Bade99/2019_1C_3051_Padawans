@@ -12,14 +12,14 @@ using TGC.Core.Input;
 using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
+using Microsoft.DirectX.Direct3D;
 
 namespace TGC.Group.Model
 {
-    public class XwingEnemigo : IActiveElement
+    public class XwingEnemigo : IActiveElement,IShaderObject
     {
         private TgcScene nave;
         private Xwing target;
-        private TemporaryElementManager managerDisparos;
         private TGCVector3 posicion;
         private CoordenadaEsferica coordenadaEsferica;
         private CoordenadaEsferica coordenadaAXwing;
@@ -55,11 +55,13 @@ namespace TGC.Group.Model
                 //Shader
                 if (VariablesGlobales.SHADERS)
                 {
-                    VariablesGlobales.shaderManager.AgregarMesh(mesh, ShaderManager.MESH_TYPE.DEFAULT);
+                    Effect shader = VariablesGlobales.shaderManager.AskForEffect(ShaderManager.MESH_TYPE.SHADOW);
+                    if (shader != null)
+                        nave.Meshes.ForEach(m => m.Effect = shader);
+                    VariablesGlobales.shaderManager.AddObject(this);
                 }
             });
             this.target = target;
-            this.managerDisparos = managerDisparos;
             //Calcula inicialmente en que direccion esta el xwing principal
             TGCVector3 vectorDistancia = CommonHelper.SumarVectores(target.GetPosition(), -posicion);
             coordenadaAXwing = new CoordenadaEsferica(vectorDistancia.X, vectorDistancia.Y, vectorDistancia.Z);
@@ -136,6 +138,25 @@ namespace TGC.Group.Model
             } else
             {
                 return false;
+            }
+        }
+
+        public void SetTechnique(string technique, ShaderManager.MESH_TYPE tipo)
+        {
+            switch (tipo)
+            {
+                case ShaderManager.MESH_TYPE.SHADOW: nave.Meshes.ForEach(m => m.Technique = technique); break;
+            }
+        }
+
+        public void Render(ShaderManager.MESH_TYPE tipo)
+        {
+            switch (tipo)
+            {
+                case ShaderManager.MESH_TYPE.SHADOW:
+                    if (CommonHelper.InDistance(posicion, target.GetPosition(), 1000))//optimizar
+                        nave.RenderAll();
+                    break;
             }
         }
     }

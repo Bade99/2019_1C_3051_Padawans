@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Geometry;
+using Microsoft.DirectX.Direct3D;
+
 namespace TGC.Group.Model
 {
-    public class Bomba : IActiveElement, ITarget//bomba q si cae dentro del target termina el juego
+    public class Bomba : IActiveElement, ITarget,IShaderObject//bomba q si cae dentro del target termina el juego
     {
         TgcMesh bomba;
         private TGCVector3 escala;
@@ -34,7 +36,18 @@ namespace TGC.Group.Model
             //@toy en seria duda de esto
             if (VariablesGlobales.SHADERS)
             {
-                VariablesGlobales.shaderManager.AgregarMesh(bomba, ShaderManager.MESH_TYPE.SHADOW);
+                Effect shader = VariablesGlobales.shaderManager.AskForEffect(ShaderManager.MESH_TYPE.SHADOW);
+                if(shader!=null)
+                    bomba.Effect = shader;
+                VariablesGlobales.shaderManager.AddObject(this);
+            }
+        }
+
+        public void SetTechnique(string technique,ShaderManager.MESH_TYPE tipo)
+        {
+            switch (tipo)
+            {
+                case ShaderManager.MESH_TYPE.SHADOW:bomba.Technique = technique;break;
             }
         }
 
@@ -61,12 +74,20 @@ namespace TGC.Group.Model
             return terminado;
         }
 
-        public void Render()
+        public void Render(ShaderManager.MESH_TYPE tipo)
         {
-            if (!terminado)
+            switch (tipo)
             {
-                bomba.Render();
+                case ShaderManager.MESH_TYPE.SHADOW:
+                    if (!terminado)
+                        bomba.Render();
+                    break;
             }
+        }
+
+        public void Render() {
+            if (!terminado)
+                bomba.Render();
         }
 
         public void RenderBoundingBox()

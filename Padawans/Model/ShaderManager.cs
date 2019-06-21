@@ -9,36 +9,32 @@ namespace TGC.Group.Model
 {
     public class ShaderManager
     {
-        List<TgcMesh> normal_meshes;
-        List<TgcMesh> shadow_meshes;
+        List<IShaderObject> objs;
         Effect shader;
 
         public ShaderManager()
         {
-            normal_meshes = new List<TgcMesh>();
-            shadow_meshes = new List<TgcMesh>();
+            objs = new List<IShaderObject>();
         }
 
         public void RenderMesh(MESH_TYPE tipo)
         {
+            objs.ForEach(obj => obj.Render(tipo));
+        }
+
+        public Effect AskForEffect(MESH_TYPE tipo)
+        {
             switch (tipo)
             {
-                case MESH_TYPE.DEFAULT: normal_meshes.ForEach(m => m.Render()); break;
-                case MESH_TYPE.SHADOW:
-                    shadow_meshes.ForEach(m => //m.Render());
-                    {if (CommonHelper.InDistance(m.BoundingBox.calculateBoxCenter(),VariablesGlobales.xwing.GetPosition(),3000)) m.Render(); });
-                    break;
+                case MESH_TYPE.DEFAULT:return null;
+                case MESH_TYPE.SHADOW:return shader;
+                default: return null;
             }
         }
 
-        public void AgregarMesh(TgcMesh mesh, MESH_TYPE tipo)
+        public void AddObject(IShaderObject obj)//cargá tu clase acá
         {
-            
-            switch (tipo)
-            {
-                case MESH_TYPE.DEFAULT:normal_meshes.Add(mesh);break;
-                case MESH_TYPE.SHADOW:shadow_meshes.Add(mesh); SetEffect(mesh); break;
-            }
+            objs.Add(obj);
         }
 
         public void Effect(Effect shader)//el effect q se va a usar, nunca cambia
@@ -46,21 +42,17 @@ namespace TGC.Group.Model
             this.shader = shader;
         }
 
-        public void SetTechnique(string technique,MESH_TYPE tipo)
+        public void SetTechnique(string technique,MESH_TYPE tipo)//indica que technique debe usar que tipo de mesh
         {
-            switch (tipo)
-            {
-                case MESH_TYPE.DEFAULT: normal_meshes.ForEach(m => m.Technique = technique); break;
-                case MESH_TYPE.SHADOW: shadow_meshes.ForEach(m => m.Technique = technique); break;
-            }
-            
+            objs.ForEach(obj => obj.SetTechnique(technique, tipo));
+            //normal_meshes.ForEach(m => m.Technique = technique); 
         }
-
+        /*
         private void SetEffect(TgcMesh mesh)
         {
             mesh.Effect = shader;
         }
-
+        */
         public enum MESH_TYPE
         {
             DEFAULT,SHADOW
