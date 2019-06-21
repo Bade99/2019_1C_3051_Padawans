@@ -230,7 +230,8 @@ namespace TGC.Group.Model
                     break;
                 case ShaderManager.MESH_TYPE.SHADOW:
                     main_escena_instancia_shadow.ForEach(s => s.ForEach(m =>
-                    { if (TgcCollisionUtils.classifyFrustumAABB(this.frustum, m.BoundingBox) != TgcCollisionUtils.FrustumResult.OUTSIDE) m.Render(); }));
+                    { if (TgcCollisionUtils.classifyFrustumAABB(this.frustum, m.BoundingBox) != TgcCollisionUtils.FrustumResult.OUTSIDE
+                        && CommonHelper.InDistance(m.BoundingBox.calculateBoxCenter(),VariablesGlobales.xwing.GetPosition(),3000)) m.Render(); }));
                     break;
             }
         }

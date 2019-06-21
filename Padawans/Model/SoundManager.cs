@@ -77,7 +77,7 @@ namespace TGC.Group.Model
                     AgregarElemento(new Sonido("Sonidos\\XWing_1_disparo.wav", 1, 1f, 1, 0, ""));
                     break;
                 case SONIDOS.DISPARO_MISIL_ENEMIGO:
-                    AgregarElemento(new Sonido("Sonidos\\TIE_fighter_1_disparo.wav", -300, 1f, 1, 0, ""));
+                    AgregarElemento(new Sonido("Sonidos\\TIE_fighter_1_disparo.wav", -900, 1f, 1, 0, ""));
                     break;
                 case SONIDOS.BACKGROUND_BATTLE:
                     AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav", -1000, 0, -1, 0, ""));
