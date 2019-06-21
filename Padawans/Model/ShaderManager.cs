@@ -26,7 +26,7 @@ namespace TGC.Group.Model
                 case MESH_TYPE.DEFAULT: normal_meshes.ForEach(m => m.Render()); break;
                 case MESH_TYPE.SHADOW:
                     shadow_meshes.ForEach(m => //m.Render());
-                    {if (CommonHelper.InDistance(m.BoundingBox.calculateBoxCenter(),VariablesGlobales.xwing.GetPosition(),2000)) m.Render(); });
+                    {if (CommonHelper.InDistance(m.BoundingBox.calculateBoxCenter(),VariablesGlobales.xwing.GetPosition(),3000)) m.Render(); });
                     break;
             }
         }
