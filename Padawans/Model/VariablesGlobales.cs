@@ -16,6 +16,7 @@ namespace TGC.Group.Model
         public static TgcSceneLoader loader;
         public static Microsoft.DirectX.DirectSound.Device soundDevice;
         public static float elapsedTime;
+        public static MenuManager managerMenu;
         public static SoundManager managerSonido;
         public static PhysicsEngine physicsEngine;
         public static TemporaryElementManager managerElementosTemporales;
@@ -25,7 +26,7 @@ namespace TGC.Group.Model
         public static Xwing xwing;
         public static bool POSTPROCESS = true;
         public static PostProcess postProcess;
-        public static bool SOUND=false;
+        public static bool SOUND=true;
         public static float time = 5;//para testeos con temporizador
         public static bool SHADERS = true;
         public static Effect shader;//effect que todos los objetos a renderizar deben usar

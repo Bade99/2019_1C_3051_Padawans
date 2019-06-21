@@ -7,7 +7,7 @@ using TGC.Core.Input;
 
 namespace TGC.Group.Model
 {
-    class MenuManager : Manager<IMenu>
+    public class MenuManager : Manager<IMenu>
     {
         IMenu currentMenu;
 
@@ -39,6 +39,9 @@ namespace TGC.Group.Model
         {
             if (currentMenu!=null && currentMenu.IsCurrent()) return true;
             else return false;
+        }
+        public void SetCurrent(IMenu newCurrent) {
+            this.currentMenu = newCurrent;
         }
     }
 }

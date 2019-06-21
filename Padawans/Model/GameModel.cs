@@ -111,7 +111,8 @@ namespace TGC.Group.Model
 
             managerSonido.ReproducirSonido(SoundManager.SONIDOS.BACKGROUND_BATTLE);
 
-            managerMenu = new MenuManager(new StartMenu(Key.Return),new StoryMenu(Key.Return,Key.E), new PauseMenu(Key.Escape));//tiene q ir ultimo pa parar el resto de sonidos
+            managerMenu = new MenuManager(new StartMenu(Key.Return), new PauseMenu(Key.Escape));//tiene q ir ultimo pa parar el resto de sonidos
+            VariablesGlobales.managerMenu = managerMenu;
         }
         private void ColocarXwingEnemigos()
         {

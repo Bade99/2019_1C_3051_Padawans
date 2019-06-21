@@ -9,6 +9,7 @@ using TGC.Core.Geometry;
 using TGC.Core.Mathematica;
 using TGC.Core.Input;
 using Microsoft.DirectX.Direct3D;
+using Microsoft.DirectX.DirectInput;
 namespace TGC.Group.Model
 {
     class StartMenu : IMenu
@@ -17,8 +18,8 @@ namespace TGC.Group.Model
         private CustomBitmap bitmap;
         private Drawer2D drawer2D;
         private bool isCurrent= true;
-        private Microsoft.DirectX.DirectInput.Key mappedKey;
-        public StartMenu(Microsoft.DirectX.DirectInput.Key mappedKey) {//recibe un key.algo para la key que abre y cierra el menu
+        private Key mappedKey;
+        public StartMenu(Key mappedKey) {//recibe un key.algo para la key que abre y cierra el menu
             this.mappedKey = mappedKey;
             drawer2D = new Drawer2D();
             fondo = new CustomSprite();
@@ -38,7 +39,7 @@ namespace TGC.Group.Model
             {
                 isCurrent = false;
                 VariablesGlobales.managerSonido.RemoveID(SoundManager.SONIDOS.MAIN_MENU);
-                VariablesGlobales.managerSonido.ResumeAll();
+                VariablesGlobales.managerMenu.SetCurrent(new StoryMenu(Key.E));
             }
         }
         public void Render() {

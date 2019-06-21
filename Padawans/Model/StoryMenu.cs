@@ -17,15 +17,14 @@ namespace TGC.Group.Model
         private CustomSprite texto1, texto2, texto3, texto_skip;
         private CustomBitmap b1,b2,b3,skip;
         private bool isCurrent = true;
-        private Microsoft.DirectX.DirectInput.Key mappedKey,skipKey;
+        private Microsoft.DirectX.DirectInput.Key skipKey;
         float timer=0;
-        public StoryMenu(Microsoft.DirectX.DirectInput.Key mappedKey, Microsoft.DirectX.DirectInput.Key skipKey) {
+        public StoryMenu(Microsoft.DirectX.DirectInput.Key skipKey) {
             drawer2D = new Drawer2D();
             texto1 = new CustomSprite();
             texto2 = new CustomSprite();
             texto3 = new CustomSprite();
             texto_skip = new CustomSprite();
-            this.mappedKey = mappedKey;
             this.skipKey = skipKey;
             b1 = new CustomBitmap(VariablesGlobales.mediaDir + "Bitmaps\\Start\\1.png", D3DDevice.Instance.Device);
             b2 = new CustomBitmap(VariablesGlobales.mediaDir + "Bitmaps\\Start\\2.png", D3DDevice.Instance.Device);
@@ -43,26 +42,22 @@ namespace TGC.Group.Model
             texto2.Bitmap = b2;
             texto3.Bitmap = b3;
             texto_skip.Bitmap = skip;
+            VariablesGlobales.managerSonido.PauseAll();
+            VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.FORCE_THEME);
         }
         public bool CheckStartKey(TgcD3dInput input)
         {
-            if (input.keyPressed(mappedKey))
-            {
-                isCurrent = true;
-                VariablesGlobales.managerSonido.PauseAll();
-                VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.FORCE_THEME);
-                return true;
-            }
             return false;
         }
         public void Update(TgcD3dInput input)
         {
             timer += VariablesGlobales.elapsedTime;
-            if (input.keyPressed(skipKey))
+            if (input.keyPressed(skipKey) || timer>138)
             {
                 isCurrent = false;
                 VariablesGlobales.managerSonido.RemoveID(SoundManager.SONIDOS.FORCE_THEME);
                 VariablesGlobales.managerSonido.ResumeAll();
+                Dispose();
             }
         }
         public void Render()
@@ -71,13 +66,13 @@ namespace TGC.Group.Model
 
             drawer2D.BeginDrawSprite();
 
-            if(timer>1)
+            if(CommonHelper.Between(timer,1,5))
                 drawer2D.DrawSprite(texto1);
-            if(timer>4)
+            if(CommonHelper.Between(timer,4,8))
                 drawer2D.DrawSprite(texto2);
-            if(timer>7)
+            if(CommonHelper.Between(timer,7,11))
                 drawer2D.DrawSprite(texto3);
-            if(timer>10)
+            if(CommonHelper.Between(timer,13,18))
                 drawer2D.DrawSprite(texto_skip);
 
             drawer2D.EndDrawSprite();

@@ -7,7 +7,7 @@ using TGC.Core.Input;
 
 namespace TGC.Group.Model
 {
-    interface IMenu
+    public interface IMenu
     {
         bool CheckStartKey(TgcD3dInput input);
         void Update(TgcD3dInput input);

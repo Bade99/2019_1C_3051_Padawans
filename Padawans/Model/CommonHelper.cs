@@ -215,5 +215,9 @@ namespace TGC.Group.Model
             float escala_real = screen_occupation / bitmap.Width;
             return new TGCVector2(escala_real, escala_real);
         }
+        public static bool Between(float num,float min,float max)
+        {
+            return min < num && num < max;
+        }
     }
 }

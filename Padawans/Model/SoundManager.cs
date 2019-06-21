@@ -43,6 +43,9 @@ namespace TGC.Group.Model
                 case SONIDOS.MAIN_MENU:
                     ID = "main_menu";
                     break;
+                case SONIDOS.FORCE_THEME:
+                    ID = "story_menu";
+                    break;
             }
             ISoundElement sonidoATerminar = elems.Find(elem => elem.GetID().Equals(ID));
             if (sonidoATerminar != null)
@@ -77,10 +80,10 @@ namespace TGC.Group.Model
                     AgregarElemento(new Sonido("Sonidos\\TIE_fighter_1_disparo.wav", 1, 1f, 1, 0, ""));
                     break;
                 case SONIDOS.BACKGROUND_BATTLE:
-                    AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav", -1800, 0, -1, 0, ""));
+                    AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav", -1000, 0, -1, 0, ""));
                     break;
                 case SONIDOS.LUKE_OBI_WAN:
-                    AgregarElemento(new Sonido("Sonidos\\obi_wan_luke.wav", 0, 0.5f, 1, 0, ""));
+                    AgregarElemento(new Sonido("Sonidos\\obi_wan_luke.wav", -300, 0.5f, 1, 0, ""));
                     break;
                 case SONIDOS.PAUSE:
                     AgregarElemento(new Sonido("Sonidos\\main_menu.wav", 0, 0, -1, 0, "pause_menu"));
@@ -89,7 +92,7 @@ namespace TGC.Group.Model
                     AgregarElemento(new Sonido("Sonidos\\main_menu.wav", 0, 0, -1, 0, "main_menu"));
                     break;
                 case SONIDOS.FLYBY_2:
-                    AgregarElemento(new Sonido("Sonidos\\XWing_flyby_2.wav", -600, 8, 1, 0, ""));
+                    AgregarElemento(new Sonido("Sonidos\\XWing_flyby_2.wav", -900, 8, 1, 0, ""));
                     break;
                 case SONIDOS.XWING_ENGINE:
                     AgregarElemento(new Sonido("Sonidos\\XWing_engine.wav", -600, 1, -1, 0, ""));
@@ -101,7 +104,7 @@ namespace TGC.Group.Model
                     AgregarElemento(new Sonido("Sonidos\\final_explotion.wav", 0, 20, 1, 0, ""));
                     break;
                 case SONIDOS.FORCE_THEME:
-                    AgregarElemento(new Sonido("Sonidos\\Force_Theme.wav", 0, 0, -1, 0, ""));
+                    AgregarElemento(new Sonido("Sonidos\\Force_Theme.wav", 0, 0, -1, 0, "story_menu"));
                     break;
             }
          }
