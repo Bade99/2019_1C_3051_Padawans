@@ -23,7 +23,7 @@ namespace TGC.Group.Model
 
         public void UpdateBullet()
         {
-            position = CommonHelper.MoverPosicionEnDireccionCoordenadaEsferica(position, coordenadaEsferica, velocidadGeneral, 0.01f);
+            position = CommonHelper.MoverPosicionEnDireccionCoordenadaEsferica(position, coordenadaEsferica, velocidadGeneral, VariablesGlobales.elapsedTime);
             TGCMatrix rotationTranslation = matrizInicialTransformacion * GetRotationMatrix() * TGCMatrix.Translation(position);
             for (int a=0;a<meshs.Length;a++)
             {

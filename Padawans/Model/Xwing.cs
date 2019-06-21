@@ -31,7 +31,7 @@ namespace TGC.Group.Model
         private readonly float minimaVelocidad = 30;
         private readonly float aceleracion = 80;
         private readonly float friccion = 10f;
-        private readonly float maximaVelocidad = 300;
+        private readonly float maximaVelocidad = 200;
         private readonly float limiteAnguloPolar=0.1f;
         private readonly float progressUnityRotationAdvance = FastMath.PI / 10;
 
@@ -57,6 +57,8 @@ namespace TGC.Group.Model
 
         //propiedades de la nave
         private float escalar = .1f;
+        private readonly static float LimiteAltura = 200f;
+        private readonly static float LimiteLateral = 300f;
 
         public Xwing(TgcSceneLoader loader, TGCVector3 posicionInicial)
         {
@@ -124,6 +126,7 @@ namespace TGC.Group.Model
         public override void Update()
         {
             UpdateBullet();
+            LimitarMovimientos();
         }
 
         private void TestingInput(TgcD3dInput input)
@@ -141,7 +144,6 @@ namespace TGC.Group.Model
 
         public void UpdateInput(TgcD3dInput input, float ElapsedTime)
         {
-            //ElapsedTime = 0.01f; //Lo hardcodeo hasta que sepamos bien como hacer esto
             TestingInput(input);
             MovimientoFlechas(input, ElapsedTime);
             AcelerarYFrenar(input, ElapsedTime);
@@ -150,6 +152,21 @@ namespace TGC.Group.Model
             MedioBarrelRoll(input, ElapsedTime);
             RotationYAnimation();
             EfectoFriccion(ElapsedTime);
+        }
+        private void LimitarMovimientos()
+        {
+            if (position.Y > LimiteAltura)
+            {
+                DownArrow(VariablesGlobales.elapsedTime);
+            }
+            if (position.X > LimiteLateral)
+            {
+                RightArrow(VariablesGlobales.elapsedTime);
+            }
+            if (position.X < -LimiteLateral)
+            {
+                LeftArrow(VariablesGlobales.elapsedTime);
+            }
         }
         private void RotationYAnimation()
         {
@@ -221,13 +238,11 @@ namespace TGC.Group.Model
         {
             if (input.keyDown(Key.A))
             {
-                rotation.Add(TGCVector3.Down * ElapsedTime);
-                ActualizarCoordenadaEsferica();
+                LeftArrow(ElapsedTime);
             }
             if (input.keyDown(Key.D))
             {
-                rotation.Add(TGCVector3.Up * ElapsedTime);
-                ActualizarCoordenadaEsferica();
+                RightArrow(ElapsedTime);
             }
             if (input.keyDown(Key.W) && !rotationYAnimation)
             {
@@ -317,6 +332,16 @@ namespace TGC.Group.Model
                 rotationYAnimation = true;
 
             }
+        }
+        private void LeftArrow(float ElapsedTime)
+        {
+            rotation.Add(TGCVector3.Down * ElapsedTime);
+            ActualizarCoordenadaEsferica();
+        }
+        private void RightArrow(float ElapsedTime)
+        {
+            rotation.Add(TGCVector3.Up * ElapsedTime);
+            ActualizarCoordenadaEsferica();
         }
 
         private void ActualizarCoordenadaEsferica()

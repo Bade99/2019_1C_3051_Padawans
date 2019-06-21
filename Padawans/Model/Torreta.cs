@@ -21,7 +21,7 @@ namespace TGC.Group.Model
         private TGCVector3 scaleVector;
         private readonly float tiempoEntreDisparos = 2f;
         private float tiempoDesdeUltimoDisparo = 1.5f;
-        private readonly float distanciaMinimaATarget = 1000;
+        private readonly float distanciaMinimaATarget = 600;
         private readonly float factorEscala = .1f;
         private readonly TGCVector3 origenDeDisparos;
         private Xwing target;

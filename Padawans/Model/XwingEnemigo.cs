@@ -32,17 +32,20 @@ namespace TGC.Group.Model
         //Radio de visibilidad de la nave para detectarte. Se aplica para ambas coordenadas, generando un cono de visibilidad
         private readonly float radioAperturaVisibilidad = (float)Math.PI / 4;
         //Distancia maxima a la que el enemigo ve al xwing propio
-        private readonly float distanciaLejanaVisibilidad = 1000;
+        private readonly float distanciaLejanaVisibilidad = 1200;
         //Velocidad fija de la nave enemigo
         private float velocidadGeneral;
         private CollisionObject collisionObject;
+        private readonly float AlturaMinimaChequeoXwing = 20;
+        private bool activado = false;
+        private readonly static float DistanciaMinimaPersecucion = 100;
 
-        public XwingEnemigo(TGCVector3 posicionInicial, Xwing target, float velocidadInicial)
+        public XwingEnemigo(TGCVector3 posicionInicial, Xwing target, float velocidadInicial, CoordenadaEsferica direccionInicial)
         {
             posicion = posicionInicial;
             velocidadGeneral = velocidadInicial;
             //Por defecto, se encuentra mirando hacia el z+
-            this.coordenadaEsferica = new CoordenadaEsferica(FastMath.PI_HALF, FastMath.PI_HALF);
+            this.coordenadaEsferica = direccionInicial;
             nave = new TgcSceneLoader().loadSceneFromFile(VariablesGlobales.mediaDir+"XWing\\X-Wing-TgcScene.xml");//@ésta deberia ser nuestra nave, no la enemiga!
             nave.Meshes.ForEach(mesh => {
                 mesh.AutoTransformEnable = false;
@@ -71,23 +74,28 @@ namespace TGC.Group.Model
             {
                 //Lo pongo en otro if porque c# no hace lazy evaluating, es decir, evalua esa funcion tan cara
                 // aunque la primer parte haya dado falso
-                if (XwingSeEncuentraEnRadioDeVisibilidad())
+                if (XwingSeEncuentraEnRadioDeVisibilidad() && target.GetPosition().Y > AlturaMinimaChequeoXwing)
                 {
                     timer = 0;
                     Disparar();
-
+                    activado = true;
                 }
+            }
+            if (activado)
+            {
+                Moverse();
             }
             //Dirigirse en direccion al xwing
             coordenadaEsferica = coordenadaAXwing;
-            //Moverse en direccion de la coordenadaEsferica y la velocidad general
+        }
+        private void Moverse()
+        {
             posicion = CommonHelper.MoverPosicionEnDireccionCoordenadaEsferica(posicion, coordenadaEsferica, velocidadGeneral, VariablesGlobales.elapsedTime);
             nave.Meshes.ForEach(mesh => {
                 mesh.Transform = TGCMatrix.Scaling(scale) *
-                TGCMatrix.RotationYawPitchRoll(coordenadaEsferica.GetRotation().Y, coordenadaEsferica.GetRotation().X, coordenadaEsferica.GetRotation().Z) * 
+                TGCMatrix.RotationYawPitchRoll(coordenadaEsferica.GetRotation().Y, coordenadaEsferica.GetRotation().X, coordenadaEsferica.GetRotation().Z) *
                 TGCMatrix.Translation(posicion);
             });
-
         }
         private void Disparar()
         {
@@ -119,10 +127,16 @@ namespace TGC.Group.Model
         public bool XwingSeEncuentraEnRadioDeVisibilidad()
         {
             TGCVector3 vectorDistancia = CommonHelper.SumarVectores(target.GetPosition(), -posicion);
-            coordenadaAXwing = new CoordenadaEsferica(vectorDistancia.X, vectorDistancia.Y, vectorDistancia.Z);
-            CoordenadaEsferica dif = this.coordenadaEsferica.Diferencia(coordenadaAXwing);
-            return dif.acimutal < radioAperturaVisibilidad && dif.polar < radioAperturaVisibilidad
-                && vectorDistancia.Length() < distanciaLejanaVisibilidad;
+            if (vectorDistancia.Length() > DistanciaMinimaPersecucion)
+            {
+                coordenadaAXwing = new CoordenadaEsferica(vectorDistancia.X, vectorDistancia.Y, vectorDistancia.Z);
+                CoordenadaEsferica dif = this.coordenadaEsferica.Diferencia(coordenadaAXwing);
+                return dif.acimutal < radioAperturaVisibilidad && dif.polar < radioAperturaVisibilidad
+                    && vectorDistancia.Length() < distanciaLejanaVisibilidad;
+            } else
+            {
+                return false;
+            }
         }
     }
 }
