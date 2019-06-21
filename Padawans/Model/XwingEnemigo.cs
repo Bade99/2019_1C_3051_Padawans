@@ -107,7 +107,7 @@ namespace TGC.Group.Model
             VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.DISPARO_MISIL_ENEMIGO);
         }
 
-        public void Render(){nave.RenderAll();}
+        public void Render(){}
 
         public bool Terminado()
         {
