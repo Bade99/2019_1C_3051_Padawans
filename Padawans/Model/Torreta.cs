@@ -19,12 +19,11 @@ namespace TGC.Group.Model
         private TGCVector3 posicion;
         private TGCVector3 rotation;
         private TGCVector3 scaleVector;
-        private readonly float tiempoEntreDisparos = 1.5f;
+        private readonly float tiempoEntreDisparos = 2f;
         private float tiempoDesdeUltimoDisparo = 1.5f;
-        private readonly float distanciaMinimaATarget = 600;
+        private readonly float distanciaMinimaATarget = 1000;
         private readonly float factorEscala = .1f;
         private readonly TGCVector3 origenDeDisparos;
-        private TGCVector3 rotacionBase;
         private Xwing target;
         private bool isActive;
         private int vida;
@@ -40,7 +39,6 @@ namespace TGC.Group.Model
             origenDeDisparos = new TGCVector3(0 * factorEscala, 70 * factorEscala, -20 * factorEscala);
             this.target = target;
             this.posicion = posicion;
-            this.rotacionBase = rotacionBase;
             this.rotation = rotacionBase;
             torreta = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + "XWing\\torreta-TgcScene.xml").Meshes[0];
             scaleVector = new TGCVector3(factorEscala, factorEscala, factorEscala);
@@ -52,7 +50,6 @@ namespace TGC.Group.Model
             }
             //EMISOR PARTICULAS
             particulaHumo = new ParticleEmitter(VariablesGlobales.mediaDir + "Particulas\\pisada.png", 30);
-            particulaHumo.Position = this.posicion;
             particulaHumo.MinSizeParticle = 1.5f;
             particulaHumo.MaxSizeParticle = 2;
             particulaHumo.ParticleTimeToLive = 0.2f;
@@ -67,7 +64,7 @@ namespace TGC.Group.Model
         {
             TGCMatrix rotationTranslation = TGCMatrix.RotationYawPitchRoll(rotation.Y, 0, 0) * TGCMatrix.Translation(posicion);
             torreta.Transform = TGCMatrix.Scaling(scaleVector) * rotationTranslation;
-            collisionObject.CollisionShape.LocalScaling = scaleVector.ToBulletVector3();
+            collisionObject.CollisionShape.LocalScaling = CommonHelper.VectorXEscalar(scaleVector, 1.6f).ToBulletVector3();
             collisionObject.WorldTransform = CommonHelper.TgcToBulletMatrix(rotationTranslation);
             /* Esto permite que rote en su eje, pero lo dejo desactivado porque los misiles quedan mal
             * TGCMatrix.Translation(-FastMath.Cos(rotation.Y) * (tamanioBoundingBox.X * factorEscala), 0,
@@ -93,8 +90,7 @@ namespace TGC.Group.Model
             if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos)
             {
                 tiempoDesdeUltimoDisparo = 0f;
-
-                DistanciaAXwing = target.GetPosition() - posicion; //+ origenDeDisparos;
+                DistanciaAXwing = target.GetPosition() - posicion - origenDeDisparos;
 
                 if (this.vida > 0 && DistanciaAXwing.Length() < distanciaMinimaATarget)
                 {
@@ -102,8 +98,8 @@ namespace TGC.Group.Model
                     CoordenadaEsferica direccionXwing = new CoordenadaEsferica(DistanciaAXwing.X,
                         DistanciaAXwing.Y, DistanciaAXwing.Z);
                     VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(
-                        posicion+ torreta.BoundingBox.calculateSize()*factorEscala,
-                        direccionXwing, direccionXwing.GetRotation(), "Misil\\misil_torreta.xml", Misil.OrigenMisil.ENEMIGO));
+                        posicion + origenDeDisparos, direccionXwing, direccionXwing.GetRotation()
+                        , "Misil\\misil_torreta.xml", Misil.OrigenMisil.ENEMIGO));
                 }
                 else isActive = false;
             }

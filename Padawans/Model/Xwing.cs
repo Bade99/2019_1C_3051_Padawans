@@ -50,7 +50,7 @@ namespace TGC.Group.Model
         private bool rotationYAnimation;
         private float rotationYAnimacionAdvance;
         private float barrelRollAdvance;
-        private float tiempoEntreDisparos=.5f;
+        private float tiempoEntreDisparos=.2f;
         private float tiempoDesdeUltimoDisparo = .5f;
         private float tiempoDesdeUltimaBomba = 5f;
         private float tiempoEntreBombas = 5f;
