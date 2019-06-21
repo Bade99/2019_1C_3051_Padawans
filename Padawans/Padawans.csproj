@@ -155,6 +155,7 @@
     <Compile Include="Model\Sonido.cs" />
     <Compile Include="Model\SoundManager.cs" />
     <Compile Include="Model\StartMenu.cs" />
+    <Compile Include="Model\StoryMenu.cs" />
     <Compile Include="Model\TemporaryElementManager.cs" />
     <Compile Include="Model\Torreta.cs" />
     <Compile Include="Model\VariablesGlobales.cs" />

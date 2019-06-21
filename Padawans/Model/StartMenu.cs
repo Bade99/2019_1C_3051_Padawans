@@ -32,10 +32,10 @@ namespace TGC.Group.Model
         {
             return false;
         }
-
         public void Update(TgcD3dInput input)
         {
-            if (input.keyPressed(mappedKey)) {
+            if (input.keyPressed(mappedKey))
+            {
                 isCurrent = false;
                 VariablesGlobales.managerSonido.RemoveID(SoundManager.SONIDOS.MAIN_MENU);
                 VariablesGlobales.managerSonido.ResumeAll();

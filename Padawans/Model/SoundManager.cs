@@ -100,13 +100,18 @@ namespace TGC.Group.Model
                 case SONIDOS.EXPLOSION_FINAL:
                     AgregarElemento(new Sonido("Sonidos\\final_explotion.wav", 0, 20, 1, 0, ""));
                     break;
+                case SONIDOS.FORCE_THEME:
+                    AgregarElemento(new Sonido("Sonidos\\Force_Theme.wav", 0, 0, -1, 0, ""));
+                    break;
             }
          }
 
 
         public enum SONIDOS
         {
-            DISPARO_MISIL_XWING, DISPARO_MISIL_ENEMIGO, BACKGROUND_BATTLE, LUKE_OBI_WAN, MAIN_MENU, PAUSE, FLYBY_2, XWING_ENGINE,NO_SOUND,XWING_BOMB,EXPLOSION_FINAL
+            DISPARO_MISIL_XWING, DISPARO_MISIL_ENEMIGO, BACKGROUND_BATTLE,
+            LUKE_OBI_WAN, MAIN_MENU, PAUSE, FLYBY_2, XWING_ENGINE,NO_SOUND,XWING_BOMB,EXPLOSION_FINAL,
+            FORCE_THEME
         }
     }
 }
