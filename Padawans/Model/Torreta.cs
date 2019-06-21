@@ -46,7 +46,7 @@ namespace TGC.Group.Model
             this.vida = 3;
             if (VariablesGlobales.SHADERS)
             {
-                VariablesGlobales.shaderManager.AgregarMesh(torreta, ShaderManager.MESH_TYPE.SHADOW);
+                VariablesGlobales.shaderManager.AgregarMesh(torreta, ShaderManager.MESH_TYPE.DEFAULT);
             }
             //EMISOR PARTICULAS
             particulaHumo = new ParticleEmitter(VariablesGlobales.mediaDir + "Particulas\\pisada.png", 30);

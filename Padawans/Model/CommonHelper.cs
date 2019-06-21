@@ -219,5 +219,10 @@ namespace TGC.Group.Model
         {
             return min < num && num < max;
         }
+
+        public static bool InDistance(TGCVector3 p1, TGCVector3 p2, float distance)
+        {
+            return FastMath.Pow2(distance) > (FastMath.Pow2(p2.X - p1.X) + FastMath.Pow2(p2.Y - p1.Y) + FastMath.Pow2(p2.Z - p1.Z));
+        }
     }
 }

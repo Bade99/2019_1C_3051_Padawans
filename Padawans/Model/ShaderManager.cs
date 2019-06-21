@@ -24,7 +24,10 @@ namespace TGC.Group.Model
             switch (tipo)
             {
                 case MESH_TYPE.DEFAULT: normal_meshes.ForEach(m => m.Render()); break;
-                case MESH_TYPE.SHADOW: shadow_meshes.ForEach(m => m.Render()); break;
+                case MESH_TYPE.SHADOW:
+                    shadow_meshes.ForEach(m => //m.Render());
+                    {if (CommonHelper.InDistance(m.BoundingBox.calculateBoxCenter(),VariablesGlobales.xwing.GetPosition(),2000)) m.Render(); });
+                    break;
             }
         }
 

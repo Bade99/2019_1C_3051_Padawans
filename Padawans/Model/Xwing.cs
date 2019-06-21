@@ -80,8 +80,8 @@ namespace TGC.Group.Model
 
             if (VariablesGlobales.SHADERS)
             {
-                VariablesGlobales.shaderManager.AgregarMesh(xwing, ShaderManager.MESH_TYPE.SHADOW);
-                VariablesGlobales.shaderManager.AgregarMesh(alaXwing, ShaderManager.MESH_TYPE.SHADOW);
+                VariablesGlobales.shaderManager.AgregarMesh(xwing, ShaderManager.MESH_TYPE.DEFAULT);
+                VariablesGlobales.shaderManager.AgregarMesh(alaXwing, ShaderManager.MESH_TYPE.DEFAULT);
             }
             collisionObject = VariablesGlobales.physicsEngine.AgregarPersonaje(xwing.BoundingBox.calculateSize());
             ActualizarCoordenadaEsferica();

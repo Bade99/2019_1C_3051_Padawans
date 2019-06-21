@@ -27,7 +27,7 @@ namespace TGC.Group.Model
         public static bool POSTPROCESS = true;
         public static PostProcess postProcess;
         public static bool SOUND=true;
-        public static float time = 5;//para testeos con temporizador
+        public static float timer = 5;//para testeos con temporizador
         public static bool SHADERS = true;
         public static Effect shader;//effect que todos los objetos a renderizar deben usar
         public static bool DameLuz = true;
@@ -39,6 +39,10 @@ namespace TGC.Group.Model
         private static int max_bombas = 1;
         public static bool MODO_DIOS = false;
         public static bool debugMode = false;
+        public static void RestarVida()
+        {
+            vidas = FastMath.Max(0, vidas - 1);
+        }
         public static void SumarBomba()
         {
             bombas = FastMath.Min(bombas+1, max_bombas);

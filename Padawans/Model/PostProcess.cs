@@ -368,7 +368,6 @@ namespace TGC.Group.Model
         {
             TexturesManager.Instance.clearAll();
 
-
             if (VariablesGlobales.SHADERS)
             {
                 RenderShaders();

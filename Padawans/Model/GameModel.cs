@@ -205,7 +205,7 @@ namespace TGC.Group.Model
             managerEnemigos.Render();
         }
 
-        public void RenderizarExtras()//renderizar estas cosas luego de los shaders@@@@
+        public void RenderizarExtras()//renderizar estas cosas luego de los shaders
         {
             physicsEngine.Render(Input);
             hud.Render();

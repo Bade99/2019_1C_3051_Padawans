@@ -55,7 +55,7 @@ namespace TGC.Group.Model
                 //Shader
                 if (VariablesGlobales.SHADERS)
                 {
-                    VariablesGlobales.shaderManager.AgregarMesh(mesh, ShaderManager.MESH_TYPE.SHADOW);
+                    VariablesGlobales.shaderManager.AgregarMesh(mesh, ShaderManager.MESH_TYPE.DEFAULT);
                 }
             });
             this.target = target;

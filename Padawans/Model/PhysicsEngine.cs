@@ -181,7 +181,7 @@ namespace TGC.Group.Model
                     listaIdMisilesQueColisionaronConXwing.Add(misilId);
                     collisionWorld.RemoveCollisionObject(listaMisilesEnemigo[misilId]);
                     listaMisilesEnemigo.Remove(misilId);
-                    VariablesGlobales.vidas--;
+                    VariablesGlobales.RestarVida();
                 }
             }
         }
