@@ -57,13 +57,6 @@ namespace TGC.Group.Model
 
         //propiedades de la nave
         private float escalar = .1f;
-        TGCVector3 escala;
-
-        //Ingreso modo Dios
-        private INGRESO_MODO_DIOS ingresoModoDios = INGRESO_MODO_DIOS.NADA;
-        private float timer;
-        private float limiteTimer = 5;
-        private float toleranciaDeRepeticion = 0.08f;
 
         public Xwing(TgcSceneLoader loader, TGCVector3 posicionInicial)
         {
@@ -71,8 +64,7 @@ namespace TGC.Group.Model
             xwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"XWing\\xwing-TgcScene.xml").Meshes[0];
             alaXwing = loader.loadSceneFromFile(VariablesGlobales.mediaDir +"XWing\\xwing-TgcScene.xml").Meshes[1];
 
-            escala = new TGCVector3(escalar, escalar, escalar);
-            matrizInicialTransformacion = TGCMatrix.Scaling(escala);
+            this.scaleVector = new TGCVector3(escalar, escalar, escalar);
             rotation = new TGCVector3(0, FastMath.PI_HALF, -FastMath.QUARTER_PI*.8f);
             position = posicionInicial;
 
@@ -89,8 +81,7 @@ namespace TGC.Group.Model
                 VariablesGlobales.shaderManager.AgregarMesh(xwing, ShaderManager.MESH_TYPE.SHADOW);
                 VariablesGlobales.shaderManager.AgregarMesh(alaXwing, ShaderManager.MESH_TYPE.SHADOW);
             }
-            TGCVector3 sizeEscalado = CommonHelper.VectorXEscalar(xwing.BoundingBox.calculateSize(), escalar);
-            collisionObject = VariablesGlobales.physicsEngine.AgregarPersonaje(sizeEscalado);
+            collisionObject = VariablesGlobales.physicsEngine.AgregarPersonaje(xwing.BoundingBox.calculateSize());
             ActualizarCoordenadaEsferica();
 
             bloom = new TgcMesh[2];
@@ -182,8 +173,7 @@ namespace TGC.Group.Model
             if (ESTADO_BARREL.BARRELROLL.Equals(estadoBarrel))
             {
                 barrelRollAdvance += ElapsedTime * 4;
-                matrizInicialTransformacion = matrizInicialTransformacion = TGCMatrix.Scaling(escala)
-                    * TGCMatrix.RotationYawPitchRoll(0, barrelRollAdvance, 0);
+                matrizInicialTransformacion = TGCMatrix.RotationYawPitchRoll(0, barrelRollAdvance, 0);
                 if (barrelRollAdvance >= FastMath.TWO_PI)
                 {
                     barrelRollAdvance = 0;
@@ -201,8 +191,7 @@ namespace TGC.Group.Model
             if (ESTADO_BARREL.MEDIO_BARRELROLL.Equals(estadoBarrel))
             {
                 barrelRollAdvance += ElapsedTime * 4;
-                matrizInicialTransformacion = matrizInicialTransformacion = TGCMatrix.Scaling(escala)
-                    * TGCMatrix.RotationYawPitchRoll(0, barrelRollAdvance, 0);
+                matrizInicialTransformacion = TGCMatrix.RotationYawPitchRoll(0, barrelRollAdvance, 0);
                 if (barrelRollAdvance >= FastMath.PI_HALF)
                 {
                     estadoBarrel = ESTADO_BARREL.ESPERA_MEDIO_BARRELROLL;
@@ -224,8 +213,7 @@ namespace TGC.Group.Model
                     barrelRollAdvance = 0;
                     estadoBarrel = ESTADO_BARREL.NADA;
                 }
-                matrizInicialTransformacion = matrizInicialTransformacion = TGCMatrix.Scaling(escala)
-                    * TGCMatrix.RotationYawPitchRoll(0, barrelRollAdvance, 0);
+                matrizInicialTransformacion = TGCMatrix.RotationYawPitchRoll(0, barrelRollAdvance, 0);
             }
 
         }

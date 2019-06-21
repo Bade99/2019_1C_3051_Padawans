@@ -16,19 +16,21 @@ namespace TGC.Group.Model
         protected TgcMesh[] meshs;
         protected TGCVector3 rotation;
         protected TGCVector3 position;
-        protected TGCMatrix matrizInicialTransformacion;
+        protected TGCMatrix matrizInicialTransformacion = TGCMatrix.Identity;
+        protected TGCVector3 scaleVector;
         protected CoordenadaEsferica coordenadaEsferica;
         protected float velocidadGeneral;
 
         public void UpdateBullet()
         {
             position = CommonHelper.MoverPosicionEnDireccionCoordenadaEsferica(position, coordenadaEsferica, velocidadGeneral, 0.01f);
-            TGCMatrix matrizPosicion = TGCMatrix.Translation(position);
+            TGCMatrix rotationTranslation = matrizInicialTransformacion * GetRotationMatrix() * TGCMatrix.Translation(position);
             for (int a=0;a<meshs.Length;a++)
             {
-                meshs[a].Transform = matrizInicialTransformacion * GetRotationMatrix() * matrizPosicion;
+                meshs[a].Transform = TGCMatrix.Scaling(scaleVector) * rotationTranslation;
             }
-            collisionObject.WorldTransform = CommonHelper.TgcToBulletMatrix(matrizPosicion);
+            collisionObject.CollisionShape.LocalScaling = scaleVector.ToBulletVector3();
+            collisionObject.WorldTransform = CommonHelper.TgcToBulletMatrix(rotationTranslation);
         }
         protected TGCMatrix GetRotationMatrix()
         {

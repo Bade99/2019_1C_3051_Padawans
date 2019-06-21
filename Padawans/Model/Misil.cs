@@ -18,9 +18,8 @@ namespace TGC.Group.Model
 {
     public class Misil : BulletSceneElement, IActiveElement
     {
-        private float tiempoDeVida = 5f;
+        private float tiempoDeVida = 5;
         private bool terminado = false;
-        private static TGCVector3 escalaMisil = new TGCVector3(.2f, .2f, 4f);
        
         /**
          * Posicion nave: Posicion inicial del misil
@@ -33,27 +32,24 @@ namespace TGC.Group.Model
             this.rotation = rotacionInicial;
             this.coordenadaEsferica = coordenadaEsferica;
             this.position = posicionInicial;
-            velocidadGeneral = 1000f;
+            this.scaleVector = new TGCVector3(.2f, .2f, 4f);
+            velocidadGeneral = 1000;
             meshs = new TgcMesh[1];
             meshs[0] = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + pathScene).Meshes[0];
             meshs[0].AutoTransformEnable = false;
-            matrizInicialTransformacion = TGCMatrix.Scaling(escalaMisil) * TGCMatrix.RotationY(FastMath.PI_HALF);
+            matrizInicialTransformacion = TGCMatrix.RotationY(FastMath.PI_HALF);
 
             if (VariablesGlobales.SHADERS)
             {
                 VariablesGlobales.shaderManager.AgregarMesh(meshs[0], ShaderManager.MESH_TYPE.SHADOW);
             }
-            TGCVector3 sizeEscalado = meshs[0].BoundingBox.calculateSize();
-            sizeEscalado.X *= escalaMisil.X;
-            sizeEscalado.Y *= escalaMisil.Y;
-            sizeEscalado.Z *= escalaMisil.Z;
             switch (origenMisil)
             {
                 case OrigenMisil.ENEMIGO:
-                    collisionObject = VariablesGlobales.physicsEngine.AgregarMisilEnemigo(sizeEscalado);
+                    collisionObject = VariablesGlobales.physicsEngine.AgregarMisilEnemigo(meshs[0].BoundingBox.calculateSize());
                     break;
                 case OrigenMisil.XWING:
-                    collisionObject = VariablesGlobales.physicsEngine.AgregarMisilXwing(sizeEscalado);
+                    collisionObject = VariablesGlobales.physicsEngine.AgregarMisilXwing(meshs[0].BoundingBox.calculateSize());
                     break;
             }
         }

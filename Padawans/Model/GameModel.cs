@@ -129,7 +129,6 @@ namespace TGC.Group.Model
             managerMenu.Update(Input);
             managerSonido.Update();
             if (!managerMenu.IsCurrent()) { //si no estoy en un menu ->
-                physicsEngine.Update();
                 worldSphere.Update();
                 xwing.UpdateInput(Input,ElapsedTime);
                 xwing.Update();
@@ -140,6 +139,7 @@ namespace TGC.Group.Model
                 managerEnemigos.Update();
                 boundingBoxHelper.UpdateInput(Input, ElapsedTime);
                 endGameManager.Update();
+                physicsEngine.Update();
             }
 
             PostUpdate();
