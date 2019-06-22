@@ -195,15 +195,6 @@ namespace TGC.Group.Model
         {
             managerMenu.Render();//ahora mismo estamos haciendo doble render en el menu, dsps lo arreglo
         }
-        public void RenderizarMeshes()//@@esta funcion ya no se usa
-        {
-            worldSphere.Render();
-            hole.Render();
-            xwing.Render();
-            pistaReferencia.Render();
-            managerElementosTemporales.Render();
-            managerEnemigos.Render();
-        }
 
         public void RenderizarExtras()//renderizar estas cosas luego de los shaders
         {
@@ -307,6 +298,11 @@ namespace TGC.Group.Model
                     iddqd += 'q';
                 else iddqd = "";
             }
+        }
+
+        public void RenderizarMeshes()
+        {
+            
         }
 
         /*solo para saber qué hacen

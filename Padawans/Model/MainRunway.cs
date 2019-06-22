@@ -22,18 +22,18 @@ namespace TGC.Group.Model
     public class MainRunway : SceneElement,IShaderObject
     {
         private TgcSceneLoader loader;
-        TgcScene escena_bomba, escena_alrededores, escena_alrededores2,hierro, tubo_rojo_gira, tubo_rojo_derecho;
-        List<List<TgcMesh>> main_escena_instancia, main_escena_instancia_shadow; //deberia ser lista de lista de lista
+        private TgcScene escena_bomba, escena_alrededores, escena_alrededores2,hierro, tubo_rojo_gira, tubo_rojo_derecho;
+        private List<List<TgcMesh>> main_escena_instancia, main_escena_instancia_shadow; //deberia ser lista de lista de lista
         //bloques de construccion
         //TgcScene piso;
         private int n;
-        TgcFrustum frustum;
+        private TgcFrustum frustum;
 
-        Random random;
+        private Random random;
 
-        Xwing target;
+        private Xwing target;
 
-        Effect shadow;
+        private Effect shadow;
 
         /// <summary>
         ///     n representa la cantidad de pistas que va a graficar
@@ -96,19 +96,24 @@ namespace TGC.Group.Model
             for (int i = 0; i < repeticiones; i++)
             {
                 todas_escenas.Add( new List<TgcMesh>());
+                TGCVector3 nuevaPosicion = posicion;
 
-                foreach (TgcMesh mesh in escena.Meshes)
+                for (int j = 0; j < escena.Meshes.Count; j++)
                 {
-                    mesh.Scale = escalador;
-                    mesh.Rotation = rotacion;
-                    mesh.Position = posicion;
+                    TgcMesh mesh = escena.Meshes[j];
                     todas_escenas[i].Add(mesh.clone(mesh.Name));
+                    todas_escenas[i][j].AutoTransformEnable = false;
+                    todas_escenas[i][j].Transform = 
+                    TGCMatrix.Scaling(escalador) *
+                        TGCMatrix.RotationYawPitchRoll(rotacion.Y, rotacion.X, rotacion.Z) *
+                        TGCMatrix.Translation(posicion);
+                    if (j == mesh_pivot)
+                    {
+                        nuevaPosicion = new TGCVector3(posicion.X, posicion.Y,
+                            posicion.Z - todas_escenas[i][j].BoundingBox.calculateSize().Z * escalador.Z - distancia_extra);
+                    }
                 }
-                
-                posicion = new TGCVector3(todas_escenas[i][mesh_pivot].Position.X,
-                                            todas_escenas[i][mesh_pivot].Position.Y,
-                                            todas_escenas[i][mesh_pivot].Position.Z -
-                                                todas_escenas[i][mesh_pivot].BoundingBox.calculateSize().Z - distancia_extra);//sip de momento solo en z
+                posicion = nuevaPosicion;
             }
             //Shader
             if (shader)
@@ -161,7 +166,7 @@ namespace TGC.Group.Model
             //-----
 
             posicion = PlaceSceneLine(escena_bomba, posicion, escalador, n/2, mesh_pivot, 0,rotacion,true);
-
+            
             posicion.X += 325f;//necesitamos rotacion sin que modifique posicion
             rotacion = new TGCVector3(0f, FastMath.PI, 0f);
             posicion = PlaceSceneLine(escena_bomba, posicion, escalador, 1, mesh_pivot, 0, rotacion,true);
@@ -170,7 +175,7 @@ namespace TGC.Group.Model
             rotacion = new TGCVector3(0f, 0f, 0f);
             posicion = PlaceSceneLine(escena_bomba, posicion, escalador, n / 2, mesh_pivot, 0, rotacion,true);
 
-
+   
             posicion = new TGCVector3(-350f, 50f, -500f);
             escalador = new TGCVector3(50f, 50f, 30f);
             mesh_pivot = 1;
@@ -206,8 +211,6 @@ namespace TGC.Group.Model
             mesh_pivot = 0;
             rotacion = new TGCVector3(0f, 0f, 0f);
 
-            main_escena_instancia.ForEach(mesh_list => VariablesGlobales.physicsEngine.AgregarEscenario(mesh_list));
-            //
             PonerTorretas(posicion_inicial, posicion_final, new TGCVector3(0, FastMath.PI, 0), 50f, 30);
 
         }
@@ -226,13 +229,27 @@ namespace TGC.Group.Model
             {
                 case ShaderManager.MESH_TYPE.DEFAULT:
                     main_escena_instancia.ForEach(s => s.ForEach(m =>
-                    { if (TgcCollisionUtils.classifyFrustumAABB(this.frustum, m.BoundingBox) != TgcCollisionUtils.FrustumResult.OUTSIDE
-                        && CommonHelper.InDistance(m.BoundingBox.calculateBoxCenter(), VariablesGlobales.xwing.GetPosition(), 6000)) m.Render(); }));
+                    {
+                        //if (TgcCollisionUtils.classifyFrustumAABB(this.frustum, m.BoundingBox)
+                        //!= TgcCollisionUtils.FrustumResult.OUTSIDE
+                        //&& CommonHelper.InDistance(m.BoundingBox.calculateBoxCenter(), VariablesGlobales.xwing.GetPosition(), 6000))
+                        {
+                            m.Render();
+                        }
+                    }));
                     break;
                 case ShaderManager.MESH_TYPE.SHADOW:
                     main_escena_instancia_shadow.ForEach(s => s.ForEach(m =>
-                    { if (TgcCollisionUtils.classifyFrustumAABB(this.frustum, m.BoundingBox) != TgcCollisionUtils.FrustumResult.OUTSIDE
-                        && CommonHelper.InDistance(m.BoundingBox.calculateBoxCenter(),VariablesGlobales.xwing.GetPosition(),3000)) m.Render(); }));
+                    { 
+                    if (
+                        //TgcCollisionUtils.classifyFrustumAABB(this.frustum, m.BoundingBox) 
+                        //!= TgcCollisionUtils.FrustumResult.OUTSIDE
+                        //&& CommonHelper.InDistance(m.BoundingBox.calculateBoxCenter(),VariablesGlobales.xwing.GetPosition(),3000))
+                        
+                        {
+                            m.Render();
+                        }
+                    }));
                     break;
             }
         }
