@@ -35,6 +35,7 @@ namespace TGC.Group.Model
         private EndgameManager endGameManager;
         private Hole hole;
         private HUD hud;
+        private BackgroundScene backgroundSceneLeft, backgroundSceneRight, backgroundSceneFront;
 
         //godmode:
         string iddqd="";
@@ -113,6 +114,10 @@ namespace TGC.Group.Model
 
             managerMenu = new MenuManager(new StartMenu(Key.Return), new PauseMenu(Key.Escape));//tiene q ir ultimo pa parar el resto de sonidos
             VariablesGlobales.managerMenu = managerMenu;
+
+            backgroundSceneLeft = new BackgroundScene(new TGCVector3(500, 100, 1000), new TGCVector3(200, 200, -15000), 100);
+            backgroundSceneRight = new BackgroundScene(new TGCVector3(-600, 100, 1000), new TGCVector3(200, 200, -15000), 100);
+            backgroundSceneFront = new BackgroundScene(new TGCVector3(500, 100, -15000), new TGCVector3(-1000, 200, -200), 100);
         }
         private void ColocarXwingEnemigos()
         {
@@ -187,6 +192,9 @@ namespace TGC.Group.Model
                 boundingBoxHelper.UpdateInput(Input, ElapsedTime);
                 endGameManager.Update();
                 physicsEngine.Update();
+                backgroundSceneLeft.Update();
+                backgroundSceneRight.Update();
+                backgroundSceneFront.Update();
             }
 
             PostUpdate();
