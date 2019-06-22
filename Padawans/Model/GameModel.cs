@@ -173,9 +173,8 @@ namespace TGC.Group.Model
 
         public override void Update()
         {
-            //seguir menu inicio
-            PreUpdate();
             VariablesGlobales.elapsedTime = ElapsedTime;
+            PreUpdate();
             GodMode();
             DebugMode();
             managerMenu.Update(Input);

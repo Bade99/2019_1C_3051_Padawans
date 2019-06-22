@@ -47,12 +47,12 @@ namespace TGC.Group.Model
             this.loader = loader;
             this.frustum = frustum;
             this.target = targetTorretas;
-            escena_bomba = loader.loadSceneFromFile("Padawans_media\\XWing\\TRENCH_RUN-TgcScene.xml");
-            escena_alrededores = loader.loadSceneFromFile("Padawans_media\\XWing\\death+star-TgcScene.xml");
-            escena_alrededores2 = loader.loadSceneFromFile("Padawans_media\\XWing\\death+star2-TgcScene.xml");
-            hierro = loader.loadSceneFromFile("Padawans_media\\XWing\\hierros-TgcScene.xml");
-            tubo_rojo_gira = loader.loadSceneFromFile("Padawans_media\\XWing\\pipeline-TgcScene.xml");
-            tubo_rojo_derecho = loader.loadSceneFromFile("Padawans_media\\XWing\\tuberia-TgcScene.xml");
+            escena_bomba = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "Trench\\TRENCH_RUN.xml");
+            escena_alrededores = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "XWing\\death+star-TgcScene.xml");
+            escena_alrededores2 = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "XWing\\death+star2-TgcScene.xml");
+            //hierro = loader.loadSceneFromFile("Padawans_media\\XWing\\hierros-TgcScene.xml");
+            tubo_rojo_gira = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "XWing\\pipeline-TgcScene.xml");
+            tubo_rojo_derecho = loader.loadSceneFromFile(VariablesGlobales.mediaDir + "XWing\\tuberia-TgcScene.xml");
 
             //bloques de construccion
             //piso = loader.loadSceneFromFile("Padawans_media\\XWing\\m1-TgcScene.xml");
