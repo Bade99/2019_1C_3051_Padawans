@@ -55,6 +55,7 @@ namespace TGC.Group.Model
         private float tiempoDesdeUltimoDisparo = .5f;
         private float tiempoDesdeUltimaBomba = 5f;
         private float tiempoEntreBombas = 5f;
+        private bool naveForzadaAVolver = false;
 
         //propiedades de la nave
         private float escalar = .1f;
@@ -155,16 +156,24 @@ namespace TGC.Group.Model
         }
         private void LimitarMovimientos()
         {
-            if (position.Y > LimiteAltura)
+            naveForzadaAVolver = false;
+            if (position.Y > LimiteAltura && coordenadaEsferica.polar < FastMath.PI_HALF)
             {
+                naveForzadaAVolver = true;
                 DownArrow(VariablesGlobales.elapsedTime);
             }
-            if (position.X > LimiteLateral)
+            if (position.X > LimiteLateral &&
+                (coordenadaEsferica.acimutal < FastMath.PI_HALF ||
+                coordenadaEsferica.acimutal > 3 * FastMath.PI_HALF))
             {
+                naveForzadaAVolver = true;
                 RightArrow(VariablesGlobales.elapsedTime);
             }
-            if (position.X < -LimiteLateral)
+            if (position.X < -LimiteLateral &&
+                coordenadaEsferica.acimutal > FastMath.PI_HALF &&
+                coordenadaEsferica.acimutal < 3 * FastMath.PI_HALF)
             {
+                naveForzadaAVolver = true;
                 LeftArrow(VariablesGlobales.elapsedTime);
             }
         }
@@ -236,19 +245,19 @@ namespace TGC.Group.Model
         }
         private void MovimientoFlechas(TgcD3dInput input, float ElapsedTime)
         {
-            if (input.keyDown(Key.A))
+            if (input.keyDown(Key.A) && !naveForzadaAVolver)
             {
                 LeftArrow(ElapsedTime);
             }
-            if (input.keyDown(Key.D))
+            if (input.keyDown(Key.D) && !naveForzadaAVolver)
             {
                 RightArrow(ElapsedTime);
             }
-            if (input.keyDown(Key.W) && !rotationYAnimation)
+            if (input.keyDown(Key.W) && !rotationYAnimation && !naveForzadaAVolver)
             {
                 UpArrow(ElapsedTime);
             }
-            if (input.keyDown(Key.S) && !rotationYAnimation)
+            if (input.keyDown(Key.S) && !rotationYAnimation && !naveForzadaAVolver)
             {
                 DownArrow(ElapsedTime);
             }

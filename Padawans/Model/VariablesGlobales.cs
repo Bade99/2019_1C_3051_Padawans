@@ -26,7 +26,7 @@ namespace TGC.Group.Model
         public static Xwing xwing;
         public static bool POSTPROCESS = true;
         public static PostProcess postProcess;
-        public static bool SOUND=true;
+        public static bool SOUND=false;
         public static float timer = 5;//para testeos con temporizador
         public static bool SHADERS = true;
         public static Effect shader;//effect que todos los objetos a renderizar deben usar
