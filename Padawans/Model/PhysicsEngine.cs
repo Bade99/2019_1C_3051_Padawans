@@ -32,6 +32,7 @@ namespace TGC.Group.Model
         private int torretaIdCount = 3;
         private int xwingEnemigoIdCount = 2;
         private static readonly int ID_XWING = 1;
+        private static readonly int ID_PARED = -2;
 
         private readonly static float epsilonContact = 1f;
         CollisionObject main_character;
@@ -99,20 +100,19 @@ namespace TGC.Group.Model
             return misil;
         }
 
-        public List<RigidBody> AgregarEscenario(List<TgcMesh> meshesEscenario)
+        public CollisionObject AgregarEscenario(TGCVector3 size)
         {
-            List<RigidBody> bodies = new List<RigidBody>();
-            meshesEscenario.ForEach(mesh =>
-            {
-                /**
-                var body = CreateRigidBodyFromTgcMesh(mesh);
-                body.Friction = 0.5f;
-                
-                dynamicsWorld.AddRigidBody(body);
-                bodies.Add(body);
-    */
-            });
-            return bodies;
+            CollisionObject pared = CrearCollisionObject(size);
+            pared.UserIndex = ID_PARED;
+            collisionWorld.AddCollisionObject(pared);
+            return pared;
+        }
+        public CollisionObject AgregarEscenario(TgcMesh mesh)
+        {
+            CollisionObject pared = CreateCollisionFromTgcMesh(mesh);
+            pared.UserIndex = ID_PARED;
+            collisionWorld.AddCollisionObject(pared);
+            return pared;
         }
         public CollisionObject AgregarPersonaje(TGCVector3 size)
         {
@@ -148,9 +148,14 @@ namespace TGC.Group.Model
                 {
                     TorretaCollision(contactManifold, misilId, objetoId);
                 }
+                if (objetoId == ID_XWING && misilId == ID_PARED)
+                {
+                    ParedCollision();
+                }
                 collisionWorld.Dispatcher.ClearManifold(contactManifold);
             }
         }
+
 
         private bool EsMisilEnemigo(int misilId)
         {
@@ -200,7 +205,10 @@ namespace TGC.Group.Model
             }
 
         }
+        private void ParedCollision()
+        {
 
+        }
         public void Render(TgcD3dInput input)
         {
             if (VariablesGlobales.debugMode)
@@ -243,6 +251,23 @@ namespace TGC.Group.Model
             {
                 return obj.oA * 100 + obj.oB;
             }
+        }
+        private CollisionObject CreateCollisionFromTgcMesh(TgcMesh mesh)
+        {
+            var vertexCoords = mesh.getVertexPositions();
+
+            TriangleMesh triangleMesh = new TriangleMesh();
+            for (int i = 0; i < vertexCoords.Length; i = i + 3)
+            {
+                triangleMesh.AddTriangle(vertexCoords[i].ToBulletVector3(), vertexCoords[i + 1].ToBulletVector3(), vertexCoords[i + 2].ToBulletVector3());
+            }
+
+            var transformationMatrix = TGCMatrix.RotationYawPitchRoll(0, 0, 0).ToBsMatrix;
+            var bulletShape = new BvhTriangleMeshShape(triangleMesh, false);
+
+            CollisionObject collisionObject = new CollisionObject();
+            collisionObject.CollisionShape = bulletShape;
+            return collisionObject;
         }
     }
 }
