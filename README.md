@@ -15,10 +15,10 @@ Trabajo Práctico de la asignatura electiva [Técnicas de Gráficos por Computad
 * [TGC.Core](https://www.nuget.org/packages/TGC.Core/) (se baja automáticamente al hacer build por primera vez)
 
 ## Integrantes ##
-Foto  |  Apellido, Nombre
+Franco Badenas Abal  |  Daniel | Agustín
 ------------ | -------------
-[foto grupal]|Badenas Abal, Franco
-<img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/master/images/robotgc.png" height="500"> | <img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/master/images/trofeotp.png" height="500">
+[foto grupal]
+<img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/master/images/robotgc.png" height="500">
 
 ## ScreenShot ##
 ![screenshot1](https://github.com/Bade99/2019_1C_3051_Padawans/blob/master/Docs/Screenshots/s1.png)
