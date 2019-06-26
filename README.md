@@ -16,7 +16,7 @@ Trabajo Práctico de la asignatura electiva [Técnicas de Gráficos por Computad
 
 ## Integrantes ##
 Franco Badenas Abal  |  Daniel | Agustín
------------- | -------------
+------------ | -------------  | -------------
 [foto grupal]
 <img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/master/images/robotgc.png" height="500">
 
