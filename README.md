@@ -1,4 +1,4 @@
-# tgc-group
+﻿# tgc-group
 [![Build status](https://ci.appveyor.com/api/projects/status/uvyboubq91uhwf3v?svg=true)](https://ci.appveyor.com/project/rejurime/tgc-group)
 [![BCH compliance](https://bettercodehub.com/edge/badge/tgc-utn/tgc-group?branch=master)](https://bettercodehub.com/)
 [![GitHub license](https://img.shields.io/github/license/tgc-utn/tgc-group.svg)](https://github.com/tgc-utn/tgc-group/blob/master/LICENSE)
@@ -19,7 +19,7 @@ TGC, Tgcito  |  Apellido, Nombre
 <img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/master/images/robotgc.png" height="500"> | <img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/master/images/trofeotp.png" height="500">
 
 ## ScreenShot ##
-![screenshot1](https://github.com/tgc-utn/tgc-group/blob/master/TGC.Group/Media/cajaMadera4.jpg)
+![screenshot1](https://github.com/Bade99/2019_1C_3051_Padawans/blob/master/Docs/Screenshots/s1.png)
 ![screenshot2](https://github.com/tgc-utn/tgc-group/blob/master/TGC.Group/Media/cajaMadera4.jpg)
 ![screenshot3](https://github.com/tgc-utn/tgc-group/blob/master/TGC.Group/Media/cajaMadera4.jpg)
 ![screenshot4](https://github.com/tgc-utn/tgc-group/blob/master/TGC.Group/Media/cajaMadera4.jpg)
