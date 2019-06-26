@@ -20,10 +20,8 @@ TGC, Tgcito  |  Apellido, Nombre
 
 ## ScreenShot ##
 ![screenshot1](https://github.com/Bade99/2019_1C_3051_Padawans/blob/master/Docs/Screenshots/s1.png)
-![screenshot2](https://github.com/tgc-utn/tgc-group/blob/master/TGC.Group/Media/cajaMadera4.jpg)
-![screenshot3](https://github.com/tgc-utn/tgc-group/blob/master/TGC.Group/Media/cajaMadera4.jpg)
-![screenshot4](https://github.com/tgc-utn/tgc-group/blob/master/TGC.Group/Media/cajaMadera4.jpg)
-![screenshot5](https://github.com/tgc-utn/tgc-group/blob/master/TGC.Group/Media/cajaMadera4.jpg)
+![screenshot2](https://github.com/Bade99/2019_1C_3051_Padawans/blob/master/Docs/Screenshots/s2.png)
+![screenshot3](https://github.com/Bade99/2019_1C_3051_Padawans/blob/master/Docs/Screenshots/s3.png)
 
 ## Game Play ##
 [![Watch the video](https://img.youtube.com/vi/qESIu8ozanU/0.jpg)](https://www.youtube.com/playlist?list=PLRM4L32DjvnazuMl8wZlbpEYL5Qh63ulG)
