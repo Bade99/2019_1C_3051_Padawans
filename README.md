@@ -5,7 +5,7 @@
 [![GitHub release](https://img.shields.io/github/release/tgc-utn/tgc-group.svg)](https://github.com/tgc-utn/tgc-group/releases)
 
 ## Descripción
-Juego de Star Wars donde Luke tiene que llegar al final del camino para destruir la estrella de la muerte y salvar la galaxia.
+Juego de Star Wars donde Luke tiene que llegar al final del camino para destruir la Estrella de la Muerte y salvar la galaxia.
 Trabajo Práctico de la asignatura electiva [Técnicas de Gráficos por Computadora](http://tgc-utn.github.io/) (TGC) en la carrera de Ingeniería en Sistemas de Información. Universidad Tecnológica Nacional, Facultad Regional Buenos Aires (UTN-FRBA).
 
 ## Requisitos
@@ -17,6 +17,7 @@ Trabajo Práctico de la asignatura electiva [Técnicas de Gráficos por Computad
 ## Integrantes ##
 TGC, Tgcito  |  Apellido, Nombre
 ------------ | -------------
+|Badenas Abal, Franco
 <img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/master/images/robotgc.png" height="500"> | <img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/master/images/trofeotp.png" height="500">
 
 ## ScreenShot ##
