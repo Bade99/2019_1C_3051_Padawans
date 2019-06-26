@@ -17,7 +17,7 @@ Trabajo Práctico de la asignatura electiva [Técnicas de Gráficos por Computad
 ## Integrantes ##
 Foto  |  Apellido, Nombre
 ------------ | -------------
-|Badenas Abal, Franco
+[foto grupal]|Badenas Abal, Franco
 <img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/master/images/robotgc.png" height="500"> | <img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/master/images/trofeotp.png" height="500">
 
 ## ScreenShot ##
