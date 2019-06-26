@@ -15,8 +15,9 @@ Trabajo Práctico de la asignatura electiva [Técnicas de Gráficos por Computad
 * [TGC.Core](https://www.nuget.org/packages/TGC.Core/) (se baja automáticamente al hacer build por primera vez)
 
 ## Integrantes ##
-Franco Badenas Abal  |  Daniel | Agustín
------------- | -------------  | -------------
+ - Franco Badenas Abal
+ - Daniel
+ - Agustín
 [foto grupal]
 <img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/master/images/robotgc.png" height="500">
 
