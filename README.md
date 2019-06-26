@@ -5,7 +5,8 @@
 [![GitHub release](https://img.shields.io/github/release/tgc-utn/tgc-group.svg)](https://github.com/tgc-utn/tgc-group/releases)
 
 ## Descripción
-Proyecto plantilla para los trabajos prácticos de la asignatura electiva [Técnicas de Gráficos por Computadora](http://tgc-utn.github.io/) (TGC) en la carrera de Ingeniería en Sistemas de Información. Universidad Tecnológica Nacional, Facultad Regional Buenos Aires (UTN-FRBA).
+Juego de Star Wars donde Luke tiene que llegar al final del camino para destruir la estrella de la muerte y salvar la galaxia.
+Trabajo Práctico de la asignatura electiva [Técnicas de Gráficos por Computadora](http://tgc-utn.github.io/) (TGC) en la carrera de Ingeniería en Sistemas de Información. Universidad Tecnológica Nacional, Facultad Regional Buenos Aires (UTN-FRBA).
 
 ## Requisitos
 * [DirectX 9 SDK](http://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=6812)
