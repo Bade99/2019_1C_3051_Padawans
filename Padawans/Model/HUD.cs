@@ -15,6 +15,7 @@ namespace TGC.Group.Model
         private List<CustomBitmap> misiles;
         private Drawer2D drawer2D;
         private TGCVector2 posInit;
+        private MiniMap miniMap;
         //mira en el centro?
 
         private string misiles1 = "Bitmaps\\HUD\\HUD_missiles_1.png";
@@ -28,6 +29,9 @@ namespace TGC.Group.Model
         public HUD()
         {
             drawer2D = new Drawer2D();
+
+            VariablesGlobales.miniMap = new MiniMap(this.drawer2D);
+            this.miniMap = VariablesGlobales.miniMap;
 
             misiles = new List<CustomBitmap>
             {
@@ -78,7 +82,15 @@ namespace TGC.Group.Model
             drawer2D.DrawSprite(HUD_misiles);
             drawer2D.DrawSprite(HUD_vidas);
             drawer2D.EndDrawSprite();
+            if(VariablesGlobales.mostrarMiniMapa)
+                this.miniMap.Render();
         }
+
+        public void UpdateMiniMap()
+        {
+            this.miniMap.Update();
+        }
+
         public void Dispose()
         {
             HUD_misiles.Dispose();

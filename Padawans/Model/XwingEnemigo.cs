@@ -16,7 +16,7 @@ using Microsoft.DirectX.Direct3D;
 
 namespace TGC.Group.Model
 {
-    public class XwingEnemigo : IActiveElement,IShaderObject
+    public class XwingEnemigo : IActiveElement,IShaderObject, ITarget
     {
         private TgcScene nave;
         private Xwing target;
@@ -159,6 +159,11 @@ namespace TGC.Group.Model
                         nave.RenderAll();
                     break;
             }
+        }
+
+        public TGCVector3 GetPosition()
+        {
+            return posicion;
         }
     }
 }

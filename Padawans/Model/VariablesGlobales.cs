@@ -39,6 +39,8 @@ namespace TGC.Group.Model
         private static int max_bombas = 1;
         public static bool MODO_DIOS = false;
         public static bool debugMode = false;
+        public static MiniMap miniMap;
+        public static bool mostrarMiniMapa = false;
         public static void RestarVida()
         {
             vidas = FastMath.Max(0, vidas - 1);

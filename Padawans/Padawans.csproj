@@ -134,6 +134,7 @@
     <Compile Include="Model\IPostProcess.cs" />
     <Compile Include="Model\IRenderizer.cs" />
     <Compile Include="Model\ITarget.cs" />
+    <Compile Include="Model\MiniMap.cs" />
     <Compile Include="Model\PauseMenu.cs" />
     <Compile Include="Model\Cue.cs" />
     <Compile Include="Model\CustomBitmap.cs" />
