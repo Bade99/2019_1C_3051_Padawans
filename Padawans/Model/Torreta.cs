@@ -16,7 +16,7 @@ namespace TGC.Group.Model
 {
     public class Torreta : IActiveElement, IPostProcess, IShaderObject
     {
-        TgcMesh torreta;
+        private TgcMesh torreta;
         private TGCVector3 posicion;
         private TGCVector3 rotation;
         private TGCVector3 scaleVector;
@@ -72,11 +72,11 @@ namespace TGC.Group.Model
             }
         }
 
-        public void Posicionar()
+        private void Posicionar()
         {
             TGCMatrix rotationTranslation = TGCMatrix.RotationYawPitchRoll(rotation.Y, 0, 0) * TGCMatrix.Translation(posicion);
             torreta.Transform = TGCMatrix.Scaling(scaleVector) * rotationTranslation;
-            collisionObject.CollisionShape.LocalScaling = CommonHelper.VectorXEscalar(scaleVector, 1.6f).ToBulletVector3();
+            collisionObject.CollisionShape.LocalScaling = scaleVector.ToBulletVector3();
             collisionObject.WorldTransform = CommonHelper.TgcToBulletMatrix(rotationTranslation);
             /* Esto permite que rote en su eje, pero lo dejo desactivado porque los misiles quedan mal
             * TGCMatrix.Translation(-FastMath.Cos(rotation.Y) * (tamanioBoundingBox.X * factorEscala), 0,

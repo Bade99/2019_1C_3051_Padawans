@@ -22,7 +22,6 @@ namespace TGC.Group.Model
         private Dictionary<int, CollisionObject> listaMisilesEnemigo;
         private Dictionary<int, CollisionObject> listaMisilesXwing;
         private Dictionary<int, Torreta> listaTorretas;
-        private Dictionary<int, XwingEnemigo> listaXwingEnemigos;
         //Colisiones
         private List<int> listaIdMisilesQueColisionaronConXwing;
         private HashSet<Colision> listaColisionesTorretaMisil;
@@ -45,7 +44,6 @@ namespace TGC.Group.Model
             collisionWorld = new CollisionWorld(dispatcher, overlappingPairCache, collisionConfiguration);
             listaMisilesEnemigo = new Dictionary<int, CollisionObject>();
             listaMisilesXwing = new Dictionary<int, CollisionObject>();
-            listaXwingEnemigos = new Dictionary<int, XwingEnemigo>();
             listaTorretas = new Dictionary<int, Torreta>();
             listaIdMisilesQueColisionaronConXwing = new List<int>();
             listaColisionesTorretaMisil = new HashSet<Colision>(new ColisionCompare());
@@ -83,15 +81,6 @@ namespace TGC.Group.Model
             torretaIdCount += 2;
             return torretaCollision;
         }
-        public CollisionObject AgregarXwingEnemigo(XwingEnemigo xwingEnemigo, TGCVector3 size)
-        {
-            CollisionObject xwingEnemigoCollision = CrearCollisionObject(size);
-            listaXwingEnemigos.Add(xwingEnemigoIdCount, xwingEnemigo);
-            xwingEnemigoCollision.UserIndex = torretaIdCount;
-            xwingEnemigoIdCount += 2;
-            collisionWorld.AddCollisionObject(xwingEnemigoCollision);
-            return xwingEnemigoCollision;
-        }
 
         private CollisionObject AgregarMisil(TGCVector3 size)
         {
@@ -113,7 +102,7 @@ namespace TGC.Group.Model
             return piso;
         }
 
-        public CollisionObject AgregarPersonaje(TGCVector3 size)
+        public CollisionObject AgregarXwing(TGCVector3 size)
         {
             main_character = CrearCollisionObject(size);
             main_character.UserIndex = 1;
@@ -147,7 +136,7 @@ namespace TGC.Group.Model
                 {
                     TorretaCollision(contactManifold, misilId, objetoId);
                 }
-                if (objetoId == ID_XWING && misilId == ID_PARED_OBSTACULO)
+                if (objetoId == ID_XWING && (misilId == ID_PARED_OBSTACULO || EsTorreta(misilId)))
                 {
                     VariablesGlobales.xwing.ChocarPared();
                 }
@@ -202,10 +191,6 @@ namespace TGC.Group.Model
                     listaTorretas[objetoId].DisminuirVida();
                 }
             }
-
-        }
-        private void ParedCollision()
-        {
 
         }
         public void Render(TgcD3dInput input)

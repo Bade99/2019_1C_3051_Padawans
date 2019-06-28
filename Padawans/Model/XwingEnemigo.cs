@@ -35,9 +35,9 @@ namespace TGC.Group.Model
         private readonly float distanciaLejanaVisibilidad = 1200;
         //Velocidad fija de la nave enemigo
         private float velocidadGeneral;
-        private CollisionObject collisionObject;
         private readonly float AlturaMinimaChequeoXwing = 20;
         private bool activado = false;
+        private bool vivo = true;
         private readonly static float DistanciaMinimaPersecucion = 100;
         private TGCVector3 vectorDistancia;
 
@@ -66,7 +66,6 @@ namespace TGC.Group.Model
             //Calcula inicialmente en que direccion esta el xwing principal
             vectorDistancia = CommonHelper.SumarVectores(target.GetPosition(), -posicion);
             coordenadaAXwing = new CoordenadaEsferica(vectorDistancia.X, vectorDistancia.Y, vectorDistancia.Z);
-            collisionObject = VariablesGlobales.physicsEngine.AgregarXwingEnemigo(this, CommonHelper.VectorXEscalar(nave.Meshes[0].BoundingBox.calculateSize(), escalar));
         }
 
         public void Update()
@@ -77,19 +76,24 @@ namespace TGC.Group.Model
             {
                 //Lo pongo en otro if porque c# no hace lazy evaluating, es decir, evalua esa funcion tan cara
                 // aunque la primer parte haya dado falso
-                if (XwingSeEncuentraEnRadioDeVisibilidad() && target.GetPosition().Y > AlturaMinimaChequeoXwing)
+                if (vivo && XwingSeEncuentraEnRadioDeVisibilidad() && target.GetPosition().Y > AlturaMinimaChequeoXwing)
                 {
                     timer = 0;
                     Disparar();
                     activado = true;
                 }
             }
-            if (activado)
+            if (activado && vivo)
             {
                 Moverse();
             }
             //Dirigirse en direccion al xwing
             coordenadaEsferica = coordenadaAXwing;
+        }
+        public void Morir()
+        {
+            vivo = false;
+            //Aca habria que correr el shader durante un ratito para parezca que desaparece
         }
         private void Moverse()
         {

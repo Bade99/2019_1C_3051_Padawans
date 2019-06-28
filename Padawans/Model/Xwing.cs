@@ -101,7 +101,7 @@ namespace TGC.Group.Model
                 }
                 VariablesGlobales.shaderManager.AddObject(this);
             }
-            collisionObject = VariablesGlobales.physicsEngine.AgregarPersonaje(xwing.BoundingBox.calculateSize());
+            collisionObject = VariablesGlobales.physicsEngine.AgregarXwing(xwing.BoundingBox.calculateSize());
             ActualizarCoordenadaEsferica();
 
             bloom = new TgcMesh[2];
