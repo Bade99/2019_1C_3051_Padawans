@@ -44,7 +44,7 @@ namespace TGC.Group.Model
             torreta = VariablesGlobales.loader.loadSceneFromFile(VariablesGlobales.mediaDir + "XWing\\torreta-TgcScene.xml").Meshes[0];
             scaleVector = new TGCVector3(factorEscala, factorEscala, factorEscala);
             torreta.AutoTransformEnable = false;
-            this.vida = 3;
+            this.vida = 1;
             if (VariablesGlobales.SHADERS)
             {
                 Effect shader = VariablesGlobales.shaderManager.AskForEffect(ShaderManager.MESH_TYPE.SHADOW);

@@ -67,9 +67,70 @@ namespace TGC.Group.Model
             this.n = n;
 
             Escena_Principal();
+        }
+        private void Escena_Principal()
+        {
+            var posicion = new TGCVector3(-160f, 0f, -500f);//por el tamaño de los objetos su centro termina cerca de 0,0,0
+
+            TGCVector3 posicion_inicial = new TGCVector3(0, 0, 0);//variable para contar la distancia recorrida, y asi agregar objetos extra luego
+            TGCVector3 posicion_final; //en z es una linea recta hacia posicion_inicial
+
+            var escalador = new TGCVector3(30f, 30f, 30f);
+            int mesh_pivot = 0;
+            var rotacion = new TGCVector3(0f, 0f, 0f);
+
+            //escenario principal
+            //-----
+
+            posicion = PlaceSceneLine(escena_bomba, posicion, escalador, n / 2, mesh_pivot, 0, rotacion, true, true, false);
+
+            posicion.X += 325f;
+            rotacion = new TGCVector3(0f, FastMath.PI, 0f);
+            posicion = PlaceSceneLine(escena_bomba, posicion, escalador, 1, mesh_pivot, 0, rotacion, true, true, true);
+
+            posicion.X -= 325f;
+            rotacion = new TGCVector3(0f, 0f, 0f);
+            posicion = PlaceSceneLine(escena_bomba, posicion, escalador, n / 2, mesh_pivot, 0, rotacion, true, true, false);
+
+
+            posicion = new TGCVector3(-350f, 50f, -500f);
+            escalador = new TGCVector3(50f, 50f, 30f);
+            mesh_pivot = 1;
+            rotacion = new TGCVector3(0, FastMath.TWO_PI, 0f);
+            PlaceSceneLine(escena_alrededores, posicion, escalador, n, mesh_pivot, 0, rotacion, false);
+
+            posicion = new TGCVector3(0f, 800f, -500f);
+            mesh_pivot = 2;
+            rotacion = new TGCVector3(0f, 0f, FastMath.PI);
+            posicion_final = PlaceSceneLine(escena_alrededores2, posicion, escalador, n, mesh_pivot, 0, rotacion, false);
+            //-----
+
+            //extras
+            //-----
+            TGCVector3 distancia = new TGCVector3(0, 0, -FastMath.Abs(posicion_final.Z));
+
+            posicion = distancia * .1f;
+            //posicion = new TGCVector3(0f, 0f, -500f);
+            //posicion = posicion_inicial - (distancia * .5f);
+            escalador = new TGCVector3(.65f, .3f, 1f);
+            mesh_pivot = 0;
+            rotacion = new TGCVector3(0f, 0f, 0f);
+            PlaceSceneLine(tubo_rojo_gira, posicion, escalador, n, mesh_pivot, 400f, rotacion, true);
+
+            posicion = distancia * .4f + new TGCVector3(30f, 0, 0);
+            escalador = new TGCVector3(.3f, .3f, 5f);
+            PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0, rotacion, true);
+
+            posicion = distancia * .6f + new TGCVector3(-30f, 0, 0);
+            PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0, rotacion, true);
+
+            escalador = new TGCVector3(30f, 50f, 50f);
+            mesh_pivot = 0;
+            rotacion = new TGCVector3(0f, 0f, 0f);
+
+            PonerTorretas(posicion_inicial, posicion_final, new TGCVector3(0, FastMath.PI, 0), 50f, 30);
 
         }
-
         private void PlaceMeshRnd() { }//@funcion a realizar
 
         private void RenderMeshList (List <TgcMesh> meshes)
@@ -86,9 +147,43 @@ namespace TGC.Group.Model
             todas_escenas.ForEach(s => s.ForEach(m => m.Effect = shadow));
             todas_escenas.ForEach(escena => { main_escena_instancia_shadow.Add(escena); });
         }
+        private void CollisionObjectsPrincipales(float deltaZ, bool reverse)
+        {
+            CrearObjetoEscenario(new TGCVector3(90, 14, 18), new TGCVector3(0, -20, 1009), deltaZ, reverse);
+            CrearObjetoEscenario(new TGCVector3(90, 14, 18), new TGCVector3(0, -50, 460), deltaZ, reverse);
+            CrearObjetoEscenario(new TGCVector3(90, 10, 10), new TGCVector3(0, 0, 522), deltaZ, reverse);
+            CrearObjetoEscenario(new TGCVector3(90, 8, 8), new TGCVector3(0, -5, 415), deltaZ, reverse);
+            CrearObjetoEscenario(new TGCVector3(90, 8, 8), new TGCVector3(0, -5, 275), deltaZ, reverse);
+            CrearObjetoEscenario(new TGCVector3(90, 8, 8), new TGCVector3(0, -8, 202), deltaZ, reverse);
+            CrearObjetoEscenario(new TGCVector3(90, 8, 8), new TGCVector3(0, -10, 123), deltaZ, reverse);
+            CrearObjetoEscenario(new TGCVector3(90, 12, 12), new TGCVector3(0, -10, 92), deltaZ, reverse);
+            CrearObjetoEscenario(new TGCVector3(90, 18, 40), new TGCVector3(0, -8, -170), deltaZ, reverse);
+            CrearObjetoEscenario(new TGCVector3(90, 20, 60), new TGCVector3(0, -5, -671), deltaZ, reverse);
+            CrearObjetoEscenario(new TGCVector3(90, 48, 45), new TGCVector3(0, -44, -1460), deltaZ, reverse);
+        }
+        private void CrearObjetoEscenario(TGCVector3 tamanio, TGCVector3 posicion, float deltaZ, bool reverse)
+        {
+            CollisionObject objeto = VariablesGlobales.physicsEngine.AgregarParedObstaculo(tamanio);
 
+            if (reverse)
+            {
+                posicion.Z = deltaZ - posicion.Z;
+                objeto.WorldTransform = CommonHelper.TgcToBulletMatrix(TGCMatrix.Translation(posicion));
+            } else
+            {
+                posicion.Z += deltaZ;
+                objeto.WorldTransform = CommonHelper.TgcToBulletMatrix(TGCMatrix.Translation(posicion));
+            }
+        }
+
+        private TGCVector3 PlaceSceneLine(TgcScene escena, TGCVector3 posicion, TGCVector3 escalador,
+            int repeticiones, int mesh_pivot, float distancia_extra, TGCVector3 rotacion, bool shader)
+        {
+            return PlaceSceneLine(escena, posicion, escalador, repeticiones, mesh_pivot, distancia_extra, rotacion, shader, false, false);
+        }
         private TGCVector3 PlaceSceneLine(TgcScene escena, TGCVector3 posicion, TGCVector3 escalador, 
-            int repeticiones, int mesh_pivot,float distancia_extra, TGCVector3 rotacion, bool shader, bool agregarCollision)//agrega la scene al render
+            int repeticiones, int mesh_pivot,float distancia_extra, TGCVector3 rotacion, bool shader, 
+            bool escenaBomba, bool escenaBombaRotada)//agrega la scene al render
         //la rotacion es muy limitada solo queda bien en pi/2 o pi y aun asi solo en ciertos casos, estoy trabajando en un nuevo metodo
         //el mesh pivot es para elegir cual de las meshes es el que va a usar de separador
         {
@@ -109,13 +204,15 @@ namespace TGC.Group.Model
                     TGCMatrix matrizRotacion = TGCMatrix.RotationYawPitchRoll(rotacion.Y, rotacion.X, rotacion.Z);
                     TGCMatrix matrizPosicion = TGCMatrix.Translation(posicion);
                     meshClonado.Transform = TGCMatrix.Scaling(escalador) * matrizRotacion * matrizPosicion;
-
-                        AgregarCollisionObject(meshClonado, escalador, matrizRotacion * matrizPosicion);
                     if (j == mesh_pivot)
                     {
                         nuevaPosicion = new TGCVector3(posicion.X, posicion.Y,
                             posicion.Z - meshClonado.BoundingBox.calculateSize().Z * escalador.Z - distancia_extra);
                     }
+                }
+                if (escenaBomba)
+                {
+                    CollisionObjectsPrincipales(posicion.Z, escenaBombaRotada);
                 }
                 posicion = nuevaPosicion;
             }
@@ -126,12 +223,6 @@ namespace TGC.Group.Model
                 AddListListMeshToMain(todas_escenas);
 
             return posicion;
-        }
-        private void AgregarCollisionObject(TgcMesh meshClonado, TGCVector3 escalador, TGCMatrix matrizRotacionTraslacion)
-        {
-            CollisionObject collisionObject = VariablesGlobales.physicsEngine.AgregarEscenario(meshClonado.BoundingBox.calculateSize());
-            collisionObject.CollisionShape.LocalScaling = escalador.ToBulletVector3();
-            collisionObject.WorldTransform = CommonHelper.TgcToBulletMatrix(matrizRotacionTraslacion);
         }
 
         private void CrearTorreta(TGCVector3 pos, TGCVector3 rotation)
@@ -158,70 +249,6 @@ namespace TGC.Group.Model
                 CrearTorreta(new TGCVector3(posInicial.X+mitadAnchoPista*MyRandom() + 30, posInicial.Y-65,posInicial.Z+ signoZFinal * (float)random.Next(zLargo)),rotation);
             }
             
-        }
-
-        private void Escena_Principal()
-        {
-            var posicion = new TGCVector3(-160f, 0f, -500f);//por el tamaño de los objetos su centro termina cerca de 0,0,0
-
-            TGCVector3 posicion_inicial = new TGCVector3(0,0,0);//variable para contar la distancia recorrida, y asi agregar objetos extra luego
-            TGCVector3 posicion_final; //en z es una linea recta hacia posicion_inicial
-
-            var escalador = new TGCVector3(30f, 30f, 30f);
-            int mesh_pivot = 0;
-            var rotacion = new TGCVector3(0f, 0f, 0f);
-
-            //escenario principal
-            //-----
-
-            posicion = PlaceSceneLine(escena_bomba, posicion, escalador, n/2, mesh_pivot, 0,rotacion,true,true);
-            
-            posicion.X += 325f;//necesitamos rotacion sin que modifique posicion
-            rotacion = new TGCVector3(0f, FastMath.PI, 0f);
-            posicion = PlaceSceneLine(escena_bomba, posicion, escalador, 1, mesh_pivot, 0, rotacion,true,false);
-
-            posicion.X -= 325f;
-            rotacion = new TGCVector3(0f, 0f, 0f);
-            posicion = PlaceSceneLine(escena_bomba, posicion, escalador, n / 2, mesh_pivot, 0, rotacion,true, false);
-
-   
-            posicion = new TGCVector3(-350f, 50f, -500f);
-            escalador = new TGCVector3(50f, 50f, 30f);
-            mesh_pivot = 1;
-            rotacion = new TGCVector3(0,FastMath.TWO_PI, 0f);
-            PlaceSceneLine(escena_alrededores, posicion, escalador, n, mesh_pivot, 0,rotacion,false, false);
-
-            posicion = new TGCVector3(0f, 800f, -500f);
-            mesh_pivot = 2;
-            rotacion = new TGCVector3(0f, 0f, FastMath.PI);
-            posicion_final = PlaceSceneLine(escena_alrededores2, posicion, escalador, n, mesh_pivot, 0,rotacion,false, false);
-            //-----
-
-            //extras
-            //-----
-            TGCVector3 distancia = new TGCVector3(0,0, -FastMath.Abs(posicion_final.Z));
-
-            posicion = distancia*.1f;
-            //posicion = new TGCVector3(0f, 0f, -500f);
-            //posicion = posicion_inicial - (distancia * .5f);
-            escalador = new TGCVector3(.65f, .3f, 1f);
-            mesh_pivot = 0;
-            rotacion = new TGCVector3(0f, 0f, 0f);
-            PlaceSceneLine(tubo_rojo_gira, posicion, escalador, n, mesh_pivot, 400f, rotacion,true, false);
-
-            posicion = distancia * .4f + new TGCVector3(30f,0,0);
-            escalador = new TGCVector3(.3f, .3f, 5f);
-            PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0,rotacion,true, false);
-
-            posicion = distancia * .6f + new TGCVector3(-30f, 0, 0);
-            PlaceSceneLine(tubo_rojo_derecho, posicion, escalador, (int)(n * 1.5f), mesh_pivot, 0, rotacion,true, false);
-
-            escalador = new TGCVector3(30f, 50f, 50f);
-            mesh_pivot = 0;
-            rotacion = new TGCVector3(0f, 0f, 0f);
-
-            PonerTorretas(posicion_inicial, posicion_final, new TGCVector3(0, FastMath.PI, 0), 50f, 30);
-
         }
 
         public void SetTechnique(string technique, ShaderManager.MESH_TYPE tipo)

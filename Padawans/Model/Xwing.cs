@@ -62,6 +62,17 @@ namespace TGC.Group.Model
         private readonly static float LimiteAltura = 200f;
         private readonly static float LimiteLateral = 300f;
 
+        //Choques con escenario
+        private bool choqueConPiso = false;
+        private bool choquePisoAltoLejos = false;
+        private bool choquePisoAltoCerca = false;
+        private bool choqueConLateralIzq = false;
+        private bool choqueConLateralDer = false;
+        private bool choqueObstaculo = false;
+        private readonly static float tiempoChoqueObstaculo = 0.7f;
+        private readonly static float tiempoChoqueObstaculoMovimiento = 0.1f;
+        private float timerChoqueObstaculo = 0;
+
         public Xwing(TgcSceneLoader loader, TGCVector3 posicionInicial)
         {
             this.loader = loader;
@@ -153,6 +164,7 @@ namespace TGC.Group.Model
             MedioBarrelRoll(input, ElapsedTime);
             RotationYAnimation();
             EfectoFriccion(ElapsedTime);
+            ChoqueObstaculo(ElapsedTime);
         }
         private void LimitarMovimientos()
         {
@@ -175,6 +187,111 @@ namespace TGC.Group.Model
             {
                 naveForzadaAVolver = true;
                 LeftArrow(VariablesGlobales.elapsedTime);
+            }
+            //Choque con piso trenchrun
+            if (position.Y < -67 && position.X > -35 && position.X < 35 && coordenadaEsferica.polar > FastMath.PI_HALF)
+            {
+                UpArrow(VariablesGlobales.elapsedTime * 4);
+                choqueConPiso = true;
+            } else
+            {
+                if (choqueConPiso)
+                {
+                    VariablesGlobales.vidas--;
+                    choqueConPiso = false;
+                }
+            }
+            //Choque con lateral izq
+            if (position.Y < 5 && position.Y > -60 && position.X > 35 &&
+                (coordenadaEsferica.acimutal < FastMath.PI_HALF ||
+                coordenadaEsferica.acimutal > 3 * FastMath.PI_HALF))
+            {
+                RightArrow(VariablesGlobales.elapsedTime * 4);
+                choqueConLateralIzq = true;
+            }
+            else
+            {
+                if (choqueConLateralIzq)
+                {
+                    VariablesGlobales.vidas--;
+                    choqueConLateralIzq = false;
+                }
+            }
+            //Choque con lateral der
+            if (position.Y < 5 && position.Y > -60 && position.X < -35 &&
+                coordenadaEsferica.acimutal > FastMath.PI_HALF &&
+                coordenadaEsferica.acimutal < 3 * FastMath.PI_HALF)
+            {
+                LeftArrow(VariablesGlobales.elapsedTime * 4);
+                choqueConLateralDer = true;
+            }
+            else
+            {
+                if (choqueConLateralDer)
+                {
+                    VariablesGlobales.vidas--;
+                    choqueConLateralDer = false;
+                }
+            }
+            //Choque con piso alto cerca
+            if (position.Y < 5 && (position.X < -35 && position.X > -110  || position.X > 35 && position.X < 110)
+                && coordenadaEsferica.polar > FastMath.PI_HALF)
+            {
+                UpArrow(VariablesGlobales.elapsedTime * 4);
+                choquePisoAltoCerca = true;
+            }
+            else
+            {
+                if (choquePisoAltoCerca)
+                {
+                    VariablesGlobales.vidas--;
+                    choquePisoAltoCerca = false;
+                }
+            }
+            //Choque con piso alto lejos
+            if (position.Y < -10 && (position.X < -110 || position.X > 110) &&
+                coordenadaEsferica.polar > FastMath.PI_HALF)
+            {
+                UpArrow(VariablesGlobales.elapsedTime * 4);
+                choquePisoAltoLejos = true;
+            }
+            else
+            {
+                if (choquePisoAltoLejos)
+                {
+                    VariablesGlobales.vidas--;
+                    choquePisoAltoLejos = false;
+                }
+            }
+        }
+
+        public void ChocarPared()
+        {
+            choqueObstaculo = true;
+        }
+        private void ChoqueObstaculo(float ElapsedTime)
+        {
+            if (choqueObstaculo)
+            {
+                if (timerChoqueObstaculo < tiempoChoqueObstaculoMovimiento)
+                {
+                    Random random = new Random();
+                    float rx = random.Next(-3, 3);
+                    float ry = random.Next(-3, 3);
+                    float rangA = (float)random.NextDouble() * 0.4f -0.2f;
+                    float rangP = (float)random.NextDouble() * 0.4f -0.2f;
+                    position.X += rx;
+                    position.Y += ry;
+                    coordenadaEsferica.acimutal += rangA;
+                    coordenadaEsferica.polar += rangP;
+                }
+                timerChoqueObstaculo += ElapsedTime;
+                if (timerChoqueObstaculo > tiempoChoqueObstaculo)
+                {
+                    VariablesGlobales.vidas--;
+                    choqueObstaculo = false;
+                    timerChoqueObstaculo = 0;
+                }
             }
         }
         private void RotationYAnimation()

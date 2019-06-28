@@ -32,7 +32,7 @@ namespace TGC.Group.Model
         private int torretaIdCount = 3;
         private int xwingEnemigoIdCount = 2;
         private static readonly int ID_XWING = 1;
-        private static readonly int ID_PARED = -2;
+        private static readonly int ID_PARED_OBSTACULO = -2;
 
         private readonly static float epsilonContact = 1f;
         CollisionObject main_character;
@@ -100,20 +100,19 @@ namespace TGC.Group.Model
             return misil;
         }
 
-        public CollisionObject AgregarEscenario(TGCVector3 size)
+        private CollisionObject AgregarEscenario(TGCVector3 size)
         {
             CollisionObject pared = CrearCollisionObject(size);
-            pared.UserIndex = ID_PARED;
             collisionWorld.AddCollisionObject(pared);
             return pared;
         }
-        public CollisionObject AgregarEscenario(TgcMesh mesh)
+        public CollisionObject AgregarParedObstaculo(TGCVector3 size)
         {
-            CollisionObject pared = CreateCollisionFromTgcMesh(mesh);
-            pared.UserIndex = ID_PARED;
-            collisionWorld.AddCollisionObject(pared);
-            return pared;
+            CollisionObject piso = AgregarEscenario(size);
+            piso.UserIndex = ID_PARED_OBSTACULO;
+            return piso;
         }
+
         public CollisionObject AgregarPersonaje(TGCVector3 size)
         {
             main_character = CrearCollisionObject(size);
@@ -148,9 +147,9 @@ namespace TGC.Group.Model
                 {
                     TorretaCollision(contactManifold, misilId, objetoId);
                 }
-                if (objetoId == ID_XWING && misilId == ID_PARED)
+                if (objetoId == ID_XWING && misilId == ID_PARED_OBSTACULO)
                 {
-                    ParedCollision();
+                    VariablesGlobales.xwing.ChocarPared();
                 }
                 collisionWorld.Dispatcher.ClearManifold(contactManifold);
             }
