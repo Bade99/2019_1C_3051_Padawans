@@ -11,6 +11,7 @@ namespace TGC.Group.Model
 {
     public static class VariablesGlobales
     {
+        public static FollowingCamera camara;
         public static string mediaDir;
         public static string shadersDir;
         public static TgcSceneLoader loader;

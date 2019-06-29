@@ -50,6 +50,16 @@ public class FollowingCamera
         Camara.SetCamera(cameraPosition, lookAtCamera);
     }
 
+    public TGCVector3 GetPositionAtDistance(float dist)
+    {
+        return CommonHelper.SumarVectores(xwing.GetPosition(), GetDistancePoint(dist));
+    }
+
+    private TGCVector3 GetDistancePoint(float dist)
+    {
+        return this.coordenadaEsferica.GetXYZCoord() * dist;
+    }
+
     private TGCVector3 GetDistancePoint()
     {
         TGCVector3 distance_point =  this.coordenadaEsferica.GetXYZCoord() * fixedDistanceCamera;

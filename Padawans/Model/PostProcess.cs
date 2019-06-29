@@ -422,7 +422,7 @@ namespace TGC.Group.Model
 
             if (VariablesGlobales.DameLuz)
             {
-                TGCVector3 light_pos = VariablesGlobales.xwing.GetPosition();
+                TGCVector3 light_pos = VariablesGlobales.camara.GetPositionAtDistance(-10);//VariablesGlobales.xwing.GetPosition();
                 TGCVector3 light_dir = VariablesGlobales.xwing.GetCoordenadaEsferica().GetXYZCoord();
                 shader.SetValue("g_vLightPos", new Vector4(light_pos.X, light_pos.Y, light_pos.Z , 1));
                 shader.SetValue("g_vLightDir", new Vector4(light_dir.X, light_dir.Y, light_dir.Z, 1));

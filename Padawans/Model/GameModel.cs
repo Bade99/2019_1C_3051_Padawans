@@ -96,6 +96,9 @@ namespace TGC.Group.Model
 
             worldSphere = new WorldSphere(VariablesGlobales.loader, xwing);
             followingCamera = new FollowingCamera(xwing);
+
+            VariablesGlobales.camara = followingCamera;
+
             boundingBoxHelper = new BoundingBoxHelper(new SceneElement[]{ xwing, pistaReferencia, worldSphere },new ActiveElementManager[] { managerElementosTemporales });
             cues = new CueManager(new Cue(new DelayCueLauncher(3),"Bitmaps\\WASD.png", VariablesGlobales.cues_relative_scale, VariablesGlobales.cues_relative_position,3),
                                   new Cue(new DelayCueLauncher(3),"Bitmaps\\Pause.png", VariablesGlobales.cues_relative_scale, VariablesGlobales.cues_relative_position, 3),
