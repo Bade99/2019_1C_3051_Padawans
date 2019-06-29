@@ -20,11 +20,11 @@ namespace TGC.Group.Model
     /// <summary>
     ///     Una clase de ejemplo que grafica pistas para poder tener una referencia de la velocidad de la nave
     /// </summary>
-    public class MainRunway : SceneElement,IShaderObject
+    public class MainRunway : SceneElement, IShaderObject
     {
         private TgcSceneLoader loader;
-        private TgcScene escena_bomba, escena_alrededores, escena_alrededores2,hierro, tubo_rojo_gira, tubo_rojo_derecho;
-        private List<List<TgcMesh>> main_escena_instancia, main_escena_instancia_shadow; //deberia ser lista de lista de lista
+        private TgcScene escena_bomba, escena_alrededores, escena_alrededores2, hierro, tubo_rojo_gira, tubo_rojo_derecho;
+        private List<ListaMeshPosicionada> main_escena_instancia, main_escena_instancia_shadow; //deberia ser lista de lista de lista
         //bloques de construccion
         //TgcScene piso;
         private int n;
@@ -41,8 +41,8 @@ namespace TGC.Group.Model
         /// </summary>
         public MainRunway(TgcSceneLoader loader, int n, TgcFrustum frustum, Xwing targetTorretas)
         {
-            main_escena_instancia = new List<List<TgcMesh>>();
-            main_escena_instancia_shadow = new List<List<TgcMesh>>();
+            main_escena_instancia = new List<ListaMeshPosicionada>();
+            main_escena_instancia_shadow = new List<ListaMeshPosicionada>();
             random = new Random();
             this.loader = loader;
             this.frustum = frustum;
@@ -133,18 +133,18 @@ namespace TGC.Group.Model
         }
         private void PlaceMeshRnd() { }//@funcion a realizar
 
-        private void RenderMeshList (List <TgcMesh> meshes)
+        private void RenderMeshList(List<TgcMesh> meshes)
         {
-            meshes.ForEach(mesh=>{ mesh.Render(); });
+            meshes.ForEach(mesh => { mesh.Render(); });
         }
 
-        private void AddListListMeshToMain(List<List<TgcMesh>> todas_escenas)
+        private void AddListListMeshToMain(List<ListaMeshPosicionada> todas_escenas)
         {
             todas_escenas.ForEach(escena => { main_escena_instancia.Add(escena); });
         }
-        private void AddListListMeshToMainShadow(List<List<TgcMesh>> todas_escenas)
+        private void AddListListMeshToMainShadow(List<ListaMeshPosicionada> todas_escenas)
         {
-            todas_escenas.ForEach(s => s.ForEach(m => m.Effect = shadow));
+            todas_escenas.ForEach(s => s.lista.ForEach(m => m.Effect = shadow));
             todas_escenas.ForEach(escena => { main_escena_instancia_shadow.Add(escena); });
         }
         private void CollisionObjectsPrincipales(float deltaZ, bool reverse)
@@ -181,17 +181,17 @@ namespace TGC.Group.Model
         {
             return PlaceSceneLine(escena, posicion, escalador, repeticiones, mesh_pivot, distancia_extra, rotacion, shader, false, false);
         }
-        private TGCVector3 PlaceSceneLine(TgcScene escena, TGCVector3 posicion, TGCVector3 escalador, 
-            int repeticiones, int mesh_pivot,float distancia_extra, TGCVector3 rotacion, bool shader, 
+        private TGCVector3 PlaceSceneLine(TgcScene escena, TGCVector3 posicion, TGCVector3 escalador,
+            int repeticiones, int mesh_pivot, float distancia_extra, TGCVector3 rotacion, bool shader,
             bool escenaBomba, bool escenaBombaRotada)//agrega la scene al render
         //la rotacion es muy limitada solo queda bien en pi/2 o pi y aun asi solo en ciertos casos, estoy trabajando en un nuevo metodo
         //el mesh pivot es para elegir cual de las meshes es el que va a usar de separador
         {
-            List<List<TgcMesh>> todas_escenas = new List<List<TgcMesh>>();//tengo que devolverlos como list de list ya que tgcscene no soporta que le agregue meshes
-            
+            List<ListaMeshPosicionada> todas_escenas = new List<ListaMeshPosicionada>();//tengo que devolverlos como list de list ya que tgcscene no soporta que le agregue meshes
+
             for (int i = 0; i < repeticiones; i++)
             {
-                todas_escenas.Add( new List<TgcMesh>());
+                todas_escenas.Add(new ListaMeshPosicionada());
                 TGCVector3 nuevaPosicion = posicion;
 
                 for (int j = 0; j < escena.Meshes.Count; j++)
@@ -199,13 +199,14 @@ namespace TGC.Group.Model
                     TgcMesh mesh = escena.Meshes[j];
                     TgcMesh meshClonado = mesh.clone(mesh.Name);
 
-                    todas_escenas[i].Add(meshClonado);
+                    todas_escenas[i].lista.Add(meshClonado);
                     meshClonado.AutoTransformEnable = false;
                     TGCMatrix matrizRotacion = TGCMatrix.RotationYawPitchRoll(rotacion.Y, rotacion.X, rotacion.Z);
                     TGCMatrix matrizPosicion = TGCMatrix.Translation(posicion);
                     meshClonado.Transform = TGCMatrix.Scaling(escalador) * matrizRotacion * matrizPosicion;
                     if (j == mesh_pivot)
                     {
+                        todas_escenas[i].posicion = posicion;
                         nuevaPosicion = new TGCVector3(posicion.X, posicion.Y,
                             posicion.Z - meshClonado.BoundingBox.calculateSize().Z * escalador.Z - distancia_extra);
                     }
@@ -234,28 +235,28 @@ namespace TGC.Group.Model
 
         private float MyRandom()//retorna float entre 0 y 1 de a .1 incrementos, puede ser positivo o negativo
         {
-            float signo = random.Next(1)==1 ? 1f : -1f;
-            return ((float)random.Next(10) / 10f)*signo;
+            float signo = random.Next(1) == 1 ? 1f : -1f;
+            return ((float)random.Next(10) / 10f) * signo;
         }
 
-        private void PonerTorretas(TGCVector3 posInicial, TGCVector3 posFinal,TGCVector3 rotation,
-                                    float mitadAnchoPista,int cantidad)
+        private void PonerTorretas(TGCVector3 posInicial, TGCVector3 posFinal, TGCVector3 rotation,
+                                    float mitadAnchoPista, int cantidad)
         {
             float signoZFinal = (float)Math.Sign(posFinal.Z);
             //mejor hacer abs de zinicial - zfinal y usar el signo de zfinal p sumarle a zinicial
-            int zLargo =(int)FastMath.Abs(posInicial.Z-posFinal.Z);
+            int zLargo = (int)FastMath.Abs(posInicial.Z - posFinal.Z);
             for (int i = 0; i < cantidad; i++)
             {//@@Problema aca con el random, solo sirve pa ints positivos, cambiarlo y obtener el + o - afuera, esta tirando exception
-                CrearTorreta(new TGCVector3(posInicial.X+mitadAnchoPista*MyRandom() + 30, posInicial.Y-65,posInicial.Z+ signoZFinal * (float)random.Next(zLargo)),rotation);
+                CrearTorreta(new TGCVector3(posInicial.X + mitadAnchoPista * MyRandom() + 30, posInicial.Y - 65, posInicial.Z + signoZFinal * (float)random.Next(zLargo)), rotation);
             }
-            
+
         }
 
         public void SetTechnique(string technique, ShaderManager.MESH_TYPE tipo)
         {
             switch (tipo)
             {
-                case ShaderManager.MESH_TYPE.SHADOW: main_escena_instancia_shadow.ForEach(s => s.ForEach(m => m.Technique = technique)); break;
+                case ShaderManager.MESH_TYPE.SHADOW: main_escena_instancia_shadow.ForEach(s => s.lista.ForEach(m => m.Technique = technique)); break;
             }
         }
 
@@ -264,7 +265,7 @@ namespace TGC.Group.Model
             switch (tipo)
             {
                 case ShaderManager.MESH_TYPE.DEFAULT:
-                    main_escena_instancia.ForEach(s => s.ForEach(m =>
+                    main_escena_instancia.ForEach(s => s.lista.ForEach(m =>
                     {
                         //if (TgcCollisionUtils.classifyFrustumAABB(this.frustum, m.BoundingBox)
                         //!= TgcCollisionUtils.FrustumResult.OUTSIDE
@@ -275,33 +276,49 @@ namespace TGC.Group.Model
                     }));
                     break;
                 case ShaderManager.MESH_TYPE.SHADOW:
-                    main_escena_instancia_shadow.ForEach(s => s.ForEach(m =>
-                    { 
-                    //if (
-                        //TgcCollisionUtils.classifyFrustumAABB(this.frustum, m.BoundingBox) 
-                        //!= TgcCollisionUtils.FrustumResult.OUTSIDE
-                        //&& CommonHelper.InDistance(m.BoundingBox.calculateBoxCenter(),VariablesGlobales.xwing.GetPosition(),3000))
-                        
+                    main_escena_instancia_shadow.ForEach(s =>
+                    {
+                        if (CumpleCondicionRender(s))
                         {
-                            m.Render();
+                            s.lista.ForEach(m =>
+                            {
+                                m.Render();
+                            });
                         }
-                    }));
+                    });
                     break;
             }
         }
 
-        public override void Render(){}
+        private bool CumpleCondicionRender(ListaMeshPosicionada listaM)
+        {
+            TGCVector3 vectorDistancia = CommonHelper.SumarVectores(target.GetPosition(), -listaM.posicion);
+            float largoDistancia = vectorDistancia.Length();
+            return TGCVector3.Dot(-vectorDistancia, target.coordenadaDireccionCartesiana) > 0
+                || largoDistancia < 2000;
+        }
 
-        public override void Update(){}
+        public override void Render() { }
+
+        public override void Update() { }
 
         public override void Dispose()
         {
-            main_escena_instancia.ForEach(escena => { escena.ForEach(mesh => { mesh.Dispose(); }); });
+            main_escena_instancia.ForEach(escena => { escena.lista.ForEach(mesh => { mesh.Dispose(); }); });
         }
 
         public override void RenderBoundingBox()
         {
-            main_escena_instancia.ForEach(escena => { escena.ForEach(mesh => { mesh.BoundingBox.Render(); }); });
+            main_escena_instancia.ForEach(escena => { escena.lista.ForEach(mesh => { mesh.BoundingBox.Render(); }); });
+        }
+        public class ListaMeshPosicionada {
+            public List<TgcMesh> lista;
+            public TGCVector3 posicion;
+
+            public ListaMeshPosicionada()
+            {
+                lista = new List<TgcMesh>();
+            }
         }
     }
 }
