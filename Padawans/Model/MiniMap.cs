@@ -49,7 +49,7 @@ namespace TGC.Group.Model
         float mapaInicialZ;
         float mapaTamanioX;
         float mapaTamanioZ;
-        float escala = 7;
+        float escala = 10;
 
         Proyeccion objetoTarget;
 
