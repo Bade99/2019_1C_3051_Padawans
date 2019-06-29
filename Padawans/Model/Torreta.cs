@@ -23,7 +23,7 @@ namespace TGC.Group.Model
         private readonly float tiempoEntreDisparos = 2f;
         private float tiempoDesdeUltimoDisparo = 1.5f;
         private readonly float distanciaMinimaATarget = 600;
-        private readonly float distanciaMinimaAVisible = 6000;
+        private readonly float distanciaMinimaAVisible = 3000;
         private readonly float factorEscala = .1f;
         private readonly TGCVector3 origenDeDisparos;
         private Xwing target;
@@ -100,38 +100,32 @@ namespace TGC.Group.Model
 
         public void Update()
         {
+            DistanciaAXwing = target.GetPosition() - posicion - origenDeDisparos;
+            float distanciaLength = DistanciaAXwing.Length();
+            isVisible = TGCVector3.Dot(-DistanciaAXwing, target.coordenadaDireccionCartesiana) > 0 &&
+                     distanciaLength < distanciaMinimaAVisible;
             tiempoDesdeUltimoDisparo += VariablesGlobales.elapsedTime;
             if (tiempoDesdeUltimoDisparo > tiempoEntreDisparos)
             {
                 tiempoDesdeUltimoDisparo = 0f;
-                DistanciaAXwing = target.GetPosition() - posicion - origenDeDisparos;
-                float distanciaLength = DistanciaAXwing.Length();
-                if (TGCVector3.Dot(-DistanciaAXwing, target.coordenadaDireccionCartesiana) > 0 &&
-                     distanciaLength < distanciaMinimaAVisible)
+                if (this.vida > 0 && distanciaLength < distanciaMinimaATarget)
                 {
-                    isVisible = true;
-                    if (this.vida > 0 && distanciaLength < distanciaMinimaATarget)
-                    {
-                        isActive = true;
-                        CoordenadaEsferica direccionXwing = new CoordenadaEsferica(DistanciaAXwing.X,
-                            DistanciaAXwing.Y, DistanciaAXwing.Z);
-                        VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(
-                            posicion + origenDeDisparos, direccionXwing, direccionXwing.GetRotation()
-                            , "Misil\\misil_torreta.xml", Misil.OrigenMisil.ENEMIGO));
-                    }
-                    else
-                    {
-                      isActive = false;
-                    }
-                } else
+                    isActive = true;
+                    CoordenadaEsferica direccionXwing = new CoordenadaEsferica(DistanciaAXwing.X,
+                        DistanciaAXwing.Y, DistanciaAXwing.Z);
+                    VariablesGlobales.managerElementosTemporales.AgregarElemento(new Misil(
+                        posicion + origenDeDisparos, direccionXwing, direccionXwing.GetRotation()
+                        , "Misil\\misil_torreta.xml", Misil.OrigenMisil.ENEMIGO));
+                }
+                else
                 {
-                    isVisible = false;
+                    isActive = false;
                 }
             }
         }
 
         public void Render(ShaderManager.MESH_TYPE tipo){
-            if (isActive && isVisible)
+            if (isVisible)
             {
                 switch (tipo)
                 {

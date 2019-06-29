@@ -19,7 +19,7 @@ namespace TGC.Group.Model
 {
     public class Misil : BulletSceneElement, IActiveElement,IShaderObject
     {
-        private float tiempoDeVida = 5;
+        private float tiempoDeVida = 2;
         private bool terminado = false;
        
         /**
