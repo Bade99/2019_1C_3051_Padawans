@@ -40,6 +40,7 @@ namespace TGC.Group.Model
         private bool vivo = true;
         private readonly static float DistanciaMinimaPersecucion = 100;
         private TGCVector3 vectorDistancia;
+        private bool visible = false;
 
         public XwingEnemigo(TGCVector3 posicionInicial, Xwing target, float velocidadInicial, CoordenadaEsferica direccionInicial)
         {
@@ -134,7 +135,10 @@ namespace TGC.Group.Model
         public bool XwingSeEncuentraEnRadioDeVisibilidad()
         {
             vectorDistancia = CommonHelper.SumarVectores(target.GetPosition(), -posicion);
-            if (vectorDistancia.Length() > DistanciaMinimaPersecucion)
+            float largoDistancia = vectorDistancia.Length();
+            visible = TGCVector3.Dot(-vectorDistancia, target.coordenadaDireccionCartesiana) > 0
+                && largoDistancia < 2000;
+            if (largoDistancia > DistanciaMinimaPersecucion)
             {
                 coordenadaAXwing = new CoordenadaEsferica(vectorDistancia.X, vectorDistancia.Y, vectorDistancia.Z);
                 CoordenadaEsferica dif = this.coordenadaEsferica.Diferencia(coordenadaAXwing);
@@ -156,12 +160,14 @@ namespace TGC.Group.Model
 
         public void Render(ShaderManager.MESH_TYPE tipo)
         {
-            switch (tipo)
+            if (visible)
             {
-                case ShaderManager.MESH_TYPE.SHADOW:
-                    if (vectorDistancia.Length() < 2000)//optimizar
-                        nave.RenderAll();
-                    break;
+                switch (tipo)
+                {
+                    case ShaderManager.MESH_TYPE.SHADOW:
+                            nave.RenderAll();
+                        break;
+                }
             }
         }
 

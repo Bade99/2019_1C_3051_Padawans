@@ -19,11 +19,15 @@ namespace TGC.Group.Model
         protected TGCMatrix matrizInicialTransformacion = TGCMatrix.Identity;
         protected TGCVector3 scaleVector;
         protected CoordenadaEsferica coordenadaEsferica;
+        public TGCVector3 coordenadaDireccionCartesiana;
         protected float velocidadGeneral;
 
         public void UpdateBullet()
         {
-            position = CommonHelper.MoverPosicionEnDireccionCoordenadaEsferica(position, coordenadaEsferica, velocidadGeneral, VariablesGlobales.elapsedTime);
+            coordenadaDireccionCartesiana = coordenadaEsferica.GetXYZCoord();
+            position.X = position.X + velocidadGeneral * coordenadaDireccionCartesiana.X * VariablesGlobales.elapsedTime;
+            position.Y = position.Y + velocidadGeneral * coordenadaDireccionCartesiana.Y * VariablesGlobales.elapsedTime;
+            position.Z = position.Z + velocidadGeneral * coordenadaDireccionCartesiana.Z * VariablesGlobales.elapsedTime;
             TGCMatrix rotationTranslation = matrizInicialTransformacion * GetRotationMatrix() * TGCMatrix.Translation(position);
             for (int a=0;a<meshs.Length;a++)
             {
