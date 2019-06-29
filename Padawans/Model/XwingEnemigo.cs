@@ -94,6 +94,7 @@ namespace TGC.Group.Model
         public void Morir()
         {
             vivo = false;
+            VariablesGlobales.Shader_DEAD_time = 0;
             //Aca habria que correr el shader durante un ratito para parezca que desaparece
         }
         private void Moverse()
@@ -154,7 +155,14 @@ namespace TGC.Group.Model
         {
             switch (tipo)
             {
-                case ShaderManager.MESH_TYPE.SHADOW: nave.Meshes.ForEach(m => m.Technique = technique); break;
+                case ShaderManager.MESH_TYPE.SHADOW:
+                    if (vivo)
+                        nave.Meshes.ForEach(m => m.Technique = technique);
+                    break;
+                case ShaderManager.MESH_TYPE.DEAD:
+                    if (!vivo)
+                        nave.Meshes.ForEach(m => m.Technique = technique);
+                    break;
             }
         }
 
@@ -165,7 +173,10 @@ namespace TGC.Group.Model
                 switch (tipo)
                 {
                     case ShaderManager.MESH_TYPE.SHADOW:
-                            nave.RenderAll();
+                        if(vivo)nave.RenderAll();
+                        break;
+                    case ShaderManager.MESH_TYPE.DEAD:
+                        if (!vivo) nave.RenderAll();
                         break;
                 }
             }

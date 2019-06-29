@@ -74,7 +74,7 @@ namespace TGC.Group.Model
         private float timerChoqueObstaculo = 0;
 
         //
-        bool xwing_dead = false;
+        bool vivo = true;
         //
 
 
@@ -161,24 +161,27 @@ namespace TGC.Group.Model
 
         public void UpdateInput(TgcD3dInput input, float ElapsedTime)
         {
-            TestingInput(input);
-            MovimientoFlechas(input, ElapsedTime);
-            AcelerarYFrenar(input, ElapsedTime);
-            Disparar(input, ElapsedTime);
-            BarrelRoll(input, ElapsedTime);
-            MedioBarrelRoll(input, ElapsedTime);
+            if (vivo)
+            {
+                TestingInput(input);
+                MovimientoFlechas(input, ElapsedTime);
+                AcelerarYFrenar(input, ElapsedTime);
+                Disparar(input, ElapsedTime);
+                BarrelRoll(input, ElapsedTime);
+                MedioBarrelRoll(input, ElapsedTime);
+                RevisarMuerte();
+            }
             RotationYAnimation();
             EfectoFriccion(ElapsedTime);
             ChoqueObstaculo(ElapsedTime);
-            RevisarMuerte();
         }
 
         private void RevisarMuerte()
         {
-            if (VariablesGlobales.vidas == 0 && !xwing_dead)
+            if (VariablesGlobales.vidas == 0)
             {
                 VariablesGlobales.Shader_DEAD_time = 0;
-                xwing_dead = true;
+                vivo = false;
             }
         }
 
@@ -577,14 +580,14 @@ namespace TGC.Group.Model
             switch (tipo)
             {
                 case ShaderManager.MESH_TYPE.SHADOW:
-                    if (!xwing_dead)
+                    if (vivo)
                     {
                         xwing.Technique = technique;
                         alaXwing.Technique = technique;
                     }
                     break;
                 case ShaderManager.MESH_TYPE.DEAD:
-                    if (xwing_dead)
+                    if (!vivo)
                     {
                         xwing.Technique = technique;
                         alaXwing.Technique = technique;
@@ -598,14 +601,14 @@ namespace TGC.Group.Model
             switch (tipo)
             {
                 case ShaderManager.MESH_TYPE.SHADOW:
-                    if (!xwing_dead)
+                    if (vivo)
                     {
                         xwing.Render();
                         alaXwing.Render();
                     }
                     break;
                 case ShaderManager.MESH_TYPE.DEAD:
-                    if (xwing_dead)
+                    if (!vivo)
                     {
                         xwing.Render();
                         alaXwing.Render();
