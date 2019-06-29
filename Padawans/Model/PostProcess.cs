@@ -107,7 +107,7 @@ namespace TGC.Group.Model
             VariablesGlobales.shader = shader;
 
             //--------------------------------------------------------------------------------------
-            // Creo el shadowmap.
+            // SHADOWMAP
             // Format.R32F
             // Format.X8R8G8B8
             shadow_map = new Texture(d3dDevice, SHADOWMAP_SIZE, SHADOWMAP_SIZE, 1, Usage.RenderTarget, Format.R32F, Pool.Default);
@@ -132,6 +132,8 @@ namespace TGC.Group.Model
             lightPos = new TGCVector3(0, 100, 50);
             lightDir = new TGCVector3(0, -1, 1);
             lightDir.Normalize();
+            //--------------------------------------------------------------------------------------
+            
         }
 
         //@@@
@@ -387,6 +389,18 @@ namespace TGC.Group.Model
                 shaderManager.SetTechnique("RenderScene", ShaderManager.MESH_TYPE.SHADOW);
                 shaderManager.RenderMesh(ShaderManager.MESH_TYPE.SHADOW);
 
+                //Dynamic Illumination
+                shaderManager.SetFloatArray3Value("fvLightPosition", TGCVector3.Vector3ToFloat3Array(lightPos));
+                shaderManager.SetFloatArray3Value("fvEyePosition", TGCVector3.Vector3ToFloat3Array(VariablesGlobales.camara.GetPosition()));
+                shaderManager.SetFloatValue("k_la", .3f);
+                shaderManager.SetFloatValue("k_ld", .9f);
+                shaderManager.SetFloatValue("k_ls", .4f);
+                shaderManager.SetFloatValue("fSpecularPower", 16.84f);
+
+                shaderManager.SetTechnique("DynamicIllumination", ShaderManager.MESH_TYPE.DYNAMIC_ILLUMINATION);
+                shaderManager.RenderMesh(ShaderManager.MESH_TYPE.DYNAMIC_ILLUMINATION);
+                //
+
                 d3dDevice.EndScene();
 
                 pSurf.Dispose();
@@ -422,11 +436,11 @@ namespace TGC.Group.Model
 
             if (VariablesGlobales.DameLuz)
             {
-                TGCVector3 light_pos = VariablesGlobales.camara.GetPositionAtDistance(-10);//VariablesGlobales.xwing.GetPosition();
-                TGCVector3 light_dir = VariablesGlobales.xwing.GetCoordenadaEsferica().GetXYZCoord();
-                shader.SetValue("g_vLightPos", new Vector4(light_pos.X, light_pos.Y, light_pos.Z , 1));
-                shader.SetValue("g_vLightDir", new Vector4(light_dir.X, light_dir.Y, light_dir.Z, 1));
-                lightView = TGCMatrix.LookAtLH(light_pos, light_pos + light_dir, new TGCVector3(0, 0, 1));
+                lightPos = VariablesGlobales.camara.GetPositionAtDistance(-10);//VariablesGlobales.xwing.GetPosition();
+                lightDir = VariablesGlobales.xwing.GetCoordenadaEsferica().GetXYZCoord();
+                shader.SetValue("g_vLightPos", new Vector4(lightPos.X, lightPos.Y, lightPos.Z , 1));
+                shader.SetValue("g_vLightDir", new Vector4(lightDir.X, lightDir.Y, lightDir.Z, 1));
+                lightView = TGCMatrix.LookAtLH(lightPos, lightPos + lightDir, new TGCVector3(0, 0, 1));
             }
             else
             {

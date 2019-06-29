@@ -210,7 +210,7 @@ float4 PixScene(float2 Tex : TEXCOORD0,
 		*/
 
 		/*
-		// anti-aliasing del shadow map
+		// anti-aliasing del shadow map (tmb genera sombras mas suaves, y artifacts)
 		float I = 0;
 		float r = 2;
 		for(int i=-r;i<=r;++i)
@@ -236,5 +236,98 @@ technique RenderScene
     {
         VertexShader = compile vs_3_0 VertScene();
         PixelShader = compile ps_3_0 PixScene();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// DYNAMIC ILLUMINATION (DI)
+//-----------------------------------------------------------------------------
+
+float3 fvLightPosition;
+float3 fvEyePosition;
+float k_la; // luz ambiente global
+float k_ld; // luz difusa
+float k_ls; // luz specular
+float fSpecularPower; // exponente de la luz specular
+
+//Input del Vertex Shader
+struct VS_INPUT_DI
+{
+    float4 Position : POSITION0;
+    float3 Normal : NORMAL0;
+    float4 Color : COLOR;
+    float2 Texcoord : TEXCOORD0;
+};
+
+//Output del Vertex Shader
+struct VS_OUTPUT_DI
+{
+    float4 Position : POSITION0;
+    float2 Texcoord : TEXCOORD0;
+    float3 Norm : TEXCOORD1; // Normales
+    float3 Pos : TEXCOORD2; // Posicion real 3d
+};
+
+//Vertex Shader
+VS_OUTPUT_DI vs_DI(VS_INPUT_DI Input)
+{
+    VS_OUTPUT_DI Output;
+
+   //Proyectar posicion
+    Output.Position = mul(Input.Position, matWorldViewProj);
+   
+   //Propagamos las coordenadas de textura
+    Output.Texcoord = Input.Texcoord;
+
+   // Calculo la posicion real (en world space)
+    float4 pos_real = mul(Input.Position, matWorld);
+   // Y la propago usando las coordenadas de texturas 2 (*)
+    Output.Pos = float3(pos_real.x, pos_real.y, pos_real.z);
+   
+   // Transformo la normal y la normalizo (si la escala no es uniforme usar la inversa Traspta)
+   //Output.Norm = normalize(mul(Input.Normal,matInverseTransposeWorld));
+    Output.Norm = normalize(mul(Input.Normal, matWorld));
+    return (Output);  
+}
+
+//Pixel Shader
+float4 ps_DI(float3 Texcoord : TEXCOORD0, float3 N : TEXCOORD1,
+	float3 Pos : TEXCOORD2) : COLOR0
+{
+    float ld = 0; // luz difusa
+    float le = 0; // luz specular
+
+    N = normalize(N);
+
+	// for(int =0;i<cant_ligths;++i)
+
+	// 1- calculo la luz diffusa
+    float3 LD = normalize(fvLightPosition - float3(Pos.x, Pos.y, Pos.z));
+    ld += saturate(dot(N, LD)) * k_ld;
+
+	// 2- calcula la reflexion specular
+    float3 D = normalize(float3(Pos.x, Pos.y, Pos.z) - fvEyePosition);
+    float ks = saturate(dot(reflect(LD, N), D));
+    ks = pow(ks, fSpecularPower);
+    le += ks * k_ls;
+
+	//Obtener el texel de textura
+    float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+
+	// suma luz diffusa, ambiente y especular
+    float4 RGBColor = 0;
+    RGBColor.rgb = saturate(fvBaseColor * (saturate(k_la + ld)) + le);
+
+	// saturate deja los valores entre [0,1]
+
+    return RGBColor;
+}
+
+technique DynamicIllumination
+{
+    pass Pass_0
+    {
+        VertexShader = compile vs_3_0 vs_DI();
+        PixelShader = compile ps_3_0 ps_DI();
     }
 }

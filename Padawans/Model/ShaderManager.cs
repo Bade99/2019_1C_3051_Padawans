@@ -37,6 +37,11 @@ namespace TGC.Group.Model
             shader.SetValue(param, value);
         }
 
+        public void SetFloatArray3Value(string param,float[] value)
+        {
+            shader.SetValue(param, value);
+        }
+
         public void AddObject(IShaderObject obj)//cargá tu clase acá
         {
             objs.Add(obj);
@@ -61,7 +66,7 @@ namespace TGC.Group.Model
         */
         public enum MESH_TYPE
         {
-            DEFAULT,SHADOW,DEAD
+            DEFAULT,SHADOW,DEAD,DYNAMIC_ILLUMINATION
         }
     }
 }

@@ -55,6 +55,11 @@ public class FollowingCamera
         return CommonHelper.SumarVectores(xwing.GetPosition(), GetDistancePoint(dist));
     }
 
+    public TGCVector3 GetPosition()
+    {
+        return cameraPosition;
+    }
+
     private TGCVector3 GetDistancePoint(float dist)
     {
         return this.coordenadaEsferica.GetXYZCoord() * dist;
