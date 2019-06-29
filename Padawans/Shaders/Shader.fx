@@ -44,6 +44,8 @@ sampler_state
     AddressV = Clamp;
 };
 
+
+
 //Output del Vertex Shader
 struct VS_OUTPUT
 {
@@ -52,6 +54,58 @@ struct VS_OUTPUT
     float3 Norm : TEXCOORD1; // Normales
     float3 Pos : TEXCOORD2; // Posicion real 3d
 };
+
+
+//+gameOverShader+++++++++++++
+
+float gameOverTime = 0;
+//Input del Vertex Shader
+struct VS_INPUT_gameOver
+{
+	float4 Position : POSITION0;
+	float4 Color : COLOR0;
+	float2 Texcoord : TEXCOORD0;
+};
+
+struct VS_OUTPUT_gameOver
+{
+	float4 Position :        POSITION0;
+	float2 Texcoord :        TEXCOORD0;
+	float4 Color :			COLOR0;
+	float3 Pos :			TEXCOORD1;
+};
+
+//Vertex Shader
+VS_OUTPUT_gameOver vs_gameOver(VS_INPUT_gameOver Input)
+{
+	VS_OUTPUT_gameOver Output;
+    Output.Position = mul(Input.Position, matWorldViewProj);
+    Output.Pos = Input.Position;
+    Output.Color = Input.Color;
+    Output.Texcoord = Input.Texcoord;
+	return(Output);
+}
+
+//Pixel Shader
+float4 ps_gameOver(float2 Texcoord: TEXCOORD0, float3 Pos : TEXCOORD1) : COLOR0
+{
+	float4 coordenada = float4(tex2D(diffuseMap, Texcoord));
+	coordenada.r -= 4*gameOverTime + cos(Pos.xyz) - 2;
+	coordenada.g -= 4*gameOverTime + cos(Pos.xyz) - 2;
+	coordenada.b -= 4*gameOverTime + cos(Pos.xyz) - 2;
+	return coordenada;
+}
+
+technique RenderGameOver
+{
+	pass Pass_0
+	{
+		VertexShader = compile vs_2_0 vs_gameOver();
+		PixelShader = compile ps_2_0 ps_gameOver();
+	}
+}
+
+//++++++++++++++++++++++++
 
 //-----------------------------------------------------------------------------
 // Vertex Shader que implementa un shadow map

@@ -86,6 +86,7 @@ namespace TGC.Group.Model
 
             xwing = new Xwing(VariablesGlobales.loader, new TGCVector3(0, 190, 1000));
             VariablesGlobales.xwing = xwing;
+
             VariablesGlobales.miniMap.agregarTarget(xwing);
 
             managerEnemigos = new EnemyManager();
@@ -224,6 +225,8 @@ namespace TGC.Group.Model
                 backgroundSceneLeft.Update();
                 backgroundSceneRight.Update();
                 backgroundSceneFront.Update();
+                VariablesGlobales.Shader_DEAD_time+=VariablesGlobales.elapsedTime;
+
             }
 
             PostUpdate();

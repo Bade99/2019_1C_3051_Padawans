@@ -28,8 +28,13 @@ namespace TGC.Group.Model
             {
                 case MESH_TYPE.DEFAULT:return null;
                 case MESH_TYPE.SHADOW:return shader;
+                case MESH_TYPE.DEAD: return shader;
                 default: return null;
             }
+        }
+        public void SetFloatValue(string param, float value)
+        {
+            shader.SetValue(param, value);
         }
 
         public void AddObject(IShaderObject obj)//cargá tu clase acá
@@ -47,6 +52,7 @@ namespace TGC.Group.Model
             objs.ForEach(obj => obj.SetTechnique(technique, tipo));
             //normal_meshes.ForEach(m => m.Technique = technique); 
         }
+
         /*
         private void SetEffect(TgcMesh mesh)
         {
@@ -55,7 +61,7 @@ namespace TGC.Group.Model
         */
         public enum MESH_TYPE
         {
-            DEFAULT,SHADOW
+            DEFAULT,SHADOW,DEAD
         }
     }
 }

@@ -22,7 +22,7 @@ namespace TGC.Group.Model
         }
         public void Update()
         {
-            if(!fin) if (juegoTerminado.IsReady()) fin = true;
+            if(!fin) if (juegoTerminado.IsReady() || VariablesGlobales.vidas==0) fin = true;
         }
         public void Render()
         {

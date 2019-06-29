@@ -73,6 +73,11 @@ namespace TGC.Group.Model
         private readonly static float tiempoChoqueObstaculoMovimiento = 0.1f;
         private float timerChoqueObstaculo = 0;
 
+        //
+        bool xwing_dead = false;
+        //
+
+
         public Xwing(TgcSceneLoader loader, TGCVector3 posicionInicial)
         {
             this.loader = loader;
@@ -128,7 +133,7 @@ namespace TGC.Group.Model
 
         public void RenderPostProcess(string effect)
         {
-            if (effect == "bloom")
+            if (effect == "bloom" && VariablesGlobales.vidas>0)
             {
                 bloom[0].Render();
                 bloom[1].Render();
@@ -165,7 +170,18 @@ namespace TGC.Group.Model
             RotationYAnimation();
             EfectoFriccion(ElapsedTime);
             ChoqueObstaculo(ElapsedTime);
+            RevisarMuerte();
         }
+
+        private void RevisarMuerte()
+        {
+            if (VariablesGlobales.vidas == 0 && !xwing_dead)
+            {
+                VariablesGlobales.Shader_DEAD_time = 0;
+                xwing_dead = true;
+            }
+        }
+
         private void LimitarMovimientos()
         {
             naveForzadaAVolver = false;
@@ -197,7 +213,7 @@ namespace TGC.Group.Model
             {
                 if (choqueConPiso)
                 {
-                    VariablesGlobales.vidas--;
+                    VariablesGlobales.RestarVida();
                     choqueConPiso = false;
                 }
             }
@@ -213,7 +229,7 @@ namespace TGC.Group.Model
             {
                 if (choqueConLateralIzq)
                 {
-                    VariablesGlobales.vidas--;
+                    VariablesGlobales.RestarVida();
                     choqueConLateralIzq = false;
                 }
             }
@@ -229,7 +245,7 @@ namespace TGC.Group.Model
             {
                 if (choqueConLateralDer)
                 {
-                    VariablesGlobales.vidas--;
+                    VariablesGlobales.RestarVida();
                     choqueConLateralDer = false;
                 }
             }
@@ -244,7 +260,7 @@ namespace TGC.Group.Model
             {
                 if (choquePisoAltoCerca)
                 {
-                    VariablesGlobales.vidas--;
+                    VariablesGlobales.RestarVida();
                     choquePisoAltoCerca = false;
                 }
             }
@@ -259,7 +275,7 @@ namespace TGC.Group.Model
             {
                 if (choquePisoAltoLejos)
                 {
-                    VariablesGlobales.vidas--;
+                    VariablesGlobales.RestarVida();
                     choquePisoAltoLejos = false;
                 }
             }
@@ -288,7 +304,7 @@ namespace TGC.Group.Model
                 timerChoqueObstaculo += ElapsedTime;
                 if (timerChoqueObstaculo > tiempoChoqueObstaculo)
                 {
-                    VariablesGlobales.vidas--;
+                    VariablesGlobales.RestarVida();
                     choqueObstaculo = false;
                     timerChoqueObstaculo = 0;
                 }
@@ -560,14 +576,42 @@ namespace TGC.Group.Model
         {
             switch (tipo)
             {
-                case ShaderManager.MESH_TYPE.SHADOW: xwing.Technique = technique; alaXwing.Technique = technique; break;
+                case ShaderManager.MESH_TYPE.SHADOW:
+                    if (!xwing_dead)
+                    {
+                        xwing.Technique = technique;
+                        alaXwing.Technique = technique;
+                    }
+                    break;
+                case ShaderManager.MESH_TYPE.DEAD:
+                    if (xwing_dead)
+                    {
+                        xwing.Technique = technique;
+                        alaXwing.Technique = technique;
+                    }
+                    break;
             }
         }
 
         public void Render(ShaderManager.MESH_TYPE tipo)
         {
-            xwing.Render();
-            alaXwing.Render();
+            switch (tipo)
+            {
+                case ShaderManager.MESH_TYPE.SHADOW:
+                    if (!xwing_dead)
+                    {
+                        xwing.Render();
+                        alaXwing.Render();
+                    }
+                    break;
+                case ShaderManager.MESH_TYPE.DEAD:
+                    if (xwing_dead)
+                    {
+                        xwing.Render();
+                        alaXwing.Render();
+                    }
+                    break;
+            }
         }
 
         public override void Render(){}

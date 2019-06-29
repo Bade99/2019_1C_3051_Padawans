@@ -381,6 +381,9 @@ namespace TGC.Group.Model
                 // dibujo la escena pp dicha
 
                 shaderManager.RenderMesh(ShaderManager.MESH_TYPE.DEFAULT);
+                shaderManager.SetTechnique("RenderGameOver", ShaderManager.MESH_TYPE.DEAD);
+                shaderManager.SetFloatValue("gameOverTime", VariablesGlobales.Shader_DEAD_time);
+                shaderManager.RenderMesh(ShaderManager.MESH_TYPE.DEAD);
                 shaderManager.SetTechnique("RenderScene", ShaderManager.MESH_TYPE.SHADOW);
                 shaderManager.RenderMesh(ShaderManager.MESH_TYPE.SHADOW);
 

@@ -40,7 +40,7 @@ namespace TGC.Group.Model
         public static bool MODO_DIOS = true;
         public static bool debugMode = false;
         public static MiniMap miniMap;
-        public static bool mostrarMiniMapa = false;
+        public static bool mostrarMiniMapa = true;
         public static void RestarVida()
         {
             vidas = FastMath.Max(0, vidas - 1);
@@ -52,6 +52,11 @@ namespace TGC.Group.Model
         public static void RestarBomba()
         {
             bombas = FastMath.Max(bombas - 1, 0);
+        }
+        public static float Shader_DEAD_time = 0;
+        public static void Restart_Shader_DEAD_time()
+        {
+            Shader_DEAD_time = 0;
         }
     }
 }

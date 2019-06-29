@@ -41,7 +41,6 @@ namespace TGC.Group.Model
                 endGameTrigger.Update();
             else
                 juegoGanado = true;
-
         }
         public void Render()
         {
