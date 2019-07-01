@@ -471,7 +471,7 @@ float4 ps_DIM( in VS_OUTPUT_DI f) : COLOR0
 
 	// suma luz diffusa, ambiente, especular y metalica
     float4 RGBColor = 0;
-    RGBColor.rgb = fvBaseColor/2 + max( 0.0f, NdotL ) * saturate(fvBaseColor * (saturate(k_la + ld)) + le*Rs);
+    RGBColor.rgb = fvBaseColor/2 + max( 0.0f, NdotL ) * saturate(fvBaseColor * (saturate(k_la + ld)) + le)*Rs;
 
     return RGBColor;
 }

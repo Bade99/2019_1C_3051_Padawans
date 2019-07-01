@@ -688,6 +688,7 @@
     </Content>
     <Content Include="Shaders\GaussianBlur.fx" />
     <Content Include="Shaders\PostProcess.fx" />
+    <Content Include="Shaders\Shader.fx" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

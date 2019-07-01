@@ -400,8 +400,8 @@ namespace TGC.Group.Model
                 shaderManager.SetTechnique("RenderScene", ShaderManager.MESH_TYPE.SHADOW);
                 shaderManager.RenderMesh(ShaderManager.MESH_TYPE.SHADOW);
 
-                shaderManager.SetTechnique("DynamicIllumination", ShaderManager.MESH_TYPE.DYNAMIC_ILLUMINATION);
-                shaderManager.RenderMesh(ShaderManager.MESH_TYPE.DYNAMIC_ILLUMINATION);
+                //shaderManager.SetTechnique("DynamicIllumination", ShaderManager.MESH_TYPE.DYNAMIC_ILLUMINATION);
+                //shaderManager.RenderMesh(ShaderManager.MESH_TYPE.DYNAMIC_ILLUMINATION);
 
                 shaderManager.SetFloatValue("k_roughness", .1f);
                 shaderManager.SetTechnique("DynamicIlluminationMetallic", ShaderManager.MESH_TYPE.DYNAMIC_ILLUMINATION_METALLIC);
