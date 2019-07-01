@@ -1,4 +1,4 @@
-﻿# tgc-group
+﻿# Padawans
 [![Build status](https://ci.appveyor.com/api/projects/status/uvyboubq91uhwf3v?svg=true)](https://ci.appveyor.com/project/rejurime/tgc-group)
 [![BCH compliance](https://bettercodehub.com/edge/badge/tgc-utn/tgc-group?branch=master)](https://bettercodehub.com/)
 [![GitHub license](https://img.shields.io/github/license/tgc-utn/tgc-group.svg)](https://github.com/tgc-utn/tgc-group/blob/master/LICENSE)
@@ -28,4 +28,4 @@ Trabajo Práctico de la asignatura electiva [Técnicas de Gráficos por Computad
 ![screenshot3](https://github.com/Bade99/2019_1C_3051_Padawans/blob/master/Docs/Screenshots/s3.png)
 
 ## Game Play ##
-[![Watch the video](https://img.youtube.com/vi/qESIu8ozanU/0.jpg)](https://www.youtube.com/playlist?list=PLRM4L32DjvnazuMl8wZlbpEYL5Qh63ulG)
+[![Watch the video](https://img.youtube.com/vi/QgDKxw1aO2E/0.jpg)](https://youtu.be/QgDKxw1aO2E)
