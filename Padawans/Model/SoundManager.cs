@@ -106,6 +106,9 @@ namespace TGC.Group.Model
                 case SONIDOS.FORCE_THEME:
                     AgregarElemento(new Sonido("Sonidos\\Force_Theme.wav", 0, 0, -1, 0, "story_menu"));
                     break;
+                case SONIDOS.DAMAGE:
+                    AgregarElemento(new Sonido("Sonidos\\Damage.wav", 0, 5, 1, 0, ""));
+                    break;
             }
          }
 
@@ -114,7 +117,7 @@ namespace TGC.Group.Model
         {
             DISPARO_MISIL_XWING, DISPARO_MISIL_ENEMIGO, BACKGROUND_BATTLE,
             LUKE_OBI_WAN, MAIN_MENU, PAUSE, FLYBY_2, XWING_ENGINE,NO_SOUND,XWING_BOMB,EXPLOSION_FINAL,
-            FORCE_THEME
+            FORCE_THEME,DAMAGE
         }
     }
 }

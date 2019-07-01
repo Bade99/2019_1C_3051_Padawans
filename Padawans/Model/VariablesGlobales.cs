@@ -44,6 +44,7 @@ namespace TGC.Group.Model
         public static bool mostrarMiniMapa = true;
         public static void RestarVida()
         {
+            managerSonido.ReproducirSonido(SoundManager.SONIDOS.DAMAGE);
             vidas = FastMath.Max(0, vidas - 1);
         }
         public static void SumarBomba()
