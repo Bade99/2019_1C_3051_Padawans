@@ -85,7 +85,7 @@ namespace TGC.Group.Model
             managerElementosTemporales = new TemporaryElementManager();
             VariablesGlobales.managerElementosTemporales = managerElementosTemporales;
 
-            xwing = new Xwing(VariablesGlobales.loader, new TGCVector3(0, 190, 1000));
+            xwing = new Xwing(VariablesGlobales.loader, new TGCVector3(0, 500, 1000));
             VariablesGlobales.xwing = xwing;
 
             VariablesGlobales.miniMap.agregarTarget(xwing);
@@ -146,59 +146,59 @@ namespace TGC.Group.Model
             managerEnemigos.AgregarElemento(enemigo3);
             VariablesGlobales.miniMap.agregarObjeto(enemigo3);
             XwingEnemigo enemigo4 = new XwingEnemigo(
-                new TGCVector3(-400f, 100, -2300f),
+                new TGCVector3(-400f, 100, -3785),
                 xwing, 100, new CoordenadaEsferica(FastMath.QUARTER_PI, FastMath.PI_HALF));
             managerEnemigos.AgregarElemento(enemigo4);
             VariablesGlobales.miniMap.agregarObjeto(enemigo4);
             //Cuatro en linea de frente
             XwingEnemigo enemigoLinea1 = new XwingEnemigo(
-                new TGCVector3(-200, 130, -4000),
+                new TGCVector3(-200, 130, -4354),
                 xwing, 150, new CoordenadaEsferica(FastMath.PI_HALF, FastMath.PI_HALF));
             managerEnemigos.AgregarElemento(enemigoLinea1);
             VariablesGlobales.miniMap.agregarObjeto(enemigoLinea1);
             XwingEnemigo enemigoLinea2 = new XwingEnemigo(
-                new TGCVector3(-50, 80, -4000),
+                new TGCVector3(-50, 80, -5783),
                 xwing, 150, new CoordenadaEsferica(FastMath.PI_HALF, FastMath.PI_HALF));
             managerEnemigos.AgregarElemento(enemigoLinea2);
             VariablesGlobales.miniMap.agregarObjeto(enemigoLinea2);
             XwingEnemigo enemigoLinea3 = new XwingEnemigo(
-                new TGCVector3(-50, 80, -4000),
+                new TGCVector3(-50, 80, -6432),
                 xwing, 150, new CoordenadaEsferica(FastMath.PI_HALF, FastMath.PI_HALF));
             managerEnemigos.AgregarElemento(enemigoLinea3);
             VariablesGlobales.miniMap.agregarObjeto(enemigoLinea3);
             XwingEnemigo enemigoLinea4 = new XwingEnemigo(
-                new TGCVector3(-200, 130, -4000),
+                new TGCVector3(-200, 130, -7655),
                 xwing, 150, new CoordenadaEsferica(FastMath.PI_HALF, FastMath.PI_HALF));
             managerEnemigos.AgregarElemento(enemigoLinea4);
             VariablesGlobales.miniMap.agregarObjeto(enemigoLinea4);
             //Los seis grosos
             XwingEnemigo enemigoGroso1 = new XwingEnemigo(
-                new TGCVector3(-50, 100, -7000),
+                new TGCVector3(-50, 100, -8845),
                 xwing, 210, new CoordenadaEsferica(FastMath.QUARTER_PI, FastMath.PI_HALF));
             managerEnemigos.AgregarElemento(enemigoGroso1);
             VariablesGlobales.miniMap.agregarObjeto(enemigoGroso1);
             XwingEnemigo enemigoGroso2 = new XwingEnemigo(
-                new TGCVector3(50, 100, -7000),
+                new TGCVector3(50, 100, -9312),
                 xwing, 210, new CoordenadaEsferica(2 * FastMath.QUARTER_PI, FastMath.PI_HALF));
             managerEnemigos.AgregarElemento(enemigoGroso2);
             VariablesGlobales.miniMap.agregarObjeto(enemigoGroso2);
             XwingEnemigo enemigoGroso3 = new XwingEnemigo(
-                new TGCVector3(-100, 120, -7000),
+                new TGCVector3(-100, 120, -10564),
                 xwing, 210, new CoordenadaEsferica(3 * FastMath.QUARTER_PI, FastMath.PI_HALF));
             managerEnemigos.AgregarElemento(enemigoGroso3);
             VariablesGlobales.miniMap.agregarObjeto(enemigoGroso3);
             XwingEnemigo enemigoGroso4 = new XwingEnemigo(
-                new TGCVector3(100, 120, -7000),
+                new TGCVector3(100, 120, -11245),
                 xwing, 210, new CoordenadaEsferica(5 * FastMath.QUARTER_PI, FastMath.PI_HALF));
             managerEnemigos.AgregarElemento(enemigoGroso4);
             VariablesGlobales.miniMap.agregarObjeto(enemigoGroso4);
             XwingEnemigo enemigoGroso5 = new XwingEnemigo(
-                new TGCVector3(-50, 80, -7000),
+                new TGCVector3(-50, 80, -12486),
                 xwing, 210, new CoordenadaEsferica(6 * FastMath.QUARTER_PI, FastMath.PI_HALF));
             managerEnemigos.AgregarElemento(enemigoGroso5);
             VariablesGlobales.miniMap.agregarObjeto(enemigoGroso5);
             XwingEnemigo enemigoGroso6 = new XwingEnemigo(
-                new TGCVector3(50, 80, -7000),
+                new TGCVector3(50, 80, -13651),
                 xwing, 210, new CoordenadaEsferica(7 * FastMath.QUARTER_PI, FastMath.PI_HALF));
             managerEnemigos.AgregarElemento(enemigoGroso6);
             VariablesGlobales.miniMap.agregarObjeto(enemigoGroso6);

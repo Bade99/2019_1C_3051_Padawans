@@ -91,7 +91,7 @@ namespace TGC.Group.Model
             barrelRollAdvance = 0;
             rotationYAnimation = false;
             rotationYAnimacionAdvance = 0;
-            velocidadGeneral = 5f;
+            velocidadGeneral = 200f;
 
             xwing.AutoTransformEnable = false;
             alaXwing.AutoTransformEnable = false;

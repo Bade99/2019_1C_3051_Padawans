@@ -282,7 +282,7 @@ VS_OUTPUT_DI vs_DI(VS_INPUT_DI Input)
    // Calculo la posicion real (en world space)
     float4 pos_real = mul(Input.Position, matWorld);
    // Y la propago usando las coordenadas de texturas 2 (*)
-    Output.Pos = float3(pos_real.x, pos_real.y, pos_real.z);
+    Output.Pos = mul(Input.Position, matWorld);
    
    // Transformo la normal y la normalizo (si la escala no es uniforme usar la inversa Traspta)
    //Output.Norm = normalize(mul(Input.Normal,matInverseTransposeWorld));
@@ -570,7 +570,7 @@ float4 ps_DIS(float3 Texcoord : TEXCOORD0, float3 N : TEXCOORD1,
 
 	// suma luz diffusa, ambiente y especular
 	float4 RGBColor = 0;
-	RGBColor.rgb = saturate((fvBaseColor*0.5) * (saturate(k_la + ld)) + le)+0.5*K;
+	RGBColor.rgb = (saturate((fvBaseColor) * (saturate(k_la + ld)) + le))*0.5+0.5*K;
 
 	// saturate deja los valores entre [0,1]
 
