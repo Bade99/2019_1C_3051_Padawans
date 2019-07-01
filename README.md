@@ -28,4 +28,4 @@ Trabajo Práctico de la asignatura electiva [Técnicas de Gráficos por Computad
 ![screenshot3](https://github.com/Bade99/2019_1C_3051_Padawans/blob/master/Docs/Screenshots/s3.png)
 
 ## Game Play ##
-[![Watch the video](https://img.youtube.com/vi/qESIu8ozanU/0.jpg)](https://www.youtube.com/playlist?list=PLRM4L32DjvnazuMl8wZlbpEYL5Qh63ulG)
+[![Watch the video](https://img.youtube.com/vi/QgDKxw1aO2E/0.jpg)](https://youtu.be/QgDKxw1aO2E)
