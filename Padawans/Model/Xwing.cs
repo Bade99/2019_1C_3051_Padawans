@@ -579,7 +579,7 @@ namespace TGC.Group.Model
         {
             switch (tipo)
             {
-                case ShaderManager.MESH_TYPE.DYNAMIC_ILLUMINATION:
+                case ShaderManager.MESH_TYPE.DYNAMIC_ILLUMINATION_METALLIC:
                     if (vivo)
                     {
                         xwing.Technique = technique;
@@ -587,7 +587,7 @@ namespace TGC.Group.Model
                     }
                     break;
                 case ShaderManager.MESH_TYPE.SHADOW:
-                    if (vivo)
+                    if (vivo && false)
                     {
                         xwing.Technique = technique;
                         alaXwing.Technique = technique;
@@ -607,7 +607,7 @@ namespace TGC.Group.Model
         {
             switch (tipo)
             {
-                case ShaderManager.MESH_TYPE.DYNAMIC_ILLUMINATION:
+                case ShaderManager.MESH_TYPE.DYNAMIC_ILLUMINATION_METALLIC:
                     if (vivo)
                     {
                         xwing.Render();

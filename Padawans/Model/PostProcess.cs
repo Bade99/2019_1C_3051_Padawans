@@ -52,9 +52,9 @@ namespace TGC.Group.Model
         //Shader
         private ShaderManager shaderManager;
 
-        private readonly float far_plane = 1500f;
-        private readonly float near_plane = 2f;
-        private readonly int SHADOWMAP_SIZE = 1024;
+        //private readonly float far_plane = 1500f;
+        //private readonly float near_plane = 2f;
+        //private readonly int SHADOWMAP_SIZE = 1024;
         private Effect shader;
 
         private TGCVector3 lightDir; // direccion de la luz actual
@@ -106,23 +106,25 @@ namespace TGC.Group.Model
 
             VariablesGlobales.shader = shader;
 
+            int shadowmap_size = (int)FastMath.Max(D3DDevice.Instance.Width,D3DDevice.Instance.Height)/2;
+
             //--------------------------------------------------------------------------------------
             // SHADOWMAP
             // Format.R32F
             // Format.X8R8G8B8
-            shadow_map = new Texture(d3dDevice, SHADOWMAP_SIZE, SHADOWMAP_SIZE, 1, Usage.RenderTarget, Format.R32F, Pool.Default);
+            shadow_map = new Texture(d3dDevice, shadowmap_size, shadowmap_size, 1, Usage.RenderTarget, Format.R32F, Pool.Default);
 
             // tengo que crear un stencilbuffer para el shadowmap manualmente
             // para asegurarme que tenga la el mismo tamano que el shadowmap, y que no tenga
             // multisample, etc etc.
-            shadow_depth = d3dDevice.CreateDepthStencilSurface(SHADOWMAP_SIZE, SHADOWMAP_SIZE, DepthFormat.D24S8, MultiSampleType.None, 0, true);
+            shadow_depth = d3dDevice.CreateDepthStencilSurface(shadowmap_size, shadowmap_size, DepthFormat.D24S8, MultiSampleType.None, 0, true);
             // por ultimo necesito una matriz de proyeccion para el shadowmap, ya
             // que voy a dibujar desde el pto de vista de la luz.
             // El angulo tiene que ser mayor a 45 para que la sombra no falle en los extremos del cono de luz
             // de hecho, un valor mayor a 90 todavia es mejor, porque hasta con 90 grados es muy dificil
             // lograr que los objetos del borde generen sombras
             shadowProj = TGCMatrix.PerspectiveFovLH(Geometry.DegreeToRadian(80), D3DDevice.Instance.AspectRatio,
-                                                    50, 5000);
+                                                    5, 5000);
             /*
             d3dDevice.Transform.Projection = TGCMatrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f),
                                              D3DDevice.Instance.AspectRatio, D3DDevice.Instance.ZNearPlaneDistance,
@@ -386,8 +388,6 @@ namespace TGC.Group.Model
                 shaderManager.SetTechnique("RenderGameOver", ShaderManager.MESH_TYPE.DEAD);
                 shaderManager.SetFloatValue("gameOverTime", VariablesGlobales.Shader_DEAD_time);
                 shaderManager.RenderMesh(ShaderManager.MESH_TYPE.DEAD);
-                shaderManager.SetTechnique("RenderScene", ShaderManager.MESH_TYPE.SHADOW);
-                shaderManager.RenderMesh(ShaderManager.MESH_TYPE.SHADOW);
 
                 //Dynamic Illumination
                 shaderManager.SetFloatArray3Value("fvLightPosition", TGCVector3.Vector3ToFloat3Array(lightPos));
@@ -397,8 +397,15 @@ namespace TGC.Group.Model
                 shaderManager.SetFloatValue("k_ls", .4f);
                 shaderManager.SetFloatValue("fSpecularPower", 16.84f);
 
+                shaderManager.SetTechnique("RenderScene", ShaderManager.MESH_TYPE.SHADOW);
+                shaderManager.RenderMesh(ShaderManager.MESH_TYPE.SHADOW);
+
                 shaderManager.SetTechnique("DynamicIllumination", ShaderManager.MESH_TYPE.DYNAMIC_ILLUMINATION);
                 shaderManager.RenderMesh(ShaderManager.MESH_TYPE.DYNAMIC_ILLUMINATION);
+
+                shaderManager.SetFloatValue("k_roughness", .1f);
+                shaderManager.SetTechnique("DynamicIlluminationMetallic", ShaderManager.MESH_TYPE.DYNAMIC_ILLUMINATION_METALLIC);
+                shaderManager.RenderMesh(ShaderManager.MESH_TYPE.DYNAMIC_ILLUMINATION_METALLIC);
                 //
 
                 d3dDevice.EndScene();

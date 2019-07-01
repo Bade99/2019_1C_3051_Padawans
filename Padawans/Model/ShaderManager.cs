@@ -29,6 +29,8 @@ namespace TGC.Group.Model
                 case MESH_TYPE.DEFAULT:return null;
                 case MESH_TYPE.SHADOW:return shader;
                 case MESH_TYPE.DEAD: return shader;
+                case MESH_TYPE.DYNAMIC_ILLUMINATION: return shader;
+                case MESH_TYPE.DYNAMIC_ILLUMINATION_METALLIC: return shader;
                 default: return null;
             }
         }
@@ -66,7 +68,7 @@ namespace TGC.Group.Model
         */
         public enum MESH_TYPE
         {
-            DEFAULT,SHADOW,DEAD,DYNAMIC_ILLUMINATION
+            DEFAULT,SHADOW,DEAD,DYNAMIC_ILLUMINATION, DYNAMIC_ILLUMINATION_METALLIC
         }
     }
 }

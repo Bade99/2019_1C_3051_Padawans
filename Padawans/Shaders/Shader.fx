@@ -331,3 +331,257 @@ technique DynamicIllumination
         PixelShader = compile ps_3_0 ps_DI();
     }
 }
+
+
+//-----------------------------------------------------------------------------
+// DYNAMIC ILLUMINATION + METALLIC (DIM) (ROUGHNESS_BECKMANN )
+//-----------------------------------------------------------------------------
+
+float k_roughness;
+
+float4 cook_torrance_roughness
+		(
+			in float3 normal,
+			in float3 viewer,
+			in float3 light,
+			in float2 diffuse_tex_coord
+		)
+{	
+	// Compute any aliases and intermediary values
+	// -------------------------------------------
+	float3 half_vector = normalize( light + viewer );
+	float NdotL        = saturate( dot( normal, light ) );
+	float NdotH        = saturate( dot( normal, half_vector ) );
+	float NdotV	       = saturate( dot( normal, viewer ) );
+	float VdotH        = saturate( dot( viewer, half_vector ) );
+	float r_sq         = k_roughness*k_roughness;//roughness_value * roughness_value;
+
+	
+	
+	// Evaluate the geometric term
+	// --------------------------------
+	float geo_numerator   = 2.0f * NdotH;
+	float geo_denominator = VdotH;
+	
+	float geo_b = (geo_numerator * NdotV ) / geo_denominator;
+	float geo_c = (geo_numerator * NdotL ) / geo_denominator;
+	float geo   = min( 1.0f, min( geo_b, geo_c ) );
+
+
+	
+	// Now evaluate the roughness term
+	// -------------------------------
+	float roughness;
+	
+	float roughness_a = 1.0f / ( 4.0f * r_sq * pow( NdotH, 4 ) );
+	float roughness_b = NdotH * NdotH - 1.0f;
+	float roughness_c = r_sq * NdotH * NdotH;
+	
+	roughness = roughness_a * exp( roughness_b / roughness_c );
+	
+	
+	// Put all the terms together to compute
+	// the specular term in the equation
+	// -------------------------------------
+	float3 Rs_numerator 		= ( /*fresnel **/ geo * roughness );
+	float Rs_denominator 		= NdotV * NdotL;
+	float3 Rs 					= Rs_numerator/ Rs_denominator;
+
+
+	
+	// Put all the parts together to generate
+	// the final colour
+	// --------------------------------------
+	float3 final = max( 0.0f, NdotL ) * ( /*cSpecular **/ Rs + tex2D(diffuseMap, diffuse_tex_coord) );
+
+	return float4( final, 1.0f );
+}
+
+//Vertex Shader
+VS_OUTPUT_DI vs_DIM(VS_INPUT_DI Input)
+{
+    VS_OUTPUT_DI Output;
+
+   //Proyectar posicion
+    Output.Position = mul(Input.Position, matWorldViewProj);
+   
+   //Propagamos las coordenadas de textura
+    Output.Texcoord = Input.Texcoord;
+
+   // Calculo la posicion real (en world space)
+    float4 pos_real = mul(Input.Position, matWorld);
+   // Y la propago usando las coordenadas de texturas 2 (*)
+    Output.Pos = float3(pos_real.x, pos_real.y, pos_real.z);
+   
+   // Transformo la normal y la normalizo (si la escala no es uniforme usar la inversa Traspta)
+   Output.Norm = normalize(mul(Input.Normal,matInverseTransposeWorld));
+   //Output.Norm = normalize(mul(Input.Normal, matWorld));
+    return (Output);  
+}
+
+float4 ps_DIM( in VS_OUTPUT_DI f) : COLOR0
+{
+	float ld = 0; // luz difusa
+    float le = 0; // luz specular
+
+    f.Norm = normalize(f.Norm);
+
+	// 1- calculo la luz diffusa
+    float3 LD = normalize(fvLightPosition - f.Pos);
+    ld += saturate(dot(f.Norm, LD)) * k_ld;
+
+	// 2- calcula la reflexion specular
+    float3 D = normalize(f.Pos - fvEyePosition);
+    float ks = saturate(dot(reflect(LD, f.Norm), D));
+    ks = pow(ks, fSpecularPower);
+    le += ks * k_ls;
+
+	//Obtener el texel de textura
+    float4 fvBaseColor = tex2D(diffuseMap, f.Texcoord);
+
+	//float3 n = f.Norm;
+	float3 l = normalize( -g_vLightDir );
+	float3 v = normalize( fvEyePosition - f.Pos );
+
+	float3 half_vector = normalize( l + v );
+	float NdotL        = saturate( dot( f.Norm, l ) );
+	float NdotH        = saturate( dot( f.Norm, half_vector ) );
+	float NdotV	       = saturate( dot( f.Norm, v ) );
+	float VdotH        = saturate( dot( v, half_vector ) );
+	float r_sq         = k_roughness*k_roughness;
+
+	float geo_numerator   = 2.0f * NdotH;
+	float geo_denominator = VdotH;
+	
+	float geo_b = (geo_numerator * NdotV ) / geo_denominator;
+	float geo_c = (geo_numerator * NdotL ) / geo_denominator;
+	float geo   = min( 1.0f, min( geo_b, geo_c ) );
+	
+	float roughness;
+	
+	float roughness_a = 1.0f / ( 4.0f * r_sq * pow( NdotH, 4 ) );
+	float roughness_b = NdotH * NdotH - 1.0f;
+	float roughness_c = r_sq * NdotH * NdotH;
+	
+	roughness = roughness_a * exp( roughness_b / roughness_c );
+
+	float3 Rs_numerator 		= ( /*fresnel **/ geo * roughness );
+	float Rs_denominator 		= NdotV * NdotL;
+	float3 Rs 					= Rs_numerator/ Rs_denominator;
+
+	// suma luz diffusa, ambiente, especular y metalica
+    float4 RGBColor = 0;
+    RGBColor.rgb = fvBaseColor/2 + max( 0.0f, NdotL ) * saturate(fvBaseColor * (saturate(k_la + ld)) + le*Rs);
+
+    return RGBColor;
+}
+
+technique DynamicIlluminationMetallic
+{
+    pass Pass_0
+    {
+        VertexShader = compile vs_3_0 vs_DIM();
+        PixelShader = compile ps_3_0 ps_DIM();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// DYNAMIC ILLUMINATION + SHADOW
+//-----------------------------------------------------------------------------
+
+struct VS_INPUT_DIS
+{
+	float4 Position : POSITION0;
+	float3 Normal : NORMAL0;
+	float4 Color : COLOR;
+	float2 Texcoord : TEXCOORD0;
+};
+
+struct VS_OUTPUT_DIS
+{
+	float4 Position : POSITION0;
+	float2 Texcoord : TEXCOORD0;
+	float3 Norm : TEXCOORD1; // Normales
+	float3 Pos : TEXCOORD2; // Posicion real 3d
+	float4 vPosLight : TEXCOORD3;
+};
+
+VS_OUTPUT_DIS vs_DIS(VS_INPUT_DIS Input)
+{
+	VS_OUTPUT_DIS Output;
+
+	//Proyectar posicion
+	Output.Position = mul(Input.Position, matWorldViewProj);
+
+	//Propagamos las coordenadas de textura
+	Output.Texcoord = Input.Texcoord;
+
+	// Calculo la posicion real (en world space)
+	// Y la propago usando las coordenadas de texturas 2 (*)
+	Output.Pos = mul(Input.Position, matWorld).xyz;
+
+	// Transformo la normal y la normalizo (si la escala no es uniforme usar la inversa Traspta)
+	//Output.Norm = normalize(mul(Input.Normal,matInverseTransposeWorld));
+	Output.Norm = normalize(mul(Input.Normal, matWorld));
+
+	Output.vPosLight = mul(Output.Pos, g_mViewLightProj);
+
+	return (Output);
+}
+
+float4 ps_DIS(float3 Texcoord : TEXCOORD0, float3 N : TEXCOORD1,
+	float3 Pos : TEXCOORD2, float4 vPosLight : TEXCOORD3) : COLOR0
+{
+	float ld = 0; // luz difusa
+	float le = 0; // luz specular
+
+	N = normalize(N);
+
+	// for(int =0;i<cant_ligths;++i)
+
+	// 1- calculo la luz diffusa
+	float3 LD = normalize(fvLightPosition - float3(Pos.x, Pos.y, Pos.z));
+	ld += saturate(dot(N, LD)) * k_ld;
+
+	// 2- calcula la reflexion specular
+	float3 D = normalize(float3(Pos.x, Pos.y, Pos.z) - fvEyePosition);
+	float ks = saturate(dot(reflect(LD, N), D));
+	ks = pow(ks, fSpecularPower);
+	le += ks * k_ls;
+
+	//Calculo sombras
+	float3 vLight = normalize(float3(Pos - g_vLightPos));
+	float cono = dot(vLight, g_vLightDir);
+	float4 K = 0.0;
+	if (cono > 0.7) {
+		float2 CT = 0.5 * vPosLight.xy / vPosLight.w + float2(0.5, 0.5);
+		CT.y = 1.0f - CT.y;
+
+		float I = (tex2D(g_samShadow, CT) + EPSILON < vPosLight.z / vPosLight.w) ? 0.0f : 1.0f;
+
+		if (cono < 0.8)
+			I *= 1 - (0.8 - cono) * 10;
+
+		K = I;
+	}
+
+	//Obtener el texel de textura
+	float4 fvBaseColor = tex2D(diffuseMap, Texcoord);
+
+	// suma luz diffusa, ambiente y especular
+	float4 RGBColor = 0;
+	RGBColor.rgb = saturate((fvBaseColor*0.5) * (saturate(k_la + ld)) + le)+0.5*K;
+
+	// saturate deja los valores entre [0,1]
+
+	return RGBColor;
+}
+
+technique DynamicIlluminationShadow
+{
+	pass Pass_0
+	{
+		VertexShader = compile vs_3_0 vs_DIS();
+		PixelShader = compile ps_3_0 ps_DIS();
+	}
+}
