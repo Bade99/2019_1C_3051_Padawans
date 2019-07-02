@@ -22,13 +22,16 @@ namespace TGC.Group.Model
         private Dictionary<int, CollisionObject> listaMisilesEnemigo;
         private Dictionary<int, CollisionObject> listaMisilesXwing;
         private Dictionary<int, Torreta> listaTorretas;
+        private Dictionary<int, Obstaculo> listaObstaculos;
         //Colisiones
         private List<int> listaIdMisilesQueColisionaronConXwing;
         private HashSet<Colision> listaColisionesTorretaMisil;
+        private HashSet<Colision> listaColisionesObstaculoMisil;
         //Ids utilizados para reconocer objetos
         private int misilXwingCount = 1000;
         private int misilEnemigoCount = 1001;
         private int torretaIdCount = 3;
+        private int obstaculoIdCount = 501;
         private int xwingEnemigoIdCount = 2;
         private static readonly int ID_XWING = 1;
         private static readonly int ID_PARED_OBSTACULO = -2;
@@ -45,8 +48,10 @@ namespace TGC.Group.Model
             listaMisilesEnemigo = new Dictionary<int, CollisionObject>();
             listaMisilesXwing = new Dictionary<int, CollisionObject>();
             listaTorretas = new Dictionary<int, Torreta>();
+            listaObstaculos = new Dictionary<int, Obstaculo>();
             listaIdMisilesQueColisionaronConXwing = new List<int>();
             listaColisionesTorretaMisil = new HashSet<Colision>(new ColisionCompare());
+            listaColisionesObstaculoMisil = new HashSet<Colision>(new ColisionCompare());
             collisionWorld.DebugDrawer = new Debug_Draw_Bullet();
             collisionWorld.DebugDrawer.DebugMode = DebugDrawModes.DrawWireframe;
         }
@@ -80,6 +85,16 @@ namespace TGC.Group.Model
             torretaCollision.UserIndex = torretaIdCount;
             torretaIdCount += 2;
             return torretaCollision;
+        }
+
+        public CollisionObject AgregarObstaculo(Obstaculo obstaculo, TGCVector3 size)
+        {
+            CollisionObject obstaculoCollision = CrearCollisionObject(size);
+            collisionWorld.AddCollisionObject(obstaculoCollision);
+            listaObstaculos.Add(obstaculoIdCount, obstaculo);
+            obstaculoCollision.UserIndex = obstaculoIdCount;
+            obstaculoIdCount += 2;
+            return obstaculoCollision;
         }
 
         private CollisionObject AgregarMisil(TGCVector3 size)
@@ -136,6 +151,11 @@ namespace TGC.Group.Model
                 {
                     TorretaCollision(contactManifold, misilId, objetoId);
                 }
+                if (EsObstaculo(objetoId) && EsMisilXWing(misilId) &&
+                    !(listaColisionesObstaculoMisil.Contains(new Colision(objetoId, misilId))))
+                {
+                    ObstaculoCollision(contactManifold, misilId, objetoId);
+                }
                 if (objetoId == ID_XWING && (misilId == ID_PARED_OBSTACULO || EsTorreta(misilId)))
                 {
                     VariablesGlobales.xwing.ChocarPared();
@@ -151,11 +171,23 @@ namespace TGC.Group.Model
         }
         private bool EsMisilXWing(int misilId)
         {
-            return (misilId % 2 == 0) && misilId > 999;
+            if((misilId % 2 == 0) && misilId > 999)
+            {
+                return true;
+            }
+            return false;
         }
         private bool EsTorreta(int misilId)
         {
-            return (misilId % 2 == 1) && misilId < 1000;
+            return (misilId % 2 == 1) && misilId < 500;
+        }
+        private bool EsObstaculo(int misilId)
+        {
+            if((misilId % 2 == 1) && misilId > 500 && misilId < 1000)
+            {
+                return true;
+            }
+            return false;
         }
         private bool EsXwingEnemigo(int misilId)
         {
@@ -193,6 +225,23 @@ namespace TGC.Group.Model
             }
 
         }
+
+        private void ObstaculoCollision(PersistentManifold contactManifold, int misilId, int objetoId)
+        {
+            int numContacts = contactManifold.NumContacts;
+            for (int j = 0; j < numContacts; j++)
+            {
+                ManifoldPoint pt = contactManifold.GetContactPoint(j);
+                double ptdist = pt.Distance;
+                if (Math.Abs(ptdist) < epsilonContact)
+                {
+                    listaColisionesObstaculoMisil.Add(new Colision(objetoId, misilId));
+                    listaObstaculos[objetoId].Destruir();
+                }
+            }
+
+        }
+
         public void Render(TgcD3dInput input)
         {
             if (VariablesGlobales.debugMode)

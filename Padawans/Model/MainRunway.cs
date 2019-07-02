@@ -128,7 +128,7 @@ namespace TGC.Group.Model
             mesh_pivot = 0;
             rotacion = new TGCVector3(0f, 0f, 0f);
 
-            PonerTorretas(posicion_inicial, posicion_final, new TGCVector3(0, FastMath.PI, 0), 50f, 30);
+            PonerTorretasYObstaculos(posicion_inicial, posicion_final, new TGCVector3(0, FastMath.PI, 0), 50f, 30);
 
         }
         private void PlaceMeshRnd() { }//@funcion a realizar
@@ -233,13 +233,20 @@ namespace TGC.Group.Model
             VariablesGlobales.postProcess.AgregarElemento(torreta);
         }
 
+        private void CrearObstaculo(TGCVector3 pos, TGCVector3 rotation)
+        {
+            Obstaculo obstaculo = new Obstaculo(pos, rotation);
+            VariablesGlobales.managerEnemigos.AgregarElemento(obstaculo);
+            VariablesGlobales.postProcess.AgregarElemento(obstaculo);
+        }
+
         private float MyRandom()//retorna float entre 0 y 1 de a .1 incrementos, puede ser positivo o negativo
         {
             float signo = random.Next(1) == 1 ? 1f : -1f;
             return ((float)random.Next(10) / 10f) * signo;
         }
 
-        private void PonerTorretas(TGCVector3 posInicial, TGCVector3 posFinal, TGCVector3 rotation,
+        private void PonerTorretasYObstaculos(TGCVector3 posInicial, TGCVector3 posFinal, TGCVector3 rotation,
                                     float mitadAnchoPista, int cantidad)
         {
             float signoZFinal = (float)Math.Sign(posFinal.Z);
@@ -247,7 +254,8 @@ namespace TGC.Group.Model
             int zLargo = (int)FastMath.Abs(posInicial.Z - posFinal.Z);
             for (int i = 0; i < cantidad; i++)
             {//@@Problema aca con el random, solo sirve pa ints positivos, cambiarlo y obtener el + o - afuera, esta tirando exception
-                CrearTorreta(new TGCVector3(posInicial.X + mitadAnchoPista * MyRandom() + 30, posInicial.Y - 65, posInicial.Z + signoZFinal * (float)random.Next(zLargo)), rotation);
+                    //CrearObstaculo(new TGCVector3(posInicial.X + mitadAnchoPista * MyRandom() + 30 + 200, posInicial.Y - 65, posInicial.Z + signoZFinal * (float)random.Next(zLargo)), rotation);
+                    CrearTorreta(new TGCVector3(posInicial.X + mitadAnchoPista * MyRandom() + 30, posInicial.Y - 65, posInicial.Z + signoZFinal * (float)random.Next(zLargo)), rotation);
             }
 
         }
