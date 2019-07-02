@@ -8,7 +8,7 @@ using TGC.Core.Geometry;
 using TGC.Core.SceneLoader;
 namespace TGC.Group.Model
 {
-    class Hole : IPostProcess//para indicar donde tiene que tirar la bomba
+    class Hole : ITarget, IPostProcess//para indicar donde tiene que tirar la bomba
     {
         TgcScene hole;
         TGCVector3 pos;
@@ -35,6 +35,11 @@ namespace TGC.Group.Model
         public bool CheckDist()
         {
             return pos.Z + 1500 > VariablesGlobales.xwing.GetPosition().Z && VariablesGlobales.xwing.GetPosition().Z > pos.Z - 1500;
+        }
+
+        public TGCVector3 GetPosition()
+        {
+            return pos;
         }
     }
 }

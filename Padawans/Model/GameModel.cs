@@ -111,6 +111,7 @@ namespace TGC.Group.Model
             postProcess.AgregarElemento(managerElementosTemporales);
             hole = new Hole(new TGCVector3(0, -40, -13875));
             postProcess.AgregarElemento(hole);
+            VariablesGlobales.miniMap.agregarObjetoMeta(hole);
 
             endGameManager = new EndgameManager(this,new EndGameTrigger(new TGCVector3(0,-50,-13900),new TGCVector3(100,100,100)),
                                     new LostGameTrigger(xwing,new TGCVector3(0,-30,-14000)));

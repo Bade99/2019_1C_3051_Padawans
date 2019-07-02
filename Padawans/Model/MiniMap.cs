@@ -83,6 +83,14 @@ namespace TGC.Group.Model
             this.objetos.Add(objetoProy);
         }
 
+        public void agregarObjetoMeta(ITarget objeto)
+        {
+            Proyeccion objetoProy = new Proyeccion();
+            objetoProy.objeto = objeto;
+            objetoProy.sprite = crearCuadrado(1200, 500, 10, 10, texturaPixel, Color.Yellow);
+            this.objetos.Add(objetoProy);
+        }
+
         public void Update()
         {
             tiempoDesdeUltimaActualizacion += VariablesGlobales.elapsedTime;
