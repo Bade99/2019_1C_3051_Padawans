@@ -19,7 +19,7 @@ Trabajo Práctico de la asignatura electiva [Técnicas de Gráficos por Computad
  - Alejandro Daniel Barreto
  - Agustín
 
-<img src="https://github.com/Bade99/2019_1C_3051_Padawans/blob/master/Docs/Screenshots/foto_grupal.jpg" height="200">
+<img src="https://github.com/Bade99/2019_1C_3051_Padawans/blob/master/Docs/Screenshots/foto_grupal.jpg" height="300">
 
 ## ScreenShot ##
 ![screenshot1](https://github.com/Bade99/2019_1C_3051_Padawans/blob/master/Docs/Screenshots/s1.png)
