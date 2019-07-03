@@ -20,7 +20,7 @@ Trabajo Práctico de la asignatura electiva [Técnicas de Gráficos por Computad
  - Agustín
 
 [foto grupal]
-<img src="https://github.com/Bade99/2019_1C_3051_Padawans/blob/master/Docs/foto_grupal.jpg" height="500">
+<img src="https://github.com/Bade99/2019_1C_3051_Padawans/blob/master/Docs/Screenshots/foto_grupal.jpg" height="500">
 
 ## ScreenShot ##
 ![screenshot1](https://github.com/Bade99/2019_1C_3051_Padawans/blob/master/Docs/Screenshots/s1.png)
