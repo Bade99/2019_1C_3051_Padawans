@@ -213,6 +213,7 @@ namespace TGC.Group.Model
             GodMode();
             MiniMap();
             DebugMode();
+            Mute();
             managerMenu.Update(Input);
             managerSonido.Update();
             if (!managerMenu.IsCurrent()) { //si no estoy en un menu ->
@@ -325,6 +326,13 @@ namespace TGC.Group.Model
             if (Input.keyPressed(Key.I))
             {
                 VariablesGlobales.mostrarMiniMapa = !VariablesGlobales.mostrarMiniMapa;
+            }
+        }
+        private void Mute()
+        {
+            if (Input.keyPressed(Key.M))
+            {
+                VariablesGlobales.managerSonido.MuteOrUnMute();
             }
         }
         private void GodMode()

@@ -68,10 +68,6 @@ namespace TGC.Group.Model
                 VariablesGlobales.managerSonido.RemoveID(SoundManager.SONIDOS.PAUSE);
                 VariablesGlobales.managerSonido.ResumeAll();
             }
-            if (input.keyPressed(Key.M))
-            {
-                VariablesGlobales.managerSonido.MuteOrUnMute();
-            }
         }
         public void Render()
         {
