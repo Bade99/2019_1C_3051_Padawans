@@ -62,7 +62,7 @@ namespace TGC.Group.Model
             particulaHumo.CreationFrecuency = 0.01f;
             particulaHumo.Dispersion = 1;
             particulaHumo.Speed = new TGCVector3(10, 10, 10);
-            collisionObject = VariablesGlobales.physicsEngine.AgregarTorreta(this, torreta.BoundingBox.calculateSize());
+            collisionObject = VariablesGlobales.physicsEngine.AgregarTorreta(this, 2 * torreta.BoundingBox.calculateSize());
             Posicionar();
         }
 

@@ -38,7 +38,7 @@ namespace TGC.Group.Model
         public static int vidas = 4;
         public static int bombas = 1;
         private static int max_bombas = 1;
-        public static bool MODO_DIOS = true;
+        public static bool MODO_DIOS = false;
         public static bool debugMode = false;
         public static MiniMap miniMap;
         public static bool mostrarMiniMapa = true;

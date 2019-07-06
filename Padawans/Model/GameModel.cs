@@ -211,6 +211,7 @@ namespace TGC.Group.Model
             VariablesGlobales.elapsedTime = ElapsedTime;
             PreUpdate();
             GodMode();
+            MiniMap();
             DebugMode();
             managerMenu.Update(Input);
             managerSonido.Update();
@@ -268,7 +269,7 @@ namespace TGC.Group.Model
             PreRender();
         }
         public void VariablesEnPantalla()
-        {
+        {/*
             DrawText.drawText("Con la ruedita aleja/acerca la camara [Actual]: " + TGCVector3.PrintVector3(Camara.Position), 0, 10, Color.White);
             DrawText.drawText("GodMode (IDDQD): " + iddqd + " : " + VariablesGlobales.MODO_DIOS, 0, 20, Color.White);
 
@@ -282,6 +283,7 @@ namespace TGC.Group.Model
             DrawText.drawText("Cam distance: " + followingCamera.fixedDistanceCamera, 0, 100, Color.White);
             DrawText.drawText("xwing coord esf: " + TGCVector3.PrintVector3(xwing.GetCoordenadaEsferica().GetXYZCoord()), 0, 110, Color.White);
             DrawText.drawText("Vidas " + VariablesGlobales.vidas, 0, 120, Color.White);
+            */
         }
         public void NormalPostRender()
         {
@@ -316,6 +318,13 @@ namespace TGC.Group.Model
             if (Input.keyPressed(Key.U))
             {
                 VariablesGlobales.debugMode = !VariablesGlobales.debugMode;
+            }
+        }
+        private void MiniMap()
+        {
+            if (Input.keyPressed(Key.I))
+            {
+                VariablesGlobales.mostrarMiniMapa = !VariablesGlobales.mostrarMiniMapa;
             }
         }
         private void GodMode()
