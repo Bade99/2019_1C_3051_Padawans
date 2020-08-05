@@ -257,7 +257,7 @@ namespace TGC.Group.Model
             CollisionObject collisionObject = new CollisionObject();
             BoxShape box2DShape = new BoxShape(CommonHelper.VectorXEscalar(size, 0.5f).ToBulletVector3());
             collisionObject.CollisionShape = box2DShape;
-            collisionObject.SetCustomDebugColor(new Vector3(1, 0, 0));
+            collisionObject.SetCustomDebugColor(new Vector3(1, 1, 0));
             return collisionObject;
         }
         private class Colision {

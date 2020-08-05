@@ -37,9 +37,7 @@ namespace TGC.Group.Model
         private HUD hud;
         private BackgroundScene backgroundSceneLeft, backgroundSceneRight, backgroundSceneFront;
 
-        //godmode:
         string iddqd="";
-        //
 
         public GameModel(string mediaDir, string shadersDir,GameForm gameForm) : base(mediaDir, shadersDir)
         {

@@ -77,7 +77,7 @@ namespace TGC.Group.Model
             {
                 //Lo pongo en otro if porque c# no hace lazy evaluating, es decir, evalua esa funcion tan cara
                 // aunque la primer parte haya dado falso
-                if (vivo && XwingSeEncuentraEnRadioDeVisibilidad() && target.GetPosition().Y > AlturaMinimaChequeoXwing)
+                if (vivo && XwingSeEncuentraEnRadioDeVisibilidad())
                 {
                     timer = 0;
                     Disparar();
@@ -139,7 +139,7 @@ namespace TGC.Group.Model
             float largoDistancia = vectorDistancia.Length();
             visible = TGCVector3.Dot(-vectorDistancia, target.coordenadaDireccionCartesiana) > 0
                 && largoDistancia < 2000;
-            if (largoDistancia > DistanciaMinimaPersecucion)
+            if (largoDistancia > DistanciaMinimaPersecucion && target.GetPosition().Y > AlturaMinimaChequeoXwing)
             {
                 coordenadaAXwing = new CoordenadaEsferica(vectorDistancia.X, vectorDistancia.Y, vectorDistancia.Z);
                 CoordenadaEsferica dif = this.coordenadaEsferica.Diferencia(coordenadaAXwing);
