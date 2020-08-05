@@ -59,10 +59,6 @@ namespace TGC.Group.Model
         public CollisionObject AgregarMisilEnemigo(TGCVector3 size)
         {
             CollisionObject misilActual = AgregarMisil(size);
-            if (VariablesGlobales.MODO_DIOS)
-            {
-                misilActual.SetIgnoreCollisionCheck(main_character, true);
-            }
             listaMisilesEnemigo.Add(misilEnemigoCount, misilActual);
             misilActual.UserIndex = misilEnemigoCount;
             misilEnemigoCount += 2;

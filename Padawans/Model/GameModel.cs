@@ -270,7 +270,8 @@ namespace TGC.Group.Model
             PreRender();
         }
         public void VariablesEnPantalla()
-        {/*
+        {
+            /*
             DrawText.drawText("Con la ruedita aleja/acerca la camara [Actual]: " + TGCVector3.PrintVector3(Camara.Position), 0, 10, Color.White);
             DrawText.drawText("GodMode (IDDQD): " + iddqd + " : " + VariablesGlobales.MODO_DIOS, 0, 20, Color.White);
 

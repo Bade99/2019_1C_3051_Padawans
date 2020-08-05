@@ -133,7 +133,7 @@ namespace TGC.Group.Model
 
         public void RenderPostProcess(string effect)
         {
-            if (effect == "bloom" && VariablesGlobales.vidas>0)
+            if (effect == "bloom" && (VariablesGlobales.vidas>0 || VariablesGlobales.MODO_DIOS))
             {
                 bloom[0].Render();
                 bloom[1].Render();
@@ -178,7 +178,7 @@ namespace TGC.Group.Model
 
         private void RevisarMuerte()
         {
-            if (VariablesGlobales.vidas == 0)
+            if (VariablesGlobales.vidas == 0 && !VariablesGlobales.MODO_DIOS)
             {
                 VariablesGlobales.Shader_DEAD_time = 0;
                 vivo = false;

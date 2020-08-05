@@ -22,7 +22,12 @@ namespace TGC.Group.Model
         }
         public void Update()
         {
-            if(!fin) if (juegoTerminado.IsReady() || VariablesGlobales.vidas==0) fin = true;
+            if (!fin &&
+                (juegoTerminado.IsReady() || VariablesGlobales.vidas == 0)
+                    && !VariablesGlobales.MODO_DIOS)
+            {
+                fin = true;
+            }
         }
         public void Render()
         {
