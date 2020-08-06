@@ -49,6 +49,7 @@ namespace TGC.Group.Model
         
         public override void Init()
         {
+            VariablesGlobales.vidas = 8;
             VariablesGlobales.mediaDir = this.MediaDir;
             VariablesGlobales.shadersDir = this.ShadersDir;
             VariablesGlobales.soundDevice = DirectSound.DsDevice;
