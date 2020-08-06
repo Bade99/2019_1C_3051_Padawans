@@ -603,6 +603,11 @@ namespace TGC.Group.Model
             }
         }
 
+        public ESTADO_BARREL getEstadoBarrel()
+        {
+            return estadoBarrel;
+        }
+
         public void Render(ShaderManager.MESH_TYPE tipo)
         {
             switch (tipo)
@@ -634,6 +639,6 @@ namespace TGC.Group.Model
         public override void Render(){}
 
         private enum INGRESO_MODO_DIOS { NADA, I, D_1, D_2, Q, D_3}
-        private enum ESTADO_BARREL { NADA, BARRELROLL, MEDIO_BARRELROLL, ESPERA_MEDIO_BARRELROLL, VOLVIENDO_MEDIO_BARRELROLL}
+        public enum ESTADO_BARREL { NADA, BARRELROLL, MEDIO_BARRELROLL, ESPERA_MEDIO_BARRELROLL, VOLVIENDO_MEDIO_BARRELROLL}
     }
 }

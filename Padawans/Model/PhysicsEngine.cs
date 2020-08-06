@@ -137,7 +137,8 @@ namespace TGC.Group.Model
                 CollisionObject obB = contactManifold.Body1;
                 int misilId = obB.UserIndex;
                 int objetoId = obA.UserIndex;
-                if (objetoId == ID_XWING && EsMisilEnemigo(misilId)
+                if (objetoId == ID_XWING && EsMisilEnemigo(misilId) 
+                    && !Xwing.ESTADO_BARREL.BARRELROLL.Equals(VariablesGlobales.xwing.getEstadoBarrel())
                     && !listaIdMisilesQueColisionaronConXwing.Contains(misilId))
                 {
                     XwingCollision(contactManifold, misilId);
