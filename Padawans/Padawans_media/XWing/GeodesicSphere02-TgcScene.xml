@@ -10,7 +10,7 @@
 		<specular>[51.0,51.0,51.0,255.0]</specular>
 		<opacity>100.0</opacity>
 		<alphaBlendEnable>false</alphaBlendEnable>
-		<bitmap uvTiling='[1.0,1.0]' uvOffset='[0.0,0.0]'>Color A05.png</bitmap>
+		<bitmap uvTiling='[1.0,1.0]' uvOffset='[0.0,0.0]'>Color A05.jpg</bitmap>
 	</subM>
 	</m>
 	</materials>
