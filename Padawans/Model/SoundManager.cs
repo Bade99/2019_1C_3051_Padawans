@@ -72,24 +72,27 @@ namespace TGC.Group.Model
         public void ReproducirSonido(SONIDOS sonido)
         {
             switch(sonido)
-            {
+            {   
+                case SONIDOS.EXPLOSION_TORRETA:
+                    AgregarElemento(new Sonido("Sonidos\\430058__manimato2__explosion.wav", -500, 1f, 1, 0, ""));
+                    break;
                 case SONIDOS.DISPARO_MISIL_XWING:
-                    AgregarElemento(new Sonido("Sonidos\\XWing_1_disparo.wav", 1, 1f, 1, 0, ""));
+                    AgregarElemento(new Sonido("Sonidos\\XWing_1_disparo.wav", -500, 1f, 1, 0, ""));
                     break;
                 case SONIDOS.DISPARO_MISIL_ENEMIGO:
-                    AgregarElemento(new Sonido("Sonidos\\TIE_fighter_1_disparo.wav", -900, 1f, 1, 0, ""));
+                    AgregarElemento(new Sonido("Sonidos\\TIE_fighter_1_disparo.wav", -500, 1f, 1, 0, ""));
                     break;
                 case SONIDOS.BACKGROUND_BATTLE:
-                    AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav", -1000, 0, -1, 0, ""));
+                    AgregarElemento(new Sonido("Sonidos\\Background_space_battle_10min.wav", -500, 0, -1, 0, ""));
                     break;
                 case SONIDOS.LUKE_OBI_WAN:
                     AgregarElemento(new Sonido("Sonidos\\obi_wan_luke.wav", -300, 0.5f, 1, 0, ""));
                     break;
                 case SONIDOS.PAUSE:
-                    AgregarElemento(new Sonido("Sonidos\\main_menu.wav", 0, 0, -1, 0, "pause_menu"));
+                    AgregarElemento(new Sonido("Sonidos\\main_menu.wav", -300, 0, -1, 0, "pause_menu"));
                     break;
                 case SONIDOS.MAIN_MENU:
-                    AgregarElemento(new Sonido("Sonidos\\main_menu.wav", 0, 0, -1, 0, "main_menu"));
+                    AgregarElemento(new Sonido("Sonidos\\main_menu.wav", -300, 0, -1, 0, "main_menu"));
                     break;
                 case SONIDOS.FLYBY_2:
                     AgregarElemento(new Sonido("Sonidos\\XWing_flyby_2.wav", -900, 8, 1, 0, ""));
@@ -98,16 +101,16 @@ namespace TGC.Group.Model
                     AgregarElemento(new Sonido("Sonidos\\XWing_engine.wav", -600, 1, -1, 0, ""));
                     break;
                 case SONIDOS.XWING_BOMB:
-                    AgregarElemento(new Sonido("Sonidos\\Xwing_bomb_sound.wav", 0, 2, 1, 0, ""));
+                    AgregarElemento(new Sonido("Sonidos\\Xwing_bomb_sound.wav", -500, 2, 1, 0, ""));
                     break;
                 case SONIDOS.EXPLOSION_FINAL:
-                    AgregarElemento(new Sonido("Sonidos\\final_explotion.wav", 0, 20, 1, 0, ""));
+                    AgregarElemento(new Sonido("Sonidos\\final_explotion.wav", -500, 20, 1, 0, ""));
                     break;
                 case SONIDOS.FORCE_THEME:
-                    AgregarElemento(new Sonido("Sonidos\\Force_Theme.wav", 0, 0, -1, 0, "story_menu"));
+                    AgregarElemento(new Sonido("Sonidos\\Force_Theme.wav", 0, 0, -500, 0, "story_menu"));
                     break;
                 case SONIDOS.DAMAGE:
-                    AgregarElemento(new Sonido("Sonidos\\Damage.wav", 0, 5, 1, 0, ""));
+                    AgregarElemento(new Sonido("Sonidos\\Damage.wav", -500, 5, 1, 0, ""));
                     break;
             }
          }
@@ -117,7 +120,7 @@ namespace TGC.Group.Model
         {
             DISPARO_MISIL_XWING, DISPARO_MISIL_ENEMIGO, BACKGROUND_BATTLE,
             LUKE_OBI_WAN, MAIN_MENU, PAUSE, FLYBY_2, XWING_ENGINE,NO_SOUND,XWING_BOMB,EXPLOSION_FINAL,
-            FORCE_THEME,DAMAGE
+            FORCE_THEME,DAMAGE,EXPLOSION_TORRETA
         }
     }
 }
