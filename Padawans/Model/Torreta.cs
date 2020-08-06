@@ -152,8 +152,11 @@ namespace TGC.Group.Model
 
         public void DisminuirVida()
         {
-            VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.EXPLOSION_TORRETA);
-            vida--;
+            if (vida>0)
+            {
+                VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.EXPLOSION_TORRETA);
+                vida--;
+            }
         }
 
         public void Render(){}
