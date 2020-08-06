@@ -192,6 +192,29 @@
       <LastGenOutput>Game.Designer.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
+    <None Include="Padawans_media\Bitmaps\Congrats.ai" />
+    <None Include="Padawans_media\Bitmaps\Failed.ai" />
+    <None Include="Padawans_media\Bitmaps\Game_Lost.ai" />
+    <None Include="Padawans_media\Bitmaps\Game_Won.ai" />
+    <None Include="Padawans_media\Bitmaps\G_Bomb.ai" />
+    <None Include="Padawans_media\Bitmaps\HUD_missiles.psd" />
+    <None Include="Padawans_media\Bitmaps\jupiter.ttf" />
+    <None Include="Padawans_media\Bitmaps\Left_Mouse.ai" />
+    <None Include="Padawans_media\Bitmaps\Pause.ai" />
+    <None Include="Padawans_media\Bitmaps\pause_menu.psd" />
+    <None Include="Padawans_media\Bitmaps\sound_icon.psd" />
+    <None Include="Padawans_media\Bitmaps\sound_off_icon.ai" />
+    <None Include="Padawans_media\Bitmaps\startmenu.psd" />
+    <None Include="Padawans_media\Bitmaps\Start\1.ai" />
+    <None Include="Padawans_media\Bitmaps\Start\2.ai" />
+    <None Include="Padawans_media\Bitmaps\Start\3.ai" />
+    <None Include="Padawans_media\Bitmaps\Start\skip.ai" />
+    <None Include="Padawans_media\Bitmaps\WASD.ai" />
+    <None Include="Padawans_media\Misil\Textures\auvBG.jpg.old" />
+    <None Include="Padawans_media\Postprocess\Bloom\Main_Xwing\Textures\blank==0,0,0" />
+    <None Include="Padawans_media\Postprocess\Bloom\Main_Xwing\Textures\red==255,0,0" />
+    <None Include="Padawans_media\Roca\Roca.max" />
+    <None Include="Padawans_media\Trench\Textures\3 es afuera 1 es adentro" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -227,7 +250,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
@@ -242,454 +267,12 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Padawans_media\Particulas\pisada.png" />
-    <Content Include="Padawans_media\XWing\death+star-TgcScene.xml">
+    <Content Include="Padawans_media\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Padawans_media\XWing\death+star2-TgcScene.xml">
+    <Content Include="Shaders\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Padawans_media\XWing\GeodesicSphere02-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\hierros-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\m1-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\m2-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\m3-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\m4-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\m5-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\m6-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\pipeline-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\q2-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Sin título.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\1.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\13.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\19.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\2.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\23.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\3.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\4.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\5.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\6.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\7.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\8.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\9.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Charcoal_1.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr0-0-0.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr0-0-153.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr0-0-255.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr0-204-0.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr0-255-0.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr102-56-40.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr105-105-105.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr112-100-74.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr114-114-114.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr119-136-153.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr119-88-54.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr122-9-9.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr123-118-118.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr127-255-0.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr128-128-0.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr128-128-128.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr132-132-132.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr14-14-14.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr142-142-142.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr153-0-0.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr154-205-50.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr160-82-45.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr167-101-82.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr169-153-113.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr169-169-169.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr170-147-143.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr170-170-170.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr174-174-174.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr176-158-25.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr177-95-104.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr183-210-221.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr184-134-11.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr192-164-115.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr192-192-192.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr198-198-198.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr198-200-202.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr204-0-0.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr211-189-144.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr211-211-211.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr220-220-220.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr225-226-230.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr226-226-226.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr227-247-251.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr23-22-22.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr245-245-245.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr252-0-0.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr255-0-0.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr255-140-0.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr255-153-50.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr255-165-0.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr255-191-126.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr255-204-50.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr255-215-0.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr255-228-181.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr255-255-0.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr255-255-255.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr255-63-0.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr255-69-0.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr30-30-30.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr35-35-35.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr36-47-66.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr40-204-204.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr40-38-52.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr5-168-200.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr50-50-255.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr51-51-0.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr52-43-19.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr58-58-58.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr62-91-5.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr63-63-63.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr71-76-74.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr72-209-204.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr76-74-59.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr78-63-43.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr81-81-81.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr86-86-86.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr96-96-96.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\clr98-100-68.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Color A05.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Color_002.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Concrete-Warm_.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Concrete_Form_4x8.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\dark_home_background.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\dark_home_background1.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\dark_home_background2.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\dark_home_background3.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\dark_home_background4.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\dark_home_background5.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Gainsboro_1.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Gainsboro_6.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Glass Sky Reflection_.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Groundcover_BarkChips.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Material2.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Material53.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Material6.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Metal-floor_.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Metal_Aluminum_Anodized.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Metal_Corrogated_Shiny.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Metal_Rough.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Metal_Steel_Textured.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Metal_Steel_Textured_White.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\sch-tie.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\sch-tie1.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\StandingSeam Metal Roof_6.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Vinyl_Gray_.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Vinyl_Gray_3.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Wood_Floor_Dark.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\Wood_Floor_Light.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\XWING1.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Textures\xwing2.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\torreta-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\torreta2-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\TRENCH_RUN-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\tuberia-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\Turbolaser-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\X-Wing-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\x1-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\x2-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\x3-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\x4-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\x5-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Padawans_media\XWing\xwing-TgcScene.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Shaders\GaussianBlur.fx" />
-    <Content Include="Shaders\PostProcess.fx" />
-    <Content Include="Shaders\Shader.fx" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
