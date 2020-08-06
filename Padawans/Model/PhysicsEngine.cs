@@ -214,7 +214,7 @@ namespace TGC.Group.Model
                 ManifoldPoint pt = contactManifold.GetContactPoint(j);
                 double ptdist = pt.Distance;
                 Console.WriteLine(ptdist);
-                if (Math.Abs(ptdist) < 10)
+                if (Math.Abs(ptdist) < 6)
                 {
                     listaColisionesTorretaMisil.Add(new Colision(objetoId, misilId));
                     listaTorretas[objetoId].DisminuirVida();

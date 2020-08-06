@@ -214,6 +214,7 @@ namespace TGC.Group.Model
             managerMenu.Update(Input);
             managerSonido.Update();
             if (!managerMenu.IsCurrent()) { //si no estoy en un menu ->
+                contarTiempo();
                 worldSphere.Update();
                 xwing.UpdateInput(Input,ElapsedTime);
                 xwing.Update();
@@ -238,6 +239,14 @@ namespace TGC.Group.Model
         public void RenderizarMenus()
         {
             managerMenu.Render();//ahora mismo estamos haciendo doble render en el menu, dsps lo arreglo
+        }
+
+        private void contarTiempo()
+        {
+            if (!VariablesGlobales.endgameManager.Fin())
+            {
+                VariablesGlobales.tiempoTotal += ElapsedTime;
+            }
         }
 
         public void RenderizarExtras()//renderizar estas cosas luego de los shaders
@@ -268,6 +277,8 @@ namespace TGC.Group.Model
         }
         public void VariablesEnPantalla()
         {
+            DrawText.drawText("Tiempo Total: " + VariablesGlobales.tiempoTotal, 0, 20, Color.Yellow);
+
             /*
             DrawText.drawText("Con la ruedita aleja/acerca la camara [Actual]: " + TGCVector3.PrintVector3(Camara.Position), 0, 10, Color.White);
             DrawText.drawText("GodMode (IDDQD): " + iddqd + " : " + VariablesGlobales.MODO_DIOS, 0, 20, Color.White);
@@ -309,6 +320,7 @@ namespace TGC.Group.Model
 
         public void GameEnded()
         {
+            VariablesGlobales.tiempoTotal = 0;
             gameForm.RestartGame();
         }
 

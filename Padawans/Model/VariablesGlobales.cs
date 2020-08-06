@@ -42,6 +42,7 @@ namespace TGC.Group.Model
         public static bool debugMode = false;
         public static MiniMap miniMap;
         public static bool mostrarMiniMapa = true;
+        public static float tiempoTotal = 0;
         public static void RestarVida()
         {
             managerSonido.ReproducirSonido(SoundManager.SONIDOS.DAMAGE);
