@@ -213,7 +213,8 @@ namespace TGC.Group.Model
             {
                 ManifoldPoint pt = contactManifold.GetContactPoint(j);
                 double ptdist = pt.Distance;
-                if (Math.Abs(ptdist) < epsilonContact)
+                Console.WriteLine(ptdist);
+                if (Math.Abs(ptdist) < 10)
                 {
                     listaColisionesTorretaMisil.Add(new Colision(objetoId, misilId));
                     listaTorretas[objetoId].DisminuirVida();
