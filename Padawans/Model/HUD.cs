@@ -25,6 +25,10 @@ namespace TGC.Group.Model
         private string vidas2 = "Bitmaps\\HUD\\HUD_health_2.png";
         private string vidas3 = "Bitmaps\\HUD\\HUD_health_3.png";
         private string vidas4 = "Bitmaps\\HUD\\HUD_health_4.png";
+        private string vidas5 = "Bitmaps\\HUD\\HUD_health_5.png";
+        private string vidas6 = "Bitmaps\\HUD\\HUD_health_6.png";
+        private string vidas7 = "Bitmaps\\HUD\\HUD_health_7.png";
+        private string vidas8 = "Bitmaps\\HUD\\HUD_health_8.png";
 
         public HUD()
         {
@@ -45,7 +49,11 @@ namespace TGC.Group.Model
                 new CustomBitmap(VariablesGlobales.mediaDir + vidas1, D3DDevice.Instance.Device),
                 new CustomBitmap(VariablesGlobales.mediaDir + vidas2, D3DDevice.Instance.Device),
                 new CustomBitmap(VariablesGlobales.mediaDir + vidas3, D3DDevice.Instance.Device),
-                new CustomBitmap(VariablesGlobales.mediaDir + vidas4, D3DDevice.Instance.Device)
+                new CustomBitmap(VariablesGlobales.mediaDir + vidas4, D3DDevice.Instance.Device),
+                new CustomBitmap(VariablesGlobales.mediaDir + vidas5, D3DDevice.Instance.Device),
+                new CustomBitmap(VariablesGlobales.mediaDir + vidas6, D3DDevice.Instance.Device),
+                new CustomBitmap(VariablesGlobales.mediaDir + vidas7, D3DDevice.Instance.Device),
+                new CustomBitmap(VariablesGlobales.mediaDir + vidas8, D3DDevice.Instance.Device)
             };
 
             HUD_misiles = new CustomSprite();
