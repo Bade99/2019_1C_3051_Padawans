@@ -23,7 +23,7 @@ namespace TGC.Group.Model
             this.mappedKey = mappedKey;
             drawer2D = new Drawer2D();
             fondo = new CustomSprite();
-            bitmap = new CustomBitmap(VariablesGlobales.mediaDir + "Bitmaps\\startmenu.bmp", D3DDevice.Instance.Device);
+            bitmap = new CustomBitmap(VariablesGlobales.mediaDir + "Bitmaps\\startmenu.jpg", D3DDevice.Instance.Device);
             fondo.Bitmap = bitmap;
             CalcularFullScreenScalingAndPosition(fondo);
             VariablesGlobales.managerSonido.PauseAll();
