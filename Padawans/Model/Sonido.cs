@@ -39,6 +39,10 @@ namespace TGC.Group.Model
             if (repeticiones < 0) infinito = true;
             //this.repeticiones = repeticiones;
         }
+        public bool IsStoppeado()
+        {
+            return false;
+        }
         public void Update()
         {
             if (paused) return;
@@ -103,5 +107,14 @@ namespace TGC.Group.Model
             return terminado;
         }
 
+        public void Play()
+        {
+            return;
+        }
+
+        public void Stop()
+        {
+            return;
+        }
     }
 }

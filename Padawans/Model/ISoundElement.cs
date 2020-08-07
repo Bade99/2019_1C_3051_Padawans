@@ -15,5 +15,8 @@ namespace TGC.Group.Model
         void Dispose();
         void Pause();
         void Resume();
+        void Play();
+        void Stop();
+        bool IsStoppeado();
     }
 }

@@ -74,7 +74,7 @@ namespace TGC.Group.Model
             physicsEngine = new PhysicsEngine();
             VariablesGlobales.physicsEngine = physicsEngine;
 
-            managerSonido = new SoundManager();
+            managerSonido = SoundManager.GetInstance();
             VariablesGlobales.managerSonido = managerSonido;
 
 

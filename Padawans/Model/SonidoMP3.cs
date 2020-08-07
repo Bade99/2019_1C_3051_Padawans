@@ -16,13 +16,17 @@ namespace TGC.Group.Model
         float delay;
         bool infinito = false;
         bool paused = false;
+        private string id;
 
-        public SonidoMP3(string path, float duracion, int repeticiones/*-1 para infinito*/,float delay/*delay antes del 1er inicio*/)
+
+        /*repeticiones en -1 para infinito*/
+        /*delay antes del 1er inicio*/
+        public SonidoMP3(string path, float duracion, int repeticiones,float delay, string id)
         {//@@RECOMIENDO NO USAR MP3, TARDAN MUCHISIMO EN CARGAR, supongo q xq necesita hacer la descompresion y conversion
             this.path = path;
             this.sonido = new TgcMp3Player();
             sonido.FileName = VariablesGlobales.mediaDir + path;
-
+            this.id = id;
             this.duracion = duracion * repeticiones;
             if (repeticiones < 0) infinito = true;
 
@@ -30,7 +34,13 @@ namespace TGC.Group.Model
             {
                 sonido.play(true);
             }
-            catch (Exception e) { terminado = true; }
+            catch (Exception e) {
+                terminado = true;
+            }
+        }
+        public bool IsStoppeado()
+        {
+            return false;
         }
         public void Update()
         {
@@ -54,8 +64,12 @@ namespace TGC.Group.Model
         }
         public void Pause()
         {
-            sonido.pause();
+            //sonido.pause();
             paused = true;
+        }
+        public string GetID()
+        {
+            return id;
         }
         public void Resume()
         {
@@ -67,6 +81,15 @@ namespace TGC.Group.Model
         public void Dispose()
         {
             sonido.closeFile();
+        }
+        public void Play()
+        {
+            return;
+        }
+
+        public void Stop()
+        {
+            return;
         }
     }
 }

@@ -55,7 +55,7 @@ namespace TGC.Group.Model
             if (input.keyPressed(skipKey) || timer>138)
             {
                 isCurrent = false;
-                VariablesGlobales.managerSonido.RemoveID(SoundManager.SONIDOS.FORCE_THEME);
+                VariablesGlobales.managerSonido.StopID(SoundManager.SONIDOS.FORCE_THEME);
                 VariablesGlobales.managerSonido.ResumeAll();
                 Dispose();
             }
