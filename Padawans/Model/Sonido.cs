@@ -46,7 +46,6 @@ namespace TGC.Group.Model
         public void Update()
         {
             if (paused) return;
-            CheckMute();
             if (delay > 0f)
             {
                 delay -= VariablesGlobales.elapsedTime;
@@ -74,11 +73,6 @@ namespace TGC.Group.Model
                     sonido.stop();
                 }
             }
-        }
-        private void CheckMute()
-        {
-            if (VariablesGlobales.SOUND) sonido.SoundBuffer.Volume = volumen;
-            else sonido.SoundBuffer.Volume = -10000;
         }
         public string GetID()
         {
@@ -115,6 +109,15 @@ namespace TGC.Group.Model
         public void Stop()
         {
             return;
+        }
+
+        public void mutear()
+        {
+            sonido.SoundBuffer.Volume = -10000;
+        }
+        public void unmute()
+        {
+            sonido.SoundBuffer.Volume = 0;
         }
     }
 }

@@ -115,8 +115,6 @@ namespace TGC.Group.Model
                                     new LostGameTrigger(xwing,new TGCVector3(0,-30,-14000)));
             VariablesGlobales.endgameManager = endGameManager;
 
-            managerSonido.ReproducirSonido(SoundManager.SONIDOS.BACKGROUND_BATTLE);
-
             managerMenu = new MenuManager(new StartMenu(Key.Return), new PauseMenu(Key.Escape));//tiene q ir ultimo pa parar el resto de sonidos
             VariablesGlobales.managerMenu = managerMenu;
 

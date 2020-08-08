@@ -38,7 +38,7 @@ namespace TGC.Group.Model
             if (input.keyPressed(mappedKey))
             {
                 isCurrent = false;
-                VariablesGlobales.managerSonido.RemoveID(SoundManager.SONIDOS.MAIN_MENU);
+                VariablesGlobales.managerSonido.StopID(SoundManager.SONIDOS.MAIN_MENU);
                 VariablesGlobales.managerMenu.SetCurrent(new StoryMenu(Key.E));
             }
         }

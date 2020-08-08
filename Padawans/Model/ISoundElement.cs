@@ -18,5 +18,7 @@ namespace TGC.Group.Model
         void Play();
         void Stop();
         bool IsStoppeado();
+        void mutear();
+        void unmute();
     }
 }

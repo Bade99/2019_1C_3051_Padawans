@@ -121,8 +121,7 @@ namespace TGC.Group.Model
             meshs[2] = bloom[0];
             meshs[3] = bloom[1];
 
-            VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.FLYBY_2);
-            VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.XWING_ENGINE);
+
         }
 
         public override void RenderBoundingBox()

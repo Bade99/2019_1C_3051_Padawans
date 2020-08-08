@@ -157,14 +157,13 @@
     <Compile Include="Model\Renderer.cs" />
     <Compile Include="Model\ShaderManager.cs" />
     <Compile Include="Model\Sonido.cs" />
-    <Compile Include="Model\SonidoMP3.cs" />
     <Compile Include="Model\SoundManager.cs" />
     <Compile Include="Model\StartMenu.cs" />
     <Compile Include="Model\StoryMenu.cs" />
     <Compile Include="Model\TemporaryElementManager.cs" />
     <Compile Include="Model\Torreta.cs" />
     <Compile Include="Model\VariablesGlobales.cs" />
-    <Compile Include="Model\Wmp.cs" />
+    <Compile Include="Model\SonidoWmp.cs" />
     <Compile Include="Model\WorldSphere.cs" />
     <Compile Include="Model\InteractiveElement.cs" />
     <Compile Include="Model\CommonHelper.cs" />

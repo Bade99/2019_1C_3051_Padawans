@@ -56,7 +56,10 @@ namespace TGC.Group.Model
             {
                 isCurrent = false;
                 VariablesGlobales.managerSonido.StopID(SoundManager.SONIDOS.FORCE_THEME);
-                VariablesGlobales.managerSonido.ResumeAll();
+                VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.FLYBY_2);
+                VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.XWING_ENGINE);
+                VariablesGlobales.managerSonido.ReproducirSonido(SoundManager.SONIDOS.BACKGROUND_BATTLE);
+                VariablesGlobales.managerSonido.StopID(SoundManager.SONIDOS.EXPLOSION_FINAL);
                 Dispose();
             }
         }
@@ -72,7 +75,7 @@ namespace TGC.Group.Model
                 drawer2D.DrawSprite(texto2);
             if(CommonHelper.Between(timer,7,11))
                 drawer2D.DrawSprite(texto3);
-            if(CommonHelper.Between(timer,13,18))
+            if(CommonHelper.Between(timer,13,138))
                 drawer2D.DrawSprite(texto_skip);
 
             drawer2D.EndDrawSprite();

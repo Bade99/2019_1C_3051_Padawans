@@ -65,7 +65,7 @@ namespace TGC.Group.Model
             if (input.keyPressed(mappedKey))
             {
                 isCurrent = false;
-                VariablesGlobales.managerSonido.RemoveID(SoundManager.SONIDOS.PAUSE);
+                VariablesGlobales.managerSonido.StopID(SoundManager.SONIDOS.PAUSE);
                 VariablesGlobales.managerSonido.ResumeAll();
             }
         }
